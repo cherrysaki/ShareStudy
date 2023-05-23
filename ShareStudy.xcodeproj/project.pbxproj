@@ -16,15 +16,11 @@
 		E447196D298D0C3B002C98C6 /* ShareStudyUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E447196C298D0C3B002C98C6 /* ShareStudyUITests.swift */; };
 		E447196F298D0C3B002C98C6 /* ShareStudyUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E447196E298D0C3B002C98C6 /* ShareStudyUITestsLaunchTests.swift */; };
 		E447197C298D109A002C98C6 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E447197B298D109A002C98C6 /* HomeViewController.swift */; };
-		E447197E298D10FD002C98C6 /* NewRoomViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E447197D298D10FD002C98C6 /* NewRoomViewController.swift */; };
-		E4471980298D111D002C98C6 /* CreateTaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E447197F298D111D002C98C6 /* CreateTaskViewController.swift */; };
-		E4471982298D1134002C98C6 /* ScheduleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4471981298D1134002C98C6 /* ScheduleViewController.swift */; };
 		E4471984298D114D002C98C6 /* SettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4471983298D114D002C98C6 /* SettingViewController.swift */; };
 		E4471988298D1738002C98C6 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = E4471987298D1738002C98C6 /* FirebaseAnalytics */; };
 		E447198A298D1738002C98C6 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = E4471989298D1738002C98C6 /* FirebaseAuth */; };
 		E447198C298D1738002C98C6 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = E447198B298D1738002C98C6 /* FirebaseFirestore */; };
 		E447198E298D1738002C98C6 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = E447198D298D1738002C98C6 /* FirebaseStorage */; };
-		E4471990298D244B002C98C6 /* WelcomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E447198F298D244B002C98C6 /* WelcomeViewController.swift */; };
 		E447199C298D26E4002C98C6 /* NotoSansJP-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = E4471995298D26E4002C98C6 /* NotoSansJP-Regular.otf */; };
 		E447199D298D26E4002C98C6 /* NotoSansJP-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = E4471996298D26E4002C98C6 /* NotoSansJP-Medium.otf */; };
 		E447199E298D26E4002C98C6 /* NotoSansJP-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = E4471997298D26E4002C98C6 /* NotoSansJP-Light.otf */; };
@@ -32,10 +28,12 @@
 		E44719A0298D26E4002C98C6 /* NotoSansJP-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = E4471999298D26E4002C98C6 /* NotoSansJP-Bold.otf */; };
 		E44719A1298D26E4002C98C6 /* OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = E447199A298D26E4002C98C6 /* OFL.txt */; };
 		E44719A2298D26E4002C98C6 /* NotoSansJP-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = E447199B298D26E4002C98C6 /* NotoSansJP-Black.otf */; };
+		E4C93AC42A1CB96700427DFF /* RankingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C93AC32A1CB96700427DFF /* RankingViewController.swift */; };
+		E4C93AC62A1CBBC800427DFF /* RecordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C93AC52A1CBBC800427DFF /* RecordViewController.swift */; };
+		E4C93AC82A1CBBFF00427DFF /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C93AC72A1CBBFF00427DFF /* ProfileViewController.swift */; };
 		E4F9E354299F8B16004EE261 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E4F9E353299F8B16004EE261 /* GoogleService-Info.plist */; };
 		E4F9E357299F8F86004EE261 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = E4F9E356299F8F86004EE261 /* GoogleSignIn */; };
 		E4F9E35B299F903E004EE261 /* SignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4F9E35A299F903E004EE261 /* SignInViewController.swift */; };
-		E4F9E35E29BC5857004EE261 /* CreateRoomViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4F9E35C29BC5848004EE261 /* CreateRoomViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -69,11 +67,7 @@
 		E447196C298D0C3B002C98C6 /* ShareStudyUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareStudyUITests.swift; sourceTree = "<group>"; };
 		E447196E298D0C3B002C98C6 /* ShareStudyUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareStudyUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		E447197B298D109A002C98C6 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
-		E447197D298D10FD002C98C6 /* NewRoomViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewRoomViewController.swift; sourceTree = "<group>"; };
-		E447197F298D111D002C98C6 /* CreateTaskViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTaskViewController.swift; sourceTree = "<group>"; };
-		E4471981298D1134002C98C6 /* ScheduleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleViewController.swift; sourceTree = "<group>"; };
 		E4471983298D114D002C98C6 /* SettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingViewController.swift; sourceTree = "<group>"; };
-		E447198F298D244B002C98C6 /* WelcomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeViewController.swift; sourceTree = "<group>"; };
 		E4471995298D26E4002C98C6 /* NotoSansJP-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NotoSansJP-Regular.otf"; sourceTree = "<group>"; };
 		E4471996298D26E4002C98C6 /* NotoSansJP-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NotoSansJP-Medium.otf"; sourceTree = "<group>"; };
 		E4471997298D26E4002C98C6 /* NotoSansJP-Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NotoSansJP-Light.otf"; sourceTree = "<group>"; };
@@ -81,9 +75,11 @@
 		E4471999298D26E4002C98C6 /* NotoSansJP-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NotoSansJP-Bold.otf"; sourceTree = "<group>"; };
 		E447199A298D26E4002C98C6 /* OFL.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = OFL.txt; sourceTree = "<group>"; };
 		E447199B298D26E4002C98C6 /* NotoSansJP-Black.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NotoSansJP-Black.otf"; sourceTree = "<group>"; };
+		E4C93AC32A1CB96700427DFF /* RankingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RankingViewController.swift; sourceTree = "<group>"; };
+		E4C93AC52A1CBBC800427DFF /* RecordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordViewController.swift; sourceTree = "<group>"; };
+		E4C93AC72A1CBBFF00427DFF /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		E4F9E353299F8B16004EE261 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		E4F9E35A299F903E004EE261 /* SignInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInViewController.swift; sourceTree = "<group>"; };
-		E4F9E35C29BC5848004EE261 /* CreateRoomViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateRoomViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -143,13 +139,11 @@
 				E447194B298D0C39002C98C6 /* AppDelegate.swift */,
 				E447194D298D0C39002C98C6 /* SceneDelegate.swift */,
 				E447197B298D109A002C98C6 /* HomeViewController.swift */,
-				E447197D298D10FD002C98C6 /* NewRoomViewController.swift */,
-				E447197F298D111D002C98C6 /* CreateTaskViewController.swift */,
-				E4471981298D1134002C98C6 /* ScheduleViewController.swift */,
 				E4471983298D114D002C98C6 /* SettingViewController.swift */,
-				E447198F298D244B002C98C6 /* WelcomeViewController.swift */,
 				E4F9E35A299F903E004EE261 /* SignInViewController.swift */,
-				E4F9E35C29BC5848004EE261 /* CreateRoomViewController.swift */,
+				E4C93AC32A1CB96700427DFF /* RankingViewController.swift */,
+				E4C93AC52A1CBBC800427DFF /* RecordViewController.swift */,
+				E4C93AC72A1CBBFF00427DFF /* ProfileViewController.swift */,
 				E4471951298D0C39002C98C6 /* Main.storyboard */,
 				E4471954298D0C3B002C98C6 /* Assets.xcassets */,
 				E4471956298D0C3B002C98C6 /* LaunchScreen.storyboard */,
@@ -348,16 +342,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E447197E298D10FD002C98C6 /* NewRoomViewController.swift in Sources */,
-				E4471990298D244B002C98C6 /* WelcomeViewController.swift in Sources */,
 				E447194C298D0C39002C98C6 /* AppDelegate.swift in Sources */,
 				E4471984298D114D002C98C6 /* SettingViewController.swift in Sources */,
 				E447194E298D0C39002C98C6 /* SceneDelegate.swift in Sources */,
+				E4C93AC62A1CBBC800427DFF /* RecordViewController.swift in Sources */,
 				E447197C298D109A002C98C6 /* HomeViewController.swift in Sources */,
-				E4471982298D1134002C98C6 /* ScheduleViewController.swift in Sources */,
-				E4471980298D111D002C98C6 /* CreateTaskViewController.swift in Sources */,
 				E4F9E35B299F903E004EE261 /* SignInViewController.swift in Sources */,
-				E4F9E35E29BC5857004EE261 /* CreateRoomViewController.swift in Sources */,
+				E4C93AC82A1CBBFF00427DFF /* ProfileViewController.swift in Sources */,
+				E4C93AC42A1CB96700427DFF /* RankingViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1,14 +1,13 @@
 //
-//  ScheduleViewController.swift
+//  RankingViewController.swift
 //  ShareStudy
 //
-//  Created by 神林沙希 on 3/2/23.
+//  Created by 神林沙希 on 23/5/23.
 //
 
 import UIKit
-import Firebase
 
-class ScheduleViewController: UIViewController {
+class RankingViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()

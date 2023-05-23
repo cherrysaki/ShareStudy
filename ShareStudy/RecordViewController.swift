@@ -1,14 +1,13 @@
 //
-//  NewRoomViewController.swift
+//  RecordViewController.swift
 //  ShareStudy
 //
-//  Created by 神林沙希 on 3/2/23.
+//  Created by 神林沙希 on 23/5/23.
 //
 
 import UIKit
-import Firebase
 
-class NewRoomViewController: UIViewController {
+class RecordViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
