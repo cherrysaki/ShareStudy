@@ -10,7 +10,6 @@
 		E447194C298D0C39002C98C6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E447194B298D0C39002C98C6 /* AppDelegate.swift */; };
 		E447194E298D0C39002C98C6 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E447194D298D0C39002C98C6 /* SceneDelegate.swift */; };
 		E4471953298D0C39002C98C6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E4471951298D0C39002C98C6 /* Main.storyboard */; };
-		E4471955298D0C3B002C98C6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E4471954298D0C3B002C98C6 /* Assets.xcassets */; };
 		E4471958298D0C3B002C98C6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E4471956298D0C3B002C98C6 /* LaunchScreen.storyboard */; };
 		E4471963298D0C3B002C98C6 /* ShareStudyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4471962298D0C3B002C98C6 /* ShareStudyTests.swift */; };
 		E447196D298D0C3B002C98C6 /* ShareStudyUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E447196C298D0C3B002C98C6 /* ShareStudyUITests.swift */; };
@@ -31,6 +30,7 @@
 		E4C93AC42A1CB96700427DFF /* RankingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C93AC32A1CB96700427DFF /* RankingViewController.swift */; };
 		E4C93AC62A1CBBC800427DFF /* RecordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C93AC52A1CBBC800427DFF /* RecordViewController.swift */; };
 		E4C93AC82A1CBBFF00427DFF /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C93AC72A1CBBFF00427DFF /* ProfileViewController.swift */; };
+		E4C93ACA2A1CCD8000427DFF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E4C93AC92A1CCD7F00427DFF /* Assets.xcassets */; };
 		E4F9E354299F8B16004EE261 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E4F9E353299F8B16004EE261 /* GoogleService-Info.plist */; };
 		E4F9E357299F8F86004EE261 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = E4F9E356299F8F86004EE261 /* GoogleSignIn */; };
 		E4F9E35B299F903E004EE261 /* SignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4F9E35A299F903E004EE261 /* SignInViewController.swift */; };
@@ -58,7 +58,6 @@
 		E447194B298D0C39002C98C6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E447194D298D0C39002C98C6 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		E4471952298D0C39002C98C6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		E4471954298D0C3B002C98C6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E4471957298D0C3B002C98C6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E4471959298D0C3B002C98C6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E447195E298D0C3B002C98C6 /* ShareStudyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ShareStudyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -78,6 +77,7 @@
 		E4C93AC32A1CB96700427DFF /* RankingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RankingViewController.swift; sourceTree = "<group>"; };
 		E4C93AC52A1CBBC800427DFF /* RecordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordViewController.swift; sourceTree = "<group>"; };
 		E4C93AC72A1CBBFF00427DFF /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
+		E4C93AC92A1CCD7F00427DFF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E4F9E353299F8B16004EE261 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		E4F9E35A299F903E004EE261 /* SignInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -145,8 +145,8 @@
 				E4C93AC52A1CBBC800427DFF /* RecordViewController.swift */,
 				E4C93AC72A1CBBFF00427DFF /* ProfileViewController.swift */,
 				E4471951298D0C39002C98C6 /* Main.storyboard */,
-				E4471954298D0C3B002C98C6 /* Assets.xcassets */,
 				E4471956298D0C3B002C98C6 /* LaunchScreen.storyboard */,
+				E4C93AC92A1CCD7F00427DFF /* Assets.xcassets */,
 				E4471959298D0C3B002C98C6 /* Info.plist */,
 				E4F9E353299F8B16004EE261 /* GoogleService-Info.plist */,
 			);
@@ -309,7 +309,7 @@
 			files = (
 				E4471958298D0C3B002C98C6 /* LaunchScreen.storyboard in Resources */,
 				E447199D298D26E4002C98C6 /* NotoSansJP-Medium.otf in Resources */,
-				E4471955298D0C3B002C98C6 /* Assets.xcassets in Resources */,
+				E4C93ACA2A1CCD8000427DFF /* Assets.xcassets in Resources */,
 				E44719A1298D26E4002C98C6 /* OFL.txt in Resources */,
 				E447199E298D26E4002C98C6 /* NotoSansJP-Light.otf in Resources */,
 				E4471953298D0C39002C98C6 /* Main.storyboard in Resources */,
@@ -529,6 +529,9 @@
 				DEVELOPMENT_TEAM = V4AXAW7D47;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ShareStudy/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_NSCameraUsageDescription = "記録を開始するために写真を撮影します";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "記録が完了した写真をフォトライブラリに保存します";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -557,6 +560,9 @@
 				DEVELOPMENT_TEAM = V4AXAW7D47;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ShareStudy/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_NSCameraUsageDescription = "記録を開始するために写真を撮影します";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "記録が完了した写真をフォトライブラリに保存します";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
