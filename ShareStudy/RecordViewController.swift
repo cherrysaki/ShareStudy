@@ -26,9 +26,11 @@ class RecordViewController: UIViewController, AVCapturePhotoCaptureDelegate {
     
     var studytime: Date!
     
+    var StatusNumber: Int = 1
     
     
     let startimage = UIImage(named: "Start")
+    let finishimage = UIImage(named: "Finish")
     let state = UIControl.State.normal
     
     override func viewDidLoad() {
@@ -61,10 +63,23 @@ class RecordViewController: UIViewController, AVCapturePhotoCaptureDelegate {
         }
     }
     
-    @IBAction func captureButtonTapped(_ sender: UIButton) {
-        let settings = AVCapturePhotoSettings()
+    @IBAction func mainButtonTapped(_ sender: UIButton) {
+        switch StatusNumber{
+        case 1:
+            let settings = AVCapturePhotoSettings()
+            photoOutput.capturePhoto(with: settings, delegate: self)
+            StatusNumber = 2
+            captureButton.setImage(startimage, for: state)
+        case 2:
+            post()
+            StatusNumber = 2
+            captureButton.setImage(finishimage, for: state)
+//        case 3:
+            
+        default:
+            <#code#>
+        }
         
-        photoOutput.capturePhoto(with: settings, delegate: self)
     }
     
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
@@ -84,9 +99,6 @@ class RecordViewController: UIViewController, AVCapturePhotoCaptureDelegate {
                 self?.imageView = image
             }
             tabBarController?.tabBar.isHidden = true
-            //ボタンを切り替える
-            captureButton.setImage(startimage, for: state) //開始になる
-            post()
             //アラートを出す
             //メソッドでかく
             
