@@ -47,6 +47,9 @@
                             </connections>
                         </barButtonItem>
                     </navigationItem>
+                    <connections>
+                        <outlet property="tableView" destination="9hq-xm-mDR" id="Yye-5t-7Bk"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="aUj-aK-HlZ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -105,7 +108,7 @@
         <!--Record View Controller-->
         <scene sceneID="Won-c1-zZ3">
             <objects>
-                <viewController id="ca9-HA-YDp" customClass="RecordViewController" customModule="ShareStudy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController wantsFullScreenLayout="YES" id="ca9-HA-YDp" customClass="RecordViewController" customModule="ShareStudy" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="7No-F0-GrT">
                         <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -116,11 +119,11 @@
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" image="Component 2"/>
                                 <connections>
-                                    <action selector="captureButtonTapped:" destination="ca9-HA-YDp" eventType="touchUpInside" id="yoX-nS-9e7"/>
+                                    <action selector="mainButtonTapped:" destination="ca9-HA-YDp" eventType="touchUpInside" id="eZp-nE-k5t"/>
                                 </connections>
                             </button>
                             <datePicker contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="countDownTimer" minuteInterval="1" useCurrentDate="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1Dy-VQ-SLN">
-                                <rect key="frame" x="-3" y="564" width="389" height="59"/>
+                                <rect key="frame" x="-4" y="564" width="390" height="59"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                 <locale key="locale" localeIdentifier="ja_JP"/>
                             </datePicker>
@@ -130,7 +133,7 @@
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </view>
                             <navigationBar contentMode="scaleToFill" fixedFrame="YES" shadowImage="Line 7" translatesAutoresizingMaskIntoConstraints="NO" id="Ugs-Pt-Svw">
-                                <rect key="frame" x="0.0" y="44" width="389" height="44"/>
+                                <rect key="frame" x="0.0" y="44" width="388" height="44"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                 <color key="barTintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <items>
@@ -153,8 +156,15 @@
                         <viewLayoutGuide key="safeArea" id="lNl-Vh-6UJ"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </view>
-                    <navigationItem key="navigationItem" id="xUq-ub-aVr"/>
+                    <navigationItem key="navigationItem" id="xUq-ub-aVr">
+                        <barButtonItem key="leftBarButtonItem" title="＜Back" id="6T8-LU-nIK">
+                            <connections>
+                                <action selector="Back" destination="ca9-HA-YDp" id="gGD-6K-yQf"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
+                        <outlet property="BackButton" destination="6T8-LU-nIK" id="uC8-jC-X1r"/>
                         <outlet property="Picker" destination="1Dy-VQ-SLN" id="usQ-Bt-drv"/>
                         <outlet property="cameraView" destination="deI-TS-kBq" id="dzC-mh-dnt"/>
                         <outlet property="captureButton" destination="ZaJ-aT-XDh" id="TD9-VN-on0"/>
@@ -173,7 +183,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" id="Slu-8Q-11l">
-                                <rect key="frame" x="-116" y="-397" width="390" height="844"/>
+                                <rect key="frame" x="-117" y="-398" width="390" height="845"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <viewLayoutGuide key="safeArea" id="2ys-hu-5GB"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -273,7 +283,7 @@
         <!--Tab Bar Controller-->
         <scene sceneID="Hf7-fB-BlD">
             <objects>
-                <tabBarController storyboardIdentifier="TabBarViewController" automaticallyAdjustsScrollViewInsets="NO" id="Rgl-pt-jzt" sceneMemberID="viewController">
+                <tabBarController storyboardIdentifier="TabBarViewController" automaticallyAdjustsScrollViewInsets="NO" modalPresentationStyle="fullScreen" id="Rgl-pt-jzt" sceneMemberID="viewController">
                     <toolbarItems/>
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="GyU-FR-aIG">
                         <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>

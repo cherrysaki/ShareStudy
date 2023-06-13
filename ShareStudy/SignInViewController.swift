@@ -52,37 +52,39 @@ class SignInViewController: UIViewController {
             
             //            let user = signInResult?.user
             
-            
-            if  let user = signInResult?.user {
-                let name = user.profile!.name
-                let email = user.profile!.email
-                
-                Firestore.firestore().collection("user").document(user.userID!).setData([
-                    "name": name,
-                    "email": email
-                ],completion: { error in
-                    if let error = error {
-                        // ②が失敗した場合
-                        print("Firestore 新規登録失敗 " + error.localizedDescription)
-                        //                        let dialog = UIAlertController(title: "新規登録失敗", message: error.localizedDescription, preferredStyle: .alert)
-                        //                        dialog.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-                        //                        self.present(dialog, animated: true, completion: nil)
-                    } else {
-                        print("ログイン完了 name:" + name)
-                        // ③成功した場合は一覧画面に画面遷移を行う
-                        let storyboard: UIStoryboard = self.storyboard!
-                        let next = storyboard.instantiateViewController(withIdentifier: "TabBarViewController")
-                        self.present(next, animated: true, completion: nil)
+            Auth.auth().signIn(with: credential) { (authResult, error) in
+                if  let user = signInResult?.user {
+                    let name = user.profile!.name
+                    let email = user.profile!.email
+                    
+                    Firestore.firestore().collection("user").document(user.userID!).setData([
+                        "name": name,
+                        "email": email
+                    ],completion: { error in
+                        if let error = error {
+                            // ②が失敗した場合
+                            print("Firestore 新規登録失敗 " + error.localizedDescription)
+                            //                        let dialog = UIAlertController(title: "新規登録失敗", message: error.localizedDescription, preferredStyle: .alert)
+                            //                        dialog.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                            //                        self.present(dialog, animated: true, completion: nil)
+                        } else {
+                            print("ログイン完了 name:" + name)
+                            // ③成功した場合は一覧画面に画面遷移を行う
+                            let storyboard: UIStoryboard = self.storyboard!
+                            let next = storyboard.instantiateViewController(withIdentifier: "TabBarViewController")
+                            self.present(next, animated: true, completion: nil)
+                        }
                     }
-                }
-                                                                                        
-                                                                                        
-                ) }
-            
-            
-            
-            
-            self.login(credential: credential)
+                                                                                            
+                                                                                            
+                    ) }
+                
+                
+                
+                
+                self.login(credential: credential)
+                
+            }
         }
     }
     private func login(credential: AuthCredential) {

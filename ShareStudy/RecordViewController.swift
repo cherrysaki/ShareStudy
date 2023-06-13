@@ -16,6 +16,7 @@ class RecordViewController: UIViewController, AVCapturePhotoCaptureDelegate {
     @IBOutlet weak var cameraView: UIView! // Storyboard上のUIViewに接続するIBOutlet
     @IBOutlet weak var captureButton: UIButton! // Storyboard上のUIButtonに接続するIBOutlet
     @IBOutlet weak var Picker: UIDatePicker!
+    @IBOutlet weak var BackButton: UIBarButtonItem!
     
     private var captureSession: AVCaptureSession!
     private var videoPreviewLayer: AVCaptureVideoPreviewLayer!
@@ -28,7 +29,6 @@ class RecordViewController: UIViewController, AVCapturePhotoCaptureDelegate {
     
     var StatusNumber: Int = 1
     
-    
     let startimage = UIImage(named: "Start")
     let finishimage = UIImage(named: "Finish")
     let state = UIControl.State.normal
@@ -36,6 +36,10 @@ class RecordViewController: UIViewController, AVCapturePhotoCaptureDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupCamera()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        BackButton.isHidden = true
     }
     
     func setupCamera() {
@@ -63,21 +67,32 @@ class RecordViewController: UIViewController, AVCapturePhotoCaptureDelegate {
         }
     }
     
+    @IBAction func Back(){
+        tabBarController?.tabBar.isHidden = false
+        let previousViewController = self.tabBarController?.viewControllers?[0]
+        self.tabBarController?.selectedViewController = previousViewController
+    }
+    
+    
     @IBAction func mainButtonTapped(_ sender: UIButton) {
         switch StatusNumber{
         case 1:
+            tabBarController?.tabBar.isHidden = true
             let settings = AVCapturePhotoSettings()
             photoOutput.capturePhoto(with: settings, delegate: self)
             StatusNumber = 2
             captureButton.setImage(startimage, for: state)
+            BackButton.isHidden = false
         case 2:
             post()
-            StatusNumber = 2
+            StatusNumber = 3
             captureButton.setImage(finishimage, for: state)
-//        case 3:
-            
+        case 3:
+            StatusNumber = 1
+            tabBarController?.tabBar.isHidden = false
+            let previousViewController = self.tabBarController?.viewControllers?[0]
         default:
-            <#code#>
+            break
         }
         
     }
@@ -85,30 +100,33 @@ class RecordViewController: UIViewController, AVCapturePhotoCaptureDelegate {
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
         if let imageData = photo.fileDataRepresentation(), let image = UIImage(data: imageData) {
             DispatchQueue.main.async { [weak self] in
-                // 撮影した写真を表示するための処理を追加する
-               // self?.imageView = UIImageView(image: image)
-                
                 //カメラで撮ったのが出てくる
-                let takedImageView = UIImageView(image: image)
-                takedImageView.frame = self?.cameraView.bounds ?? CGRect.zero
+                let trimImage = self!.trimmingImage(image, trimmingArea: self?.cameraView.frame ?? CGRect.zero)
+                print(self?.cameraView.frame.width)
+                let takedImageView = UIImageView(image: trimImage)
+                //                takedImageView.frame = self?.cameraView.bounds ?? CGRect.zero
                 takedImageView.contentMode = .scaleAspectFit
                 takedImageView.clipsToBounds = true
                 self?.cameraView.addSubview(takedImageView)
+                //UIImageViewのサイズ指定。
+                
                 
                 //保存したいのは、image(UIImage(data: imageData)が入ってる)
                 self?.imageView = image
             }
-            tabBarController?.tabBar.isHidden = true
-            //アラートを出す
-            //メソッドでかく
-            
         }
+    }
+    //写真をリサイズ
+    func trimmingImage(_ image: UIImage, trimmingArea: CGRect) -> UIImage {
+        let imgRef = image.cgImage?.cropping(to: trimmingArea)
+        let trimImage = UIImage(cgImage: imgRef!, scale: image.scale, orientation: image.imageOrientation)
+        return trimImage
     }
     
     //dataPickerから時間のデータをとる
     func GetDate(_ sender: Any) {
         studytime = Picker.date
-        }
+    }
     
     //投稿
     func post(){
