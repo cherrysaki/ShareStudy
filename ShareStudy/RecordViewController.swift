@@ -22,10 +22,10 @@ class RecordViewController: UIViewController, AVCapturePhotoCaptureDelegate {
     private var videoPreviewLayer: AVCaptureVideoPreviewLayer!
     private var photoOutput: AVCapturePhotoOutput!
     
-    let ongoing: Bool = false
+    var ongoing: Bool = false
     var imageView: UIImage! = nil
     
-    var studytime: Date!
+    var studytime: Double = 0
     
     var StatusNumber: Int = 1
     
@@ -74,6 +74,7 @@ class RecordViewController: UIViewController, AVCapturePhotoCaptureDelegate {
     }
     
     
+    
     @IBAction func mainButtonTapped(_ sender: UIButton) {
         switch StatusNumber{
         case 1:
@@ -84,7 +85,8 @@ class RecordViewController: UIViewController, AVCapturePhotoCaptureDelegate {
             captureButton.setImage(startimage, for: state)
             BackButton.isHidden = false
         case 2:
-            post()
+            ongoing = true
+            save()
             StatusNumber = 3
             captureButton.setImage(finishimage, for: state)
         case 3:
@@ -124,21 +126,26 @@ class RecordViewController: UIViewController, AVCapturePhotoCaptureDelegate {
     }
     
     //dataPickerから時間のデータをとる
-    func GetDate(_ sender: Any) {
-        studytime = Picker.date
+    func GetDate(_ sender: UIDatePicker) {
+        //秒表記されてる
+        print(Picker.countDownDuration)
+        studytime = Picker.countDownDuration
     }
     
-    //投稿
-    func post(){
+    
+    func save(){
+        
         // ユーザーがログインしているか確認する
         if let user = Auth.auth().currentUser {
             let image = self.imageView.jpegData(compressionQuality: 0.01)!
             // データを保存
             DispatchQueue(label: "post data", qos: .default).async {
                 // 画像のアップロード
-                let ref = postImage(user: user,image: image)
+                let ref = self.postImage(user: user,image: image)
                 // ダウンロードURLの取得
-                let url = getDownloadUrl(storageRef: ref)
+                let url = self.getDownloadUrl(storageRef: ref)
+                self.GetDate(self.Picker)
+                self.post(user: user, imageUrlString: url)
             }
             print("complete!")
         }else {
@@ -146,59 +153,79 @@ class RecordViewController: UIViewController, AVCapturePhotoCaptureDelegate {
             return
         }
         
-        func postImage(user: User,image:Data) -> StorageReference {
-            let semaphore = DispatchSemaphore(value: 0)
-            
-            let currentTimeStampInSecond = NSDate().timeIntervalSince1970
-            let storage = Storage.storage().reference(forURL: "gs://original-app-31d37.appspot.com")
-            
-            // 保存する場所を指定
-            let storageRef = storage.child("ShareStudyImage").child(user.uid).child("\(user.uid)+\(currentTimeStampInSecond).jpg")
-            
-            // ファイルをアップロード
-            storageRef.putData(image, metadata: nil) { (metadate, error) in
-                //errorがあったら
-                if error != nil {
-                    print("Firestrageへの画像の保存に失敗")
-                    print(error.debugDescription)
-                }else {
-                    print("Firestrageへの画像の保存に成功")
-                }
-                semaphore.signal()
+    }
+    
+    func postImage(user: User,image:Data) -> StorageReference {
+        let semaphore = DispatchSemaphore(value: 0)
+        
+        let currentTimeStampInSecond = NSDate().timeIntervalSince1970
+        let storage = Storage.storage().reference(forURL: "gs://original-app-31d37.appspot.com")
+        
+        // 保存する場所を指定
+        let storageRef = storage.child("ShareStudyImage").child(user.uid).child("\(user.uid)+\(currentTimeStampInSecond).jpg")
+        
+        // ファイルをアップロード
+        storageRef.putData(image, metadata: nil) { (metadate, error) in
+            //errorがあったら
+            if error != nil {
+                print("Firestrageへの画像の保存に失敗")
+                print(error.debugDescription)
+            }else {
+                print("Firestrageへの画像の保存に成功")
             }
-            
-            semaphore.wait()
-            return storageRef
+            semaphore.signal()
         }
         
-        
-        func getDownloadUrl(storageRef: StorageReference) -> String {
-            let semaphore = DispatchSemaphore(value: 0)
-            
-            var imageUrlString = ""
-            
-            storageRef.downloadURL { (url, error) in
-                if error != nil {
-                    print("Firestorageからのダウンロードに失敗しました")
-                    print(error.debugDescription)
-                } else {
-                    print("Firestorageからのダウンロードに成功しました")
-                    //6URLをString型に変更して変数urlStringにdainyuu
-                    guard let urlString = url?.absoluteString else {
-                        return
-                    }
-                    imageUrlString = urlString
-                }
-                semaphore.signal()
-            }
-            
-            semaphore.wait()
-            return imageUrlString
-        }
-        
+        semaphore.wait()
+        return storageRef
     }
     
     
+    func getDownloadUrl(storageRef: StorageReference) -> String {
+        let semaphore = DispatchSemaphore(value: 0)
+        
+        var imageUrlString = ""
+        
+        storageRef.downloadURL { (url, error) in
+            if error != nil {
+                print("Firestorageからのダウンロードに失敗しました")
+                print(error.debugDescription)
+            } else {
+                print("Firestorageからのダウンロードに成功しました")
+                //6URLをString型に変更して変数urlStringにdainyuu
+                guard let urlString = url?.absoluteString else {
+                    return
+                }
+                imageUrlString = urlString
+            }
+            semaphore.signal()
+        }
+        
+        semaphore.wait()
+        return imageUrlString
+    }
+    
+    
+    
+    func post(user: User, imageUrlString: String) {
+        Firestore.firestore().collection("user/\(user.uid)/study").addDocument(data: [
+            "date": FieldValue.serverTimestamp(),
+            "studytime": studytime,
+            "image": imageUrlString,
+            "Bool": ongoing
+        ]) { error in
+            if let error = error {
+                // 失敗した場合
+                print("投稿失敗: " + error.localizedDescription)
+                let dialog = UIAlertController(title: "投稿失敗", message: error.localizedDescription, preferredStyle: .alert)
+                dialog.addAction(UIAlertAction(title: "OK", style: .default))
+                self.present(dialog, animated: true, completion: nil)
+            } else {
+                print("投稿成功")
+            }
+            return
+        }
+    }
     
     
     
