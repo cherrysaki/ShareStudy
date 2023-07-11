@@ -74,6 +74,16 @@
                 </subviews>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
+            <connections>
+                <outlet property="iconImageView" destination="y8a-aU-cCt" id="lbu-JX-gI0"/>
+                <outlet property="nameLabel" destination="bf2-5O-Qc9" id="1D9-mU-zf9"/>
+                <outlet property="ongoingImage" destination="vqH-pb-hdM" id="A4X-TZ-jk9"/>
+                <outlet property="ongoingLabel" destination="aCm-4j-9cR" id="YDV-PD-8gl"/>
+                <outlet property="posttimeLabel" destination="QDR-0K-5Ue" id="RsR-DE-NHR"/>
+                <outlet property="studyImage" destination="qaT-aL-wvU" id="DEB-rm-tgv"/>
+                <outlet property="studytimeLabel" destination="7P4-nw-EtK" id="dfW-gE-uNC"/>
+                <outlet property="useridLabel" destination="u1G-oo-goF" id="HaP-p7-NPi"/>
+            </connections>
             <point key="canvasLocation" x="130.76923076923077" y="103.7914691943128"/>
         </tableViewCell>
     </objects>

@@ -3,6 +3,7 @@
     <device id="retina6_0" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21207"/>
+        <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -13,7 +14,7 @@
         </array>
     </customFonts>
     <scenes>
-        <!--ホーム-->
+        <!--Home View Controller-->
         <scene sceneID="9QS-q2-7ls">
             <objects>
                 <viewController id="dev-ek-pNs" customClass="HomeViewController" customModule="ShareStudy" customModuleProvider="target" sceneMemberID="viewController">
@@ -36,11 +37,20 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
+                            <navigationBar contentMode="scaleToFill" fixedFrame="YES" shadowImage="Line 7" translatesAutoresizingMaskIntoConstraints="NO" id="Dkp-dr-Zgd">
+                                <rect key="frame" x="-2" y="47" width="390" height="44"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <color key="barTintColor" systemColor="systemBackgroundColor"/>
+                                <items>
+                                    <navigationItem title="ホーム" id="31L-VM-nBC"/>
+                                </items>
+                            </navigationBar>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="eDz-7J-q76"/>
                         <color key="backgroundColor" red="0.97647058959999999" green="0.98431372640000003" blue="0.98823523520000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                     </view>
-                    <navigationItem key="navigationItem" title="ホーム" id="3hm-Fx-yM9">
+                    <navigationItem key="navigationItem" id="3hm-Fx-yM9">
                         <barButtonItem key="rightBarButtonItem" title="Item" id="WnC-8K-0RJ">
                             <connections>
                                 <segue destination="R2O-Fb-LvS" kind="presentation" id="6nx-Hq-Fb4"/>
@@ -63,10 +73,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="tsG-sd-Bit">
-                                <rect key="frame" x="52" y="110" width="66" height="71"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vSt-5k-iMR">
                                 <rect key="frame" x="174" y="110" width="42" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -94,6 +100,27 @@
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" title="Button"/>
                             </button>
+                            <navigationBar contentMode="scaleToFill" fixedFrame="YES" shadowImage="Line 7" translatesAutoresizingMaskIntoConstraints="NO" id="wnX-Wa-4Tu">
+                                <rect key="frame" x="-1" y="27" width="388" height="44"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                <color key="barTintColor" systemColor="systemBackgroundColor"/>
+                                <items>
+                                    <navigationItem id="PIK-q6-Go7">
+                                        <leftBarButtonItems>
+                                            <barButtonItem id="lra-bR-sVO"/>
+                                            <barButtonItem image="＜" id="LXV-17-Swn"/>
+                                        </leftBarButtonItems>
+                                        <rightBarButtonItems>
+                                            <barButtonItem id="paZ-Ji-XhW"/>
+                                            <barButtonItem image="+" id="6ox-cf-Y6P"/>
+                                        </rightBarButtonItems>
+                                    </navigationItem>
+                                </items>
+                            </navigationBar>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="icon" translatesAutoresizingMaskIntoConstraints="NO" id="Vus-T9-3R0">
+                                <rect key="frame" x="41" y="106" width="85" height="89"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="ubk-2d-0Bz"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -114,7 +141,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZaJ-aT-XDh">
-                                <rect key="frame" x="147" y="672" width="88" height="81"/>
+                                <rect key="frame" x="153" y="671" width="85" height="85"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" image="Component 2"/>
@@ -123,17 +150,12 @@
                                 </connections>
                             </button>
                             <datePicker contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="countDownTimer" minuteInterval="1" useCurrentDate="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1Dy-VQ-SLN">
-                                <rect key="frame" x="-4" y="564" width="390" height="59"/>
+                                <rect key="frame" x="0.0" y="564" width="389" height="59"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                 <locale key="locale" localeIdentifier="ja_JP"/>
                             </datePicker>
-                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="deI-TS-kBq">
-                                <rect key="frame" x="19" y="132" width="352" height="397"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                            </view>
                             <navigationBar contentMode="scaleToFill" fixedFrame="YES" shadowImage="Line 7" translatesAutoresizingMaskIntoConstraints="NO" id="Ugs-Pt-Svw">
-                                <rect key="frame" x="0.0" y="44" width="388" height="44"/>
+                                <rect key="frame" x="-3" y="44" width="389" height="44"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                 <color key="barTintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <items>
@@ -141,17 +163,28 @@
                                 </items>
                             </navigationBar>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0FH-Hk-AJj">
-                                <rect key="frame" x="51" y="726" width="75" height="35"/>
+                                <rect key="frame" x="61" y="701" width="60" height="60"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" image="リセット"/>
+                                <connections>
+                                    <action selector="resetButtonTapped" destination="ca9-HA-YDp" eventType="touchUpInside" id="CkK-A7-wq3"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="az6-rN-oW8">
-                                <rect key="frame" x="280" y="726" width="75" height="35"/>
+                                <rect key="frame" x="266" y="696" width="60" height="60"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" image="一時停止"/>
+                                <connections>
+                                    <action selector="timerControlButtonTapped" destination="ca9-HA-YDp" eventType="touchUpInside" id="hHe-6y-XaZ"/>
+                                </connections>
                             </button>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="deI-TS-kBq">
+                                <rect key="frame" x="38" y="117" width="315" height="420"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="lNl-Vh-6UJ"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -168,6 +201,8 @@
                         <outlet property="Picker" destination="1Dy-VQ-SLN" id="usQ-Bt-drv"/>
                         <outlet property="cameraView" destination="deI-TS-kBq" id="dzC-mh-dnt"/>
                         <outlet property="captureButton" destination="ZaJ-aT-XDh" id="TD9-VN-on0"/>
+                        <outlet property="resetButton" destination="0FH-Hk-AJj" id="T5O-Bn-W9A"/>
+                        <outlet property="stopButton" destination="az6-rN-oW8" id="76c-QG-FXl"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="nTD-fI-5aT" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -181,14 +216,6 @@
                     <view key="view" contentMode="scaleToFill" id="5eQ-tu-whv">
                         <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <view contentMode="scaleToFill" id="Slu-8Q-11l">
-                                <rect key="frame" x="-117" y="-398" width="390" height="845"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                <viewLayoutGuide key="safeArea" id="2ys-hu-5GB"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                            </view>
-                        </subviews>
                         <viewLayoutGuide key="safeArea" id="GvB-pG-Gup"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
@@ -197,7 +224,7 @@
             </objects>
             <point key="canvasLocation" x="4051" y="-250"/>
         </scene>
-        <!--ランキング-->
+        <!--Ranking View Controller-->
         <scene sceneID="ZH6-75-M2r">
             <objects>
                 <viewController id="5PP-Zo-FUw" customClass="RankingViewController" customModule="ShareStudy" customModuleProvider="target" sceneMemberID="viewController">
@@ -205,22 +232,29 @@
                         <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="LuR-hu-Yic">
-                                <rect key="frame" x="66" y="121" width="258" height="210"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                            </view>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mCZ-9a-f1t">
                                 <rect key="frame" x="0.0" y="339" width="390" height="505"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <viewLayoutGuide key="contentLayoutGuide" id="b3y-Tu-EG7"/>
                                 <viewLayoutGuide key="frameLayoutGuide" id="gfO-Ci-Wi4"/>
                             </scrollView>
+                            <navigationBar contentMode="scaleToFill" fixedFrame="YES" shadowImage="Line 7" translatesAutoresizingMaskIntoConstraints="NO" id="0UH-ey-V9F">
+                                <rect key="frame" x="-3" y="39" width="391" height="44"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                <color key="barTintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <items>
+                                    <navigationItem title="ランキング" id="J96-1J-xqC"/>
+                                </items>
+                            </navigationBar>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="Rectangle 14" translatesAutoresizingMaskIntoConstraints="NO" id="UOn-Sn-kuL">
+                                <rect key="frame" x="19" y="107" width="353" height="203"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="GaQ-R0-pMO"/>
-                        <color key="backgroundColor" red="0.97647058959999999" green="0.98431372640000003" blue="0.98823523520000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
-                    <navigationItem key="navigationItem" title="ランキング" id="PV3-zu-Qf4"/>
+                    <navigationItem key="navigationItem" id="PV3-zu-Qf4"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="u1b-yi-LPc" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -292,8 +326,8 @@
                     </tabBar>
                     <connections>
                         <segue destination="ff0-u0-otx" kind="relationship" relationship="viewControllers" id="91E-ge-Vy9"/>
-                        <segue destination="aqe-2J-xeK" kind="relationship" relationship="viewControllers" id="BUv-XC-aM5"/>
                         <segue destination="IhU-Le-Yzt" kind="relationship" relationship="viewControllers" id="LIp-7o-CvJ"/>
+                        <segue destination="aqe-2J-xeK" kind="relationship" relationship="viewControllers" id="BUv-XC-aM5"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="07r-Np-KXN" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -304,7 +338,10 @@
         <scene sceneID="QJw-BR-16Q">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="ff0-u0-otx" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" image="Home" selectedImage="Home" id="xgf-db-iJb"/>
+                    <tabBarItem key="tabBarItem" id="xgf-db-iJb">
+                        <imageReference key="image" image="house" catalog="system" symbolScale="small"/>
+                        <imageReference key="selectedImage" image="house.fill" catalog="system" symbolScale="small"/>
+                    </tabBarItem>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="Y28-FU-qwW">
                         <rect key="frame" x="0.0" y="47" width="390" height="44"/>
@@ -323,7 +360,10 @@
         <scene sceneID="3ab-Mt-xKa">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="aqe-2J-xeK" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" image="Settings" selectedImage="Settings" id="nXN-yy-Uax"/>
+                    <tabBarItem key="tabBarItem" id="nXN-yy-Uax">
+                        <imageReference key="image" image="trophy" catalog="system" symbolScale="small"/>
+                        <imageReference key="selectedImage" image="trophy.fill" catalog="system" symbolScale="small"/>
+                    </tabBarItem>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="tcj-BM-elY">
                         <rect key="frame" x="0.0" y="47" width="390" height="44"/>
@@ -338,11 +378,11 @@
             </objects>
             <point key="canvasLocation" x="2287.6923076923076" y="568.72037914691941"/>
         </scene>
-        <!--Item-->
+        <!--Navigation Controller-->
         <scene sceneID="mev-Cd-iQH">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="IhU-Le-Yzt" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item" id="YGO-z8-XqS"/>
+                    <tabBarItem key="tabBarItem" title="" image="Vector" selectedImage="Vector" id="YGO-z8-XqS"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="E6h-Bb-f0A">
                         <rect key="frame" x="0.0" y="47" width="390" height="44"/>
@@ -359,10 +399,19 @@
         </scene>
     </scenes>
     <resources>
+        <image name="+" width="13.666666984558105" height="15"/>
         <image name="Component 2" width="72" height="72"/>
-        <image name="Home" width="24" height="24"/>
         <image name="Line 7" width="390" height="3"/>
-        <image name="Settings" width="24" height="24"/>
+        <image name="Rectangle 14" width="350" height="204"/>
+        <image name="Vector" width="30" height="30"/>
+        <image name="house" catalog="system" width="128" height="104"/>
+        <image name="house.fill" catalog="system" width="128" height="104"/>
+        <image name="icon" width="512" height="512"/>
+        <image name="trophy" catalog="system" width="128" height="128"/>
+        <image name="trophy.fill" catalog="system" width="128" height="128"/>
+        <image name="リセット" width="60" height="60"/>
+        <image name="一時停止" width="60" height="60"/>
+        <image name="＜" width="16" height="16"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

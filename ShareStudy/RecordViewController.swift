@@ -13,120 +13,272 @@ import FirebaseStorage
 
 class RecordViewController: UIViewController, AVCapturePhotoCaptureDelegate {
     
-    @IBOutlet weak var cameraView: UIView! // Storyboard上のUIViewに接続するIBOutlet
-    @IBOutlet weak var captureButton: UIButton! // Storyboard上のUIButtonに接続するIBOutlet
+    @IBOutlet weak var cameraView: UIView!
+    @IBOutlet weak var captureButton: UIButton!
     @IBOutlet weak var Picker: UIDatePicker!
     @IBOutlet weak var BackButton: UIBarButtonItem!
+    @IBOutlet weak var stopButton: UIButton!
+    @IBOutlet weak var resetButton:UIButton!
     
     private var captureSession: AVCaptureSession!
     private var videoPreviewLayer: AVCaptureVideoPreviewLayer!
     private var photoOutput: AVCapturePhotoOutput!
     
-    var ongoing: Bool = false
+   
     var imageView: UIImage! = nil
     
+    var ongoing: Bool = false
     var studytime: Double = 0
     
-    var StatusNumber: Int = 1
     
-    let startimage = UIImage(named: "Start")
-    let finishimage = UIImage(named: "Finish")
+    var statusNumber: Int = 0
+    var buttonStatus: Int = 0
+    var timerTappedNumber: Int = 0
+    
+    var time: Double = 0.0
+    var restTime: Double = 0.0
+    var timer: Timer = Timer()
+    
+    
+    let takeImage = UIImage(named: "Take")
+    let startImage = UIImage(named: "Start")
+    let finishImage = UIImage(named: "Finish")
+    let restartImage = UIImage(named: "Restart")
+    let pauseImage = UIImage(named: "Pause")
     let state = UIControl.State.normal
+    let timerLabel = UILabel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        Picker.locale = Locale(identifier: "ja-JP")
+        self.makeLabel()
+        timerLabel.isHidden = true
         setupCamera()
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        stopButton.setImage(pauseImage, for: state)
+        captureButton.setImage(takeImage, for: state)
+//        buttonStatus = 1
         BackButton.isHidden = true
+        statusChanged()
+    }
+
+    
+    @IBAction func mainButtonTapped(_ sender: UIButton) {
+       statusChanged()
     }
     
-    func setupCamera() {
-        captureSession = AVCaptureSession()
+    @IBAction func timerControlButtonTapped(){
+        if buttonStatus == 0{
+            buttonStatus = 1
+        }else if buttonStatus == 1{
+            buttonStatus = 0
+        }
+        buttonUIUpdate()
+
+    }
+    
+//    リセット機能は後で作る
+    @IBAction func resetButtonTapped(){
+       buttonStatus = 2
+       buttonUIUpdate()
+        buttonStatus = 1
         
-        guard let captureDevice = AVCaptureDevice.default(for: .video) else {
-            print("カメラデバイスが取得できません")
-            return
-        }
-        do {
-            let input = try AVCaptureDeviceInput(device: captureDevice)
-            captureSession.addInput(input)
-            
-            videoPreviewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-            videoPreviewLayer.videoGravity = .resizeAspectFill
-            videoPreviewLayer.frame = cameraView.bounds
-            cameraView.layer.addSublayer(videoPreviewLayer)
-            
-            photoOutput = AVCapturePhotoOutput()
-            captureSession.addOutput(photoOutput)
-            
-            captureSession.startRunning()
-        } catch {
-            print("カメラのセットアップに失敗しました: \(error.localizedDescription)")
-        }
     }
     
+    //ホーム画面に戻る
     @IBAction func Back(){
         tabBarController?.tabBar.isHidden = false
         let previousViewController = self.tabBarController?.viewControllers?[0]
         self.tabBarController?.selectedViewController = previousViewController
     }
     
+    //タイマーをセットする。時間を表示する
+    func timerStart(setTime: Double){
+        
+        print(setTime)
+        
+        time = setTime
+        
+        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true, block: { [self] _ in
+                //1秒ごとに呼ばれる処理
+            
+            //1. timeの変更
+            time -= 1.0
+
+            //2. ラベルの表示
+            timerUIUpdate(time: time)
+            
+            //3. 時間が指定時間になったらの処理
+            if time < 0{
+                let finishAlert = UIAlertController(title: "タイマーが終了しました", message: nil, preferredStyle: .alert)
+                let okAction = UIAlertAction(title: "OK", style: .default)
+                finishAlert.addAction(okAction)
+                present(finishAlert, animated: true)
+                
+                timer.invalidate()
+            }
+            
+            })
+        
+
+    }
     
+    //タイマーがストップされた時の残り時間をとってくる
+    func timerStop(){
+            restTime = time
+            self.timer.invalidate()
+    }
     
-    @IBAction func mainButtonTapped(_ sender: UIButton) {
-        switch StatusNumber{
+    //タイマーをリセットする
+    func timerReset(){
+        let resetAlert = UIAlertController(title: "タイマーをリセットしますか？", message: nil, preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "OK", style: .default){ _ in
+            // OKが選択された場合の処理
+            self.getData(self.Picker)
+            self.time = self.studytime
+            self.timerUIUpdate(time: self.time)
+            self.timer.invalidate()
+        }
+        let cancelAction = UIAlertAction(title: "キャンセル", style: .cancel)
+        resetAlert.addAction(okAction)
+        resetAlert.addAction(cancelAction)
+        present(resetAlert, animated: true)
+    }
+    
+    func statusChanged(){
+        switch statusNumber{
+        case 0:
+            Picker.isHidden = false
+            stopButton.isHidden = true
+            resetButton.isHidden = true
+            timerLabel.isHidden = true
+            
+            statusNumber = 1
         case 1:
             tabBarController?.tabBar.isHidden = true
             let settings = AVCapturePhotoSettings()
             photoOutput.capturePhoto(with: settings, delegate: self)
-            StatusNumber = 2
-            captureButton.setImage(startimage, for: state)
+            statusNumber = 2
+            captureButton.setImage(startImage, for: state)
             BackButton.isHidden = false
         case 2:
+            stopButton.isHidden = false
+            resetButton.isHidden = false
+            Picker.isHidden = true
+            timerLabel.isHidden = false
+            
             ongoing = true
+            getData(Picker)
+            timerStart(setTime: studytime)
+            buttonStatus = 1
             save()
-            StatusNumber = 3
-            captureButton.setImage(finishimage, for: state)
+            statusNumber = 3
+            captureButton.setImage(finishImage, for: state)
         case 3:
-            StatusNumber = 1
             tabBarController?.tabBar.isHidden = false
             let previousViewController = self.tabBarController?.viewControllers?[0]
+            self.tabBarController?.selectedViewController = previousViewController
+            statusNumber = 0
         default:
             break
         }
-        
     }
+    
+    
+    func setupCamera() {
+            captureSession = AVCaptureSession()
+            
+            guard let captureDevice = AVCaptureDevice.default(for: .video) else {
+                print("カメラデバイスが取得できません")
+                return
+            }
+            do {
+                let input = try AVCaptureDeviceInput(device: captureDevice)
+                       captureSession.addInput(input)
+                       
+                       videoPreviewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
+                       videoPreviewLayer.videoGravity = .resizeAspectFill
+                
+                // カメラビューのアスペクト比を4:3に設定する
+                let cameraAspectRatio: CGFloat = 3.0 / 4.0
+                let cameraWidth = cameraView.frame.width
+                let cameraHeight = cameraWidth / cameraAspectRatio
+
+                let x = (cameraView.frame.width - cameraWidth) / 2
+                let y = (cameraView.frame.height - cameraHeight) / 2
+
+                let cameraFrame = CGRect(x: x, y: y, width: cameraWidth, height: cameraHeight)
+
+                videoPreviewLayer.frame = cameraFrame
+                       
+                       cameraView.layer.addSublayer(videoPreviewLayer)
+                       
+                       photoOutput = AVCapturePhotoOutput()
+                       captureSession.addOutput(photoOutput)
+                       
+                       captureSession.startRunning()
+                   } catch {
+                       print("カメラのセットアップに失敗しました: \(error.localizedDescription)")
+                   }
+        }
     
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
-        if let imageData = photo.fileDataRepresentation(), let image = UIImage(data: imageData) {
-            DispatchQueue.main.async { [weak self] in
-                //カメラで撮ったのが出てくる
-                let trimImage = self!.trimmingImage(image, trimmingArea: self?.cameraView.frame ?? CGRect.zero)
-                print(self?.cameraView.frame.width)
-                let takedImageView = UIImageView(image: trimImage)
-                //                takedImageView.frame = self?.cameraView.bounds ?? CGRect.zero
-                takedImageView.contentMode = .scaleAspectFit
-                takedImageView.clipsToBounds = true
-                self?.cameraView.addSubview(takedImageView)
-                //UIImageViewのサイズ指定。
-                
-                
-                //保存したいのは、image(UIImage(data: imageData)が入ってる)
-                self?.imageView = image
-            }
+            if let imageData = photo.fileDataRepresentation(), let image = UIImage(data: imageData) {
+                    DispatchQueue.main.async { [weak self] in
+                        guard let self = self else { return }
+
+                        let cameraFrame = self.cameraView.frame
+                        let cameraBounds = self.cameraView.bounds
+
+                        let trimmingArea = CGRect(x: (cameraBounds.width - cameraBounds.height) / 2.0,
+                                                  y: 0,
+                                                  width: cameraBounds.height,
+                                                  height: cameraBounds.height)
+
+                        let trimmedImage = self.trimmingImage(image, trimmingArea: trimmingArea)
+
+                        let scaledImage = self.resizeImage(trimmedImage, targetSize: cameraFrame.size)
+
+                        let takedImageView = UIImageView(image: scaledImage)
+                        takedImageView.contentMode = .scaleAspectFit
+                        takedImageView.frame = self.cameraView.bounds
+                        takedImageView.clipsToBounds = true
+                        self.cameraView.addSubview(takedImageView)
+
+                        // Save the original image
+                        self.imageView = image
+                    }
+                }
         }
-    }
+    
     //写真をリサイズ
+
     func trimmingImage(_ image: UIImage, trimmingArea: CGRect) -> UIImage {
-        let imgRef = image.cgImage?.cropping(to: trimmingArea)
-        let trimImage = UIImage(cgImage: imgRef!, scale: image.scale, orientation: image.imageOrientation)
-        return trimImage
-    }
+            
+            let cropRect = CGRect(x: image.size.width * trimmingArea.origin.x,
+                                      y: image.size.height * trimmingArea.origin.y,
+                                      width: image.size.width * trimmingArea.size.width,
+                                      height: image.size.height * trimmingArea.size.height)
+
+                if let cgImage = image.cgImage?.cropping(to: cropRect) {
+                    return UIImage(cgImage: cgImage, scale: image.scale, orientation: image.imageOrientation)
+                }
+                return image
+        }
+
+        func resizeImage(_ image: UIImage, targetSize: CGSize) -> UIImage {
+            let renderer = UIGraphicsImageRenderer(size: targetSize)
+            let scaledImage = renderer.image { context in
+                image.draw(in: CGRect(origin: .zero, size: targetSize))
+            }
+            return scaledImage
+        }
+   
     
     //dataPickerから時間のデータをとる
-    func GetDate(_ sender: UIDatePicker) {
+    func getData(_ sender: UIDatePicker) {
         //秒表記されてる
         print(Picker.countDownDuration)
         studytime = Picker.countDownDuration
@@ -134,7 +286,6 @@ class RecordViewController: UIViewController, AVCapturePhotoCaptureDelegate {
     
     
     func save(){
-        
         // ユーザーがログインしているか確認する
         if let user = Auth.auth().currentUser {
             let image = self.imageView.jpegData(compressionQuality: 0.01)!
@@ -144,10 +295,12 @@ class RecordViewController: UIViewController, AVCapturePhotoCaptureDelegate {
                 let ref = self.postImage(user: user,image: image)
                 // ダウンロードURLの取得
                 let url = self.getDownloadUrl(storageRef: ref)
-                self.GetDate(self.Picker)
+                self.getData(self.Picker)
                 self.post(user: user, imageUrlString: url)
             }
+            
             print("complete!")
+            
         }else {
             print("Error: ユーザーがログインしていません。")
             return
@@ -183,9 +336,7 @@ class RecordViewController: UIViewController, AVCapturePhotoCaptureDelegate {
     
     func getDownloadUrl(storageRef: StorageReference) -> String {
         let semaphore = DispatchSemaphore(value: 0)
-        
         var imageUrlString = ""
-        
         storageRef.downloadURL { (url, error) in
             if error != nil {
                 print("Firestorageからのダウンロードに失敗しました")
@@ -227,7 +378,38 @@ class RecordViewController: UIViewController, AVCapturePhotoCaptureDelegate {
         }
     }
     
+    func buttonUIUpdate(){
+        switch buttonStatus{
+        case 0:
+            stopButton.setImage(restartImage, for: state)
+            timerStop() //一時停止
+        case 1:
+            stopButton.setImage(pauseImage, for: state)
+            timerStart(setTime: restTime) //再開
+        case 2:
+            stopButton.setImage(pauseImage, for: state)
+            timerReset()//リセット
+        default:
+            break
+        }
+    }
     
+    func timerUIUpdate(time: Double){
+        let hours = Int(time / 3600)
+        let resthours = Int(time) % 3600
+        let minutes = Int(resthours / 60)
+        let restminutes = Int(resthours) % 60
+        let second = Int(restminutes) % 60
+        self.timerLabel.text = String(format: "%02d:%02d:%02d", hours, minutes, second)
+    }
+    
+    
+    func makeLabel(){
+        timerLabel.frame = CGRect(x: 0, y: 600, width: UIScreen.main.bounds.size.width, height: 44)
+        timerLabel.font = UIFont.boldSystemFont(ofSize: 40)
+        timerLabel.textAlignment = NSTextAlignment.center
+        self.view.addSubview(timerLabel)
+    }
     
     
     

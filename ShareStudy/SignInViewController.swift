@@ -15,6 +15,14 @@ class SignInViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+     /*
+        do {
+            try Auth.auth().signOut()
+        }
+        catch let error as NSError {
+            print(error)
+        }
+      */
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -57,7 +65,7 @@ class SignInViewController: UIViewController {
                     let name = user.profile!.name
                     let email = user.profile!.email
                     
-                    Firestore.firestore().collection("user").document(user.userID!).setData([
+                    Firestore.firestore().collection("user").document((authResult?.user.uid)!).setData([
                         "name": name,
                         "email": email
                     ],completion: { error in
@@ -74,9 +82,10 @@ class SignInViewController: UIViewController {
                             let next = storyboard.instantiateViewController(withIdentifier: "TabBarViewController")
                             self.present(next, animated: true, completion: nil)
                         }
+            
                     }
-                                                                                            
-                                                                                            
+                                                                                                       
+                                                                                                       
                     ) }
                 
                 
