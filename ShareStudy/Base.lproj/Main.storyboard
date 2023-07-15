@@ -51,6 +51,11 @@
                         <color key="backgroundColor" red="0.97647058959999999" green="0.98431372640000003" blue="0.98823523520000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                     </view>
                     <navigationItem key="navigationItem" id="3hm-Fx-yM9">
+                        <barButtonItem key="leftBarButtonItem" title="Item" id="J2x-Kz-66H">
+                            <connections>
+                                <segue destination="KHY-CX-FtQ" kind="presentation" id="M7e-Ip-5oe"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="Item" id="WnC-8K-0RJ">
                             <connections>
                                 <segue destination="R2O-Fb-LvS" kind="presentation" id="6nx-Hq-Fb4"/>
@@ -64,6 +69,22 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="aUj-aK-HlZ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="3218.4615384615386" y="-980.33175355450237"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="3tg-MT-gG2">
+            <objects>
+                <viewController wantsFullScreenLayout="YES" modalPresentationStyle="fullScreen" id="KHY-CX-FtQ" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="uDJ-dx-jyF">
+                        <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <viewLayoutGuide key="safeArea" id="4if-i9-z6s"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="gdi-LX-i7b"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="n1M-Bj-FGF" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="4454" y="-1755"/>
         </scene>
         <!--Profile View Controller-->
         <scene sceneID="gDn-iq-emj">
@@ -260,20 +281,60 @@
             </objects>
             <point key="canvasLocation" x="3216.9230769230767" y="568.72037914691941"/>
         </scene>
-        <!--View Controller-->
+        <!--Register View Controller-->
         <scene sceneID="xAz-pl-WtU">
             <objects>
-                <viewController id="krs-4c-b25" sceneMemberID="viewController">
+                <viewController id="krs-4c-b25" customClass="RegisterViewController" customModule="ShareStudy" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="JWA-6A-JFp">
                         <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="ユーザーネーム" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="XZ7-72-OH8">
+                                <rect key="frame" x="52" y="455" width="287" height="34"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="ユーザーID" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="EsX-zW-W1d">
+                                <rect key="frame" x="52" y="514" width="287" height="34"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="atk-0Z-4gz">
+                                <rect key="frame" x="307" y="775" width="59" height="35"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" title="完了"/>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mAt-fZ-hR5">
+                                <rect key="frame" x="7" y="775" width="94" height="35"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" title="スキップ"/>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NjH-aS-giG">
+                                <rect key="frame" x="120" y="227" width="150" height="150"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" title="プロフィール画像">
+                                    <fontDescription key="titleFontDescription" name="NotoSansJP-Regular" family="Noto Sans JP" pointSize="15"/>
+                                </buttonConfiguration>
+                            </button>
+                        </subviews>
                         <viewLayoutGuide key="safeArea" id="Ptj-JD-4Ck"/>
                         <color key="backgroundColor" red="0.97647058959999999" green="0.98431372640000003" blue="0.98823523520000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                     </view>
+                    <connections>
+                        <outlet property="nextButton" destination="atk-0Z-4gz" id="q5E-ze-hgl"/>
+                        <outlet property="skipButton" destination="mAt-fZ-hR5" id="COY-Qf-jSn"/>
+                        <outlet property="userIdTextField" destination="EsX-zW-W1d" id="fbR-Tz-xiy"/>
+                        <outlet property="userNameTextField" destination="XZ7-72-OH8" id="o5e-CW-cKe"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="PkU-xj-7hF" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-866" y="463"/>
+            <point key="canvasLocation" x="-866.15384615384608" y="462.79620853080564"/>
         </scene>
         <!--Sign In View Controller-->
         <scene sceneID="FdO-Nz-trf">

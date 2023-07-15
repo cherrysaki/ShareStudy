@@ -25,10 +25,11 @@ class RecordViewController: UIViewController, AVCapturePhotoCaptureDelegate {
     private var photoOutput: AVCapturePhotoOutput!
     
    
-    var imageView: UIImage! = nil
+    var image: UIImage! = nil
     
-    var ongoing: Bool = false
-    var studytime: Double = 0
+    var isFinished: Bool = false
+    var onGoing: Bool = false
+    var studyTime: Double = 0
     
     
     var statusNumber: Int = 0
@@ -37,7 +38,9 @@ class RecordViewController: UIViewController, AVCapturePhotoCaptureDelegate {
     
     var time: Double = 0.0
     var restTime: Double = 0.0
+    var extTime: Double = 0.0
     var timer: Timer = Timer()
+    var alartFlag: Bool = false
     
     
     let takeImage = UIImage(named: "Take")
@@ -57,9 +60,13 @@ class RecordViewController: UIViewController, AVCapturePhotoCaptureDelegate {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        
+        extTime = 0.0
+        alartFlag = false
+        isFinished = false
+        onGoing = false
         stopButton.setImage(pauseImage, for: state)
         captureButton.setImage(takeImage, for: state)
-//        buttonStatus = 1
         BackButton.isHidden = true
         statusChanged()
     }
@@ -79,11 +86,9 @@ class RecordViewController: UIViewController, AVCapturePhotoCaptureDelegate {
 
     }
     
-//    リセット機能は後で作る
+    //リセット機能
     @IBAction func resetButtonTapped(){
-       buttonStatus = 2
-       buttonUIUpdate()
-        buttonStatus = 1
+       timerReset()
         
     }
     
@@ -98,7 +103,6 @@ class RecordViewController: UIViewController, AVCapturePhotoCaptureDelegate {
     func timerStart(setTime: Double){
         
         print(setTime)
-        
         time = setTime
         
         timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true, block: { [self] _ in
@@ -112,12 +116,26 @@ class RecordViewController: UIViewController, AVCapturePhotoCaptureDelegate {
             
             //3. 時間が指定時間になったらの処理
             if time < 0{
-                let finishAlert = UIAlertController(title: "タイマーが終了しました", message: nil, preferredStyle: .alert)
-                let okAction = UIAlertAction(title: "OK", style: .default)
-                finishAlert.addAction(okAction)
-                present(finishAlert, animated: true)
+                isFinished = true
                 
-                timer.invalidate()
+                if alartFlag == false{
+                    
+                    alartFlag = true
+                    
+                    let finishAlert = UIAlertController(title: "タイマーが終了しました", message: nil, preferredStyle: .alert)
+                    let okAction = UIAlertAction(title: "OK", style: .default)
+                    finishAlert.addAction(okAction)
+                    present(finishAlert, animated: true)
+                    
+//                    timer.invalidate()
+                    
+                    //もしアラートが一回出されているならばそれ以降はextTimeを表示することにする
+                }else if alartFlag == true{
+                    extTime += 1.0
+                    timerUIUpdate(time: extTime)
+                    
+                    
+                }
             }
             
             })
@@ -136,9 +154,11 @@ class RecordViewController: UIViewController, AVCapturePhotoCaptureDelegate {
         let resetAlert = UIAlertController(title: "タイマーをリセットしますか？", message: nil, preferredStyle: .alert)
         let okAction = UIAlertAction(title: "OK", style: .default){ _ in
             // OKが選択された場合の処理
+            self.buttonStatus = 2
+            self.buttonUIUpdate()
             self.getData(self.Picker)
-            self.time = self.studytime
-            self.timerUIUpdate(time: self.time)
+            self.restTime = self.studyTime
+            self.timerUIUpdate(time: self.studyTime)
             self.timer.invalidate()
         }
         let cancelAction = UIAlertAction(title: "キャンセル", style: .cancel)
@@ -154,7 +174,6 @@ class RecordViewController: UIViewController, AVCapturePhotoCaptureDelegate {
             stopButton.isHidden = true
             resetButton.isHidden = true
             timerLabel.isHidden = true
-            
             statusNumber = 1
         case 1:
             tabBarController?.tabBar.isHidden = true
@@ -169,14 +188,16 @@ class RecordViewController: UIViewController, AVCapturePhotoCaptureDelegate {
             Picker.isHidden = true
             timerLabel.isHidden = false
             
-            ongoing = true
+            onGoing = true
             getData(Picker)
-            timerStart(setTime: studytime)
+            timerStart(setTime: studyTime)
             buttonStatus = 1
             save()
             statusNumber = 3
             captureButton.setImage(finishImage, for: state)
         case 3:
+            onGoing = false
+            repost()
             tabBarController?.tabBar.isHidden = false
             let previousViewController = self.tabBarController?.viewControllers?[0]
             self.tabBarController?.selectedViewController = previousViewController
@@ -241,6 +262,7 @@ class RecordViewController: UIViewController, AVCapturePhotoCaptureDelegate {
 
                         let scaledImage = self.resizeImage(trimmedImage, targetSize: cameraFrame.size)
 
+                        //グローバル変数にしてもいい？
                         let takedImageView = UIImageView(image: scaledImage)
                         takedImageView.contentMode = .scaleAspectFit
                         takedImageView.frame = self.cameraView.bounds
@@ -248,13 +270,12 @@ class RecordViewController: UIViewController, AVCapturePhotoCaptureDelegate {
                         self.cameraView.addSubview(takedImageView)
 
                         // Save the original image
-                        self.imageView = image
+                        self.image = image
                     }
                 }
         }
     
     //写真をリサイズ
-
     func trimmingImage(_ image: UIImage, trimmingArea: CGRect) -> UIImage {
             
             let cropRect = CGRect(x: image.size.width * trimmingArea.origin.x,
@@ -281,14 +302,14 @@ class RecordViewController: UIViewController, AVCapturePhotoCaptureDelegate {
     func getData(_ sender: UIDatePicker) {
         //秒表記されてる
         print(Picker.countDownDuration)
-        studytime = Picker.countDownDuration
+        studyTime = Picker.countDownDuration
     }
     
     
     func save(){
         // ユーザーがログインしているか確認する
         if let user = Auth.auth().currentUser {
-            let image = self.imageView.jpegData(compressionQuality: 0.01)!
+            let image = self.image.jpegData(compressionQuality: 0.01)!
             // データを保存
             DispatchQueue(label: "post data", qos: .default).async {
                 // 画像のアップロード
@@ -361,9 +382,11 @@ class RecordViewController: UIViewController, AVCapturePhotoCaptureDelegate {
     func post(user: User, imageUrlString: String) {
         Firestore.firestore().collection("user/\(user.uid)/study").addDocument(data: [
             "date": FieldValue.serverTimestamp(),
-            "studytime": studytime,
+            "studyTime": studyTime,
+            "extTime": extTime,
             "image": imageUrlString,
-            "Bool": ongoing
+            "onGoing": onGoing,
+            "isFinished": isFinished
         ]) { error in
             if let error = error {
                 // 失敗した場合
@@ -378,6 +401,30 @@ class RecordViewController: UIViewController, AVCapturePhotoCaptureDelegate {
         }
     }
     
+    func repost() {
+        if let user = Auth.auth().currentUser {
+            Firestore.firestore().collection("user/\(user.uid)/study").addDocument(data: [
+                "extTime": extTime,
+                "onGoing": onGoing,
+                "isFinished": isFinished
+            ]) { error in
+                if let error = error {
+                    // 失敗した場合
+                    print("投稿失敗: " + error.localizedDescription)
+                    let dialog = UIAlertController(title: "投稿失敗", message: error.localizedDescription, preferredStyle: .alert)
+                    dialog.addAction(UIAlertAction(title: "OK", style: .default))
+                    self.present(dialog, animated: true, completion: nil)
+                } else {
+                    print("投稿成功")
+                }
+                return
+            }
+        }
+    }
+    
+    
+    
+    
     func buttonUIUpdate(){
         switch buttonStatus{
         case 0:
@@ -387,8 +434,8 @@ class RecordViewController: UIViewController, AVCapturePhotoCaptureDelegate {
             stopButton.setImage(pauseImage, for: state)
             timerStart(setTime: restTime) //再開
         case 2:
-            stopButton.setImage(pauseImage, for: state)
-            timerReset()//リセット
+            stopButton.setImage(restartImage, for: state)
+            buttonStatus = 0
         default:
             break
         }
