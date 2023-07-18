@@ -60,7 +60,7 @@ class RecordViewController: UIViewController, AVCapturePhotoCaptureDelegate {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        
+        statusNumber = 0
         extTime = 0.0
         alartFlag = false
         isFinished = false
@@ -108,11 +108,11 @@ class RecordViewController: UIViewController, AVCapturePhotoCaptureDelegate {
         timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true, block: { [self] _ in
                 //1秒ごとに呼ばれる処理
             
-            //1. timeの変更
-            time -= 1.0
-
-            //2. ラベルの表示
-            timerUIUpdate(time: time)
+//            //1. timeの変更
+//            time -= 1.0
+//
+//            //2. ラベルの表示
+//            timerUIUpdate(time: time)
             
             //3. 時間が指定時間になったらの処理
             if time < 0{
@@ -134,8 +134,16 @@ class RecordViewController: UIViewController, AVCapturePhotoCaptureDelegate {
                     extTime += 1.0
                     timerUIUpdate(time: extTime)
                     
+                    timerUIUpdate(time: time)
+                    
                     
                 }
+            } else {
+                //1. timeの変更
+                time -= 1.0
+
+                //2. ラベルの表示
+                timerUIUpdate(time: time)
             }
             
             })

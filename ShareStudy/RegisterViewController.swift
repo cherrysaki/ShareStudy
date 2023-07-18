@@ -15,7 +15,7 @@ class RegisterViewController: UIViewController,UITextFieldDelegate,UIScrollViewD
     @IBOutlet var iconImageButton: UIButton!
     @IBOutlet var userNameTextField: UITextField!
     @IBOutlet var userIdTextField: UITextField!
-//    @IBOutlet var skipButton: UIButton!
+    //    @IBOutlet var skipButton: UIButton!
     @IBOutlet var nextButton: UIButton!
     @IBOutlet var imageView: UIImageView!
     @IBOutlet var scrollView: UIScrollView!
@@ -32,6 +32,7 @@ class RegisterViewController: UIViewController,UITextFieldDelegate,UIScrollViewD
         userNameTextField.delegate = self
         imagePicker.sourceType = .photoLibrary
         imagePicker.delegate = self
+        scrollView.delegate = self
         
         setupUI()
         
@@ -42,8 +43,13 @@ class RegisterViewController: UIViewController,UITextFieldDelegate,UIScrollViewD
         
     }
     
+    override func didReceiveMemoryWarning() {
+           super.didReceiveMemoryWarning()
+       }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
         
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(self.keyboardWillShow(_:)),
@@ -77,10 +83,11 @@ class RegisterViewController: UIViewController,UITextFieldDelegate,UIScrollViewD
         let topKeyboard = screenHeight - keyboardFrame.size.height
         // 重なり
         let distance = topKeyboard - bottomTextField
+        print(distance)
         
-        if distance >= 0 {
-            // scrollViewのコンテツを上へオフセット + 50.0(追加のオフセット)
-            scrollView.contentOffset.y = distance + 50.0
+        if distance <= 0 {
+            // scrollViewのコンテツを上へオフセット + (追加のオフセット)
+            scrollView.contentOffset.y = distance + 150.0
         }
     }
     
@@ -103,28 +110,31 @@ class RegisterViewController: UIViewController,UITextFieldDelegate,UIScrollViewD
     }
     //完了ボタンが押された後に呼ばれるメソッド
     func save() {
-            if let image = imageView.image, let imageData = image.jpegData(compressionQuality: 0.8) {
-                if let user = Auth.auth().currentUser {
-                    postImage(user: user, image: imageData) { result in
-                        switch result {
-                        case .success(let urlString):
-                            print("ダウンロードURL: \(urlString)")
-                            // ここでダウンロードURLを使った処理を行う
-                            self.registerNewUser(profileImageName: urlString)
-                            let storyboard: UIStoryboard = self.storyboard!
-                            let next = storyboard.instantiateViewController(withIdentifier: "TabBarViewController")
-                            self.present(next, animated: true, completion: nil)
-                        case .failure(let error):
-                            print("エラー: \(error)")
-                            // エラー発生時の処理を行う
-                        }
+        if let image = imageView.image, let imageData = image.jpegData(compressionQuality: 0.8) {
+            if let user = Auth.auth().currentUser {
+                postImage(user: user, image: imageData) { result in
+                    switch result {
+                    case .success(let urlString):
+                        print("ダウンロードURL: \(urlString)")
+                        // ここでダウンロードURLを使った処理を行う
+                        self.registerNewUser(profileImageName: urlString)
+                        
+                        //画面遷移
+                        let storyboard: UIStoryboard = self.storyboard!
+                        let next = storyboard.instantiateViewController(withIdentifier: "TabBarViewController")
+                        self.present(next, animated: true, completion: nil)
+                        
+                    case .failure(let error):
+                        print("エラー: \(error)")
+                        // エラー発生時の処理を行う
                     }
-                }else {
-                    print("Error: ユーザーがログインしていません。")
-                    return
                 }
+            }else {
+                print("Error: ユーザーがログインしていません。")
+                return
             }
         }
+    }
     
     func postImage(user: User, image: Data, completion: @escaping (Result<String, Error>) -> Void) {
         let currentTimeStampInSecond = NSDate().timeIntervalSince1970
@@ -168,81 +178,74 @@ class RegisterViewController: UIViewController,UITextFieldDelegate,UIScrollViewD
     }
     
     // 写真を選択した後に呼ばれるメソッド
-        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-            if let image = info[.originalImage] as? UIImage {
-                    
-                    // ImageViewに選択した画像を表示
-                    imageView.image = image
-                }
-            picker.dismiss(animated: true, completion: nil)
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        if let image = info[.originalImage] as? UIImage {
+            
+            // ImageViewに選択した画像を表示
+            imageView.image = image
         }
-        
-        // 写真選択をキャンセルした後に呼ばれるメソッド
-        func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-            picker.dismiss(animated: true, completion: nil)
-        }
+        picker.dismiss(animated: true, completion: nil)
+    }
+    
+    // 写真選択をキャンセルした後に呼ばれるメソッド
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true, completion: nil)
+    }
     
     
     func registerNewUser(profileImageName: String) {
         
         if userIdTextField.text! != "" && userNameTextField.text! != "" {
-           if let userID = self.userIdTextField.text,
-              let userName = self.userNameTextField.text{
-               // Firestoreへの参照を取得
-               let db = Firestore.firestore()
-               
-               // "users"コレクション内でuserIDが一致するドキュメントを検索
-               db.collection("user").whereField("userID", isEqualTo: userID).getDocuments { (querySnapshot, err) in
-                   if let err = err {
-                       print("エラー: \(err)")
-                   } else {
-                       // userIDが既に存在する場合はエラーメッセージを表示
-                       if querySnapshot!.documents.count > 0 {
-                           print("エラー: このユーザーIDはすでに存在します。")
-                       } else {
-                           // userIDが存在しない場合は新規ユーザーを登録
-                           var ref: DocumentReference? = nil
-                           
-                           ref = db.collection("user").addDocument(data: [
-                            "userID": userID,
-                            "userName": userName,
-                            "profileImageName": profileImageName
-                            // 他の必要なフィールドもここに追加します
-                           ]) { err in
-                               if let err = err {
-                                   print("エラー: \(err)")
-                               } else {
-                                   print("新規ユーザーが登録されました。ID: \(ref!.documentID)")
-                               }
-                           }
-                       }
-                   }
-               }
-           }
+            if let userID = self.userIdTextField.text,
+               let userName = self.userNameTextField.text{
+                // Firestoreへの参照を取得
+                let db = Firestore.firestore()
+                
+                // "users"コレクション内でuserIDが一致するドキュメントを検索
+                db.collection("user").whereField("userID", isEqualTo: userID).getDocuments { (querySnapshot, err) in
+                    if let err = err {
+                        print("エラー: \(err)")
+                    } else {
+                        // userIDが既に存在する場合はエラーメッセージを表示
+                        if querySnapshot!.documents.count > 0 {
+                            print("エラー: このユーザーIDはすでに存在します。")
+                            let dialog = UIAlertController(title: "登録失敗", message: "このユーザーIDはすでに存在します", preferredStyle: .alert)
+                            dialog.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                            self.present(dialog, animated: true, completion: nil)
+                        } else {
+                            // userIDが存在しない場合は新規ユーザーを登録
+                            var ref: DocumentReference? = nil
+                            
+                            ref = db.collection("user").addDocument(data: [
+                                "userID": userID,
+                                "userName": userName,
+                                "profileImageName": profileImageName
+                                
+                            ]) { err in
+                                if let err = err {
+                                    print("エラー: \(err)")
+                                } else {
+                                    print("新規ユーザーが登録されました。ID: \(ref!.documentID)")
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }else{
-            //アラートのタイトル
+            //アラート
             let dialog = UIAlertController(title: "登録失敗", message: "ユーザーネームとユーザーIDを入力してください", preferredStyle: .alert)
-            //ボタンのタイトル
             dialog.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-            //実際に表示させる
             self.present(dialog, animated: true, completion: nil)
         }
     }
-    
-  
-    
-    
-    
-    
-    
-    
     
     func setupUI(){
         imageView.layer.masksToBounds = true
         imageView.layer.cornerRadius = 75
         imageView.layer.borderColor = UIColor.lightGray.cgColor
         imageView.layer.borderWidth  = 0.1
-//        skipButton.layer.cornerRadius = 3
+        //        skipButton.layer.cornerRadius = 3
         nextButton.layer.cornerRadius = 3
         
     }
