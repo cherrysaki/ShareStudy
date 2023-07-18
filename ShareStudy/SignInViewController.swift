@@ -15,14 +15,7 @@ class SignInViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-     /*
-        do {
-            try Auth.auth().signOut()
-        }
-        catch let error as NSError {
-            print(error)
-        }
-      */
+     
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -58,7 +51,6 @@ class SignInViewController: UIViewController {
             
             let credential = GoogleAuthProvider.credential(withIDToken: idToken, accessToken: authentication.accessToken.tokenString)
             
-            //            let user = signInResult?.user
             
             Auth.auth().signIn(with: credential) { (authResult, error) in
                 if  let user = signInResult?.user {
@@ -77,9 +69,9 @@ class SignInViewController: UIViewController {
                             //                        self.present(dialog, animated: true, completion: nil)
                         } else {
                             print("ログイン完了 name:" + name)
-                            // ③成功した場合は一覧画面に画面遷移を行う
+                            // ③成功した場合はRegisterViewに画面遷移を行う
                             let storyboard: UIStoryboard = self.storyboard!
-                            let next = storyboard.instantiateViewController(withIdentifier: "TabBarViewController")
+                            let next = storyboard.instantiateViewController(withIdentifier: "RegisterView")
                             self.present(next, animated: true, completion: nil)
                         }
             
