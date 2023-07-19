@@ -64,14 +64,11 @@ class SignInViewController: UIViewController {
                         if let error = error {
                             // ②が失敗した場合
                             print("Firestore 新規登録失敗 " + error.localizedDescription)
-                            //                        let dialog = UIAlertController(title: "新規登録失敗", message: error.localizedDescription, preferredStyle: .alert)
-                            //                        dialog.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-                            //                        self.present(dialog, animated: true, completion: nil)
                         } else {
                             print("ログイン完了 name:" + name)
                             // ③成功した場合はRegisterViewに画面遷移を行う
                             let storyboard: UIStoryboard = self.storyboard!
-                            let next = storyboard.instantiateViewController(withIdentifier: "RegisterView")
+                            let next = storyboard.instantiateViewController(withIdentifier: "TabBarViewController")
                             self.present(next, animated: true, completion: nil)
                         }
             

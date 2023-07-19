@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21225" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="jFa-BM-g4O">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21225" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="tv1-Kb-A19">
     <device id="retina6_0" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21207"/>
@@ -17,7 +17,7 @@
         <!--Home View Controller-->
         <scene sceneID="9QS-q2-7ls">
             <objects>
-                <viewController id="dev-ek-pNs" customClass="HomeViewController" customModule="ShareStudy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController wantsFullScreenLayout="YES" modalPresentationStyle="fullScreen" id="dev-ek-pNs" customClass="HomeViewController" customModule="ShareStudy" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="P7D-Ac-T5C">
                         <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -53,15 +53,23 @@
                     <navigationItem key="navigationItem" id="3hm-Fx-yM9">
                         <barButtonItem key="leftBarButtonItem" title="Item" id="J2x-Kz-66H">
                             <connections>
-                                <segue destination="KHY-CX-FtQ" kind="presentation" id="M7e-Ip-5oe"/>
+                                <segue destination="tv1-Kb-A19" kind="presentation" id="xi4-P3-x5T"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" title="Item" id="WnC-8K-0RJ">
-                            <connections>
-                                <segue destination="R2O-Fb-LvS" kind="presentation" id="6nx-Hq-Fb4"/>
-                            </connections>
-                        </barButtonItem>
+                        <rightBarButtonItems>
+                            <barButtonItem title="Item" id="WnC-8K-0RJ">
+                                <connections>
+                                    <segue destination="R2O-Fb-LvS" kind="presentation" id="6nx-Hq-Fb4"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem title="Item" id="09f-Zi-bxK">
+                                <connections>
+                                    <segue destination="OPF-GL-noQ" kind="presentation" id="W9L-jZ-Tbe"/>
+                                </connections>
+                            </barButtonItem>
+                        </rightBarButtonItems>
                     </navigationItem>
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="tableView" destination="9hq-xm-mDR" id="Yye-5t-7Bk"/>
                     </connections>
@@ -70,21 +78,74 @@
             </objects>
             <point key="canvasLocation" x="3218.4615384615386" y="-980.33175355450237"/>
         </scene>
-        <!--View Controller-->
-        <scene sceneID="3tg-MT-gG2">
+        <!--Friend Search View Controller-->
+        <scene sceneID="kjJ-OL-3PT">
             <objects>
-                <viewController wantsFullScreenLayout="YES" modalPresentationStyle="fullScreen" id="KHY-CX-FtQ" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="uDJ-dx-jyF">
+                <viewController wantsFullScreenLayout="YES" modalPresentationStyle="fullScreen" id="tv1-Kb-A19" customClass="FriendSearchViewController" customModule="ShareStudy" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="R1U-QX-6Hv">
                         <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <viewLayoutGuide key="safeArea" id="4if-i9-z6s"/>
+                        <subviews>
+                            <searchBar contentMode="redraw" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="XWT-Bk-Nq6">
+                                <rect key="frame" x="0.0" y="81" width="390" height="44"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                <textInputTraits key="textInputTraits"/>
+                                <connections>
+                                    <outlet property="delegate" destination="tv1-Kb-A19" id="A98-zH-G43"/>
+                                </connections>
+                            </searchBar>
+                            <navigationBar contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4Vj-pX-wb1">
+                                <rect key="frame" x="0.0" y="37" width="390" height="44"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                <color key="barTintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <items>
+                                    <navigationItem title="ShareStudy" id="jAP-JN-YZG">
+                                        <barButtonItem key="rightBarButtonItem" title="Item" id="yVW-pr-Zz7"/>
+                                    </navigationItem>
+                                </items>
+                            </navigationBar>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="TuP-NK-pJU">
+                                <rect key="frame" x="0.0" y="125" width="390" height="719"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="mz6-m0-tsT">
+                                        <rect key="frame" x="0.0" y="50" width="390" height="43.666667938232422"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="mz6-m0-tsT" id="g7Y-h0-LqY">
+                                            <rect key="frame" x="0.0" y="0.0" width="390" height="43.666667938232422"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
+                            </tableView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="ZcV-oM-QcH"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
-                    <navigationItem key="navigationItem" id="gdi-LX-i7b"/>
+                    <connections>
+                        <outlet property="searchBar" destination="XWT-Bk-Nq6" id="S8d-dl-DWe"/>
+                        <outlet property="tableView" destination="TuP-NK-pJU" id="ElO-GN-A1h"/>
+                    </connections>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="n1M-Bj-FGF" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="LQx-AF-gb1" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4454" y="-1755"/>
+            <point key="canvasLocation" x="4476.9230769230771" y="-2397.8672985781991"/>
+        </scene>
+        <!--Notification View Controller-->
+        <scene sceneID="Zg6-uH-bNe">
+            <objects>
+                <viewController wantsFullScreenLayout="YES" modalPresentationStyle="fullScreen" id="OPF-GL-noQ" customClass="NotificationViewController" customModule="ShareStudy" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="yau-Pf-bXX">
+                        <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <viewLayoutGuide key="safeArea" id="AoP-HF-M0W"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ucC-Wb-fmB" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="4477" y="-1683"/>
         </scene>
         <!--Profile View Controller-->
         <scene sceneID="gDn-iq-emj">

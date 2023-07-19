@@ -117,7 +117,7 @@ class RegisterViewController: UIViewController,UITextFieldDelegate,UIScrollViewD
                     case .success(let urlString):
                         print("ダウンロードURL: \(urlString)")
                         // ここでダウンロードURLを使った処理を行う
-                        self.registerNewUser(profileImageName: urlString)
+                        self.registerNewUser(user: user,profileImageName: urlString)
                         
                         //画面遷移
                         let storyboard: UIStoryboard = self.storyboard!
@@ -193,16 +193,16 @@ class RegisterViewController: UIViewController,UITextFieldDelegate,UIScrollViewD
     }
     
     
-    func registerNewUser(profileImageName: String) {
+    func registerNewUser(user: User, profileImageName: String) {
         
         if userIdTextField.text! != "" && userNameTextField.text! != "" {
             if let userID = self.userIdTextField.text,
                let userName = self.userNameTextField.text{
                 // Firestoreへの参照を取得
                 let db = Firestore.firestore()
-                
+                // Firestore.firestore().collection("user/\(user.uid)/study").addDocument(data: [
                 // "users"コレクション内でuserIDが一致するドキュメントを検索
-                db.collection("user").whereField("userID", isEqualTo: userID).getDocuments { (querySnapshot, err) in
+                db.collection("user/\(user.uid)/profile").whereField("userID", isEqualTo: userID).getDocuments { (querySnapshot, err) in
                     if let err = err {
                         print("エラー: \(err)")
                     } else {
@@ -216,7 +216,7 @@ class RegisterViewController: UIViewController,UITextFieldDelegate,UIScrollViewD
                             // userIDが存在しない場合は新規ユーザーを登録
                             var ref: DocumentReference? = nil
                             
-                            ref = db.collection("user").addDocument(data: [
+                            ref = db.collection("user/\(user.uid)/profile").addDocument(data: [
                                 "userID": userID,
                                 "userName": userName,
                                 "profileImageName": profileImageName
