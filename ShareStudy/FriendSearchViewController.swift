@@ -8,7 +8,8 @@
 import UIKit
 import Firebase
 
-class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITableViewDataSource, UITableViewDelegate {
+class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITableViewDataSource, UITableViewDelegate, FriendSearchViewDelegate {
+ 
     
     @IBOutlet var searchBar: UISearchBar!
     @IBOutlet var tableView: UITableView!
@@ -16,6 +17,7 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
     var searchHistory: [String] = []
     var searchResults: [Profile] = [] // 検索結果を格納するための配列
     var profiles: [Profile] = [] // プロフィール情報を格納するための配列
+    var keyword: String = ""
     
     
     struct Profile {
@@ -84,6 +86,7 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
             let profile = profiles[indexPath.row]
             cell.nameLabel.text = profile.userName
             cell.idLabel.text = profile.userID
+            cell.delegate = self
             return cell
         } else {
             // セクション1またはプロフィール情報がない場合は特別なセルを表示する
@@ -139,7 +142,7 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
     
     // 検索ボタンが押された時の処理
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        if let keyword = searchBar.text, !keyword.isEmpty {
+        if keyword == searchBar.text, !keyword.isEmpty {
             searchResults = [] // 新たな検索が始まるたびにリセット
             // 検索キーワードを保存
             saveSearchKeyword(keyword: keyword)
@@ -159,7 +162,7 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
         }
     }
     
-    func addFriend(keyword: String) {
+    func addFriend(cell: SearchTableViewCell) {
         // 1. キーワードを使用して、指定されたユーザーIDの人のコレクションにwaitfollowerを作成する
         if let currentUserID = Auth.auth().currentUser?.uid {
             let targetUserID = keyword // セルに表示されている文字をキーワードとして使用
@@ -195,5 +198,7 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
             }
         }
     }
+    
+    
 
 }

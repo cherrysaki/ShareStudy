@@ -7,7 +7,7 @@
 
 import UIKit
 
-class NotificationViewController: UIViewController,UITableViewDelegate,UITableViewDataSource {
+class NotificationViewController: UIViewController{
     
     @IBOutlet var tableView: UITableView!
     @IBOutlet var BackButton: UIBarButtonItem!
@@ -15,19 +15,19 @@ class NotificationViewController: UIViewController,UITableViewDelegate,UITableVi
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.dataSource = self
-        tableView.delegate = self
+//        tableView.dataSource = self
+//        tableView.delegate = self
     }
+//    UITableViewDelegate,UITableViewDataSource
     
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        <#code#>
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        <#code#>
-    }
-    
+//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+//        <#code#>
+//    }
+//
+//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+//        <#code#>
+//    }
+//
 
    
 

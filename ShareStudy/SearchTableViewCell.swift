@@ -14,6 +14,8 @@ class SearchTableViewCell: UITableViewCell {
     @IBOutlet var nameLabel:UILabel!
     @IBOutlet var idLabel: UILabel!
     @IBOutlet var addButton: UIButton!
+    
+    weak var delegate: FriendSearchViewDelegate?
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -24,11 +26,14 @@ class SearchTableViewCell: UITableViewCell {
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
+    }
+    
+    @IBAction func addButtonTapped(){
+        delegate?.addFriend(cell: self)
+    }
+    
+}
 
-    }
-    
-  @IBAction func addButtonTapped(){
-        
-    }
-    
+protocol FriendSearchViewDelegate: AnyObject{
+    func addFriend(cell: SearchTableViewCell)
 }

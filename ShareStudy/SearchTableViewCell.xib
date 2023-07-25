@@ -39,6 +39,9 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <state key="normal" title="Button"/>
                         <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                        <connections>
+                            <action selector="addButtonTapped" destination="KGk-i7-Jjw" eventType="touchUpInside" id="RBa-Uw-dvU"/>
+                        </connections>
                     </button>
                 </subviews>
             </tableViewCellContentView>
