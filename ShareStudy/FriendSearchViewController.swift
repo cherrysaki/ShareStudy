@@ -101,7 +101,7 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
     func fetchSearchResults(keyword: String) {
         searchResults = [] // 検索結果をクリア
         
-        let usersCollection = Firestore.firestore().collection("users")
+        let usersCollection = Firestore.firestore().collection("user")
         
         usersCollection.getDocuments { (usersSnapshot, error) in
             if let error = error {
@@ -113,7 +113,7 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
             for userDocument in usersSnapshot!.documents {
                 let profileCollection = userDocument.reference.collection("profile")
                 let query = profileCollection.whereField("userID", isEqualTo: keyword)
-                
+//                let query = profileCollection
                 query.getDocuments { (profileSnapshot, error) in
                     if let error = error {
                         // エラーハンドリング
@@ -142,7 +142,8 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
     
     // 検索ボタンが押された時の処理
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        if keyword == searchBar.text, !keyword.isEmpty {
+        if let keyword = searchBar.text, !keyword.isEmpty {
+            self.keyword = keyword
             searchResults = [] // 新たな検索が始まるたびにリセット
             // 検索キーワードを保存
             saveSearchKeyword(keyword: keyword)
@@ -169,7 +170,7 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
             
             // Firestoreの参照を取得
             let db = Firestore.firestore()
-            let targetUserCollection = db.collection("users").document(targetUserID)
+            let targetUserCollection = db.collection("user").document(targetUserID)
             
             // waitfollowerコレクションを作成
             targetUserCollection.collection("waitfollower").document(currentUserID).setData([
@@ -183,7 +184,7 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
             }
             
             // 2. 自分のコレクションの中にwatifollowを作成し、キーワードを追加する
-            let currentUserCollection = db.collection("users").document(currentUserID)
+            let currentUserCollection = db.collection("user").document(currentUserID)
             
             // watifollowコレクションを作成
             currentUserCollection.collection("watifollow").document(targetUserID).setData([

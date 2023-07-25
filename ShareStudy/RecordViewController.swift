@@ -99,62 +99,44 @@ class RecordViewController: UIViewController, AVCapturePhotoCaptureDelegate {
         self.tabBarController?.selectedViewController = previousViewController
     }
     
-    //タイマーをセットする。時間を表示する
     func timerStart(setTime: Double){
-        
-        print(setTime)
-        time = setTime
-        
-        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true, block: { [self] _ in
-                //1秒ごとに呼ばれる処理
-            
-//            //1. timeの変更
-//            time -= 1.0
-//
-//            //2. ラベルの表示
-//            timerUIUpdate(time: time)
-            
-            //3. 時間が指定時間になったらの処理
-            if time < 0{
-                isFinished = true
-                
-                if alartFlag == false{
-                    
-                    alartFlag = true
-                    
-                    let finishAlert = UIAlertController(title: "タイマーが終了しました", message: nil, preferredStyle: .alert)
-                    let okAction = UIAlertAction(title: "OK", style: .default)
-                    finishAlert.addAction(okAction)
-                    present(finishAlert, animated: true)
-                    
-//                    timer.invalidate()
-                    
-                    //もしアラートが一回出されているならばそれ以降はextTimeを表示することにする
-                }else if alartFlag == true{
-                    extTime += 1.0
-                    timerUIUpdate(time: extTime)
-                    
-                    timerUIUpdate(time: time)
-                    
-                    
-                }
-            } else {
-                //1. timeの変更
-                time -= 1.0
+          
+          print(setTime)
+          time = setTime
+          alartFlag = false  // アラートフラグのリセット
+          
+          timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true, block: { [self] _ in
+              // 1秒ごとに呼ばれる処理
 
-                //2. ラベルの表示
-                timerUIUpdate(time: time)
-            }
-            
-            })
-        
+              if time <= 0 {
+                  // 時間が指定時間になったらの処理
+                  if alartFlag == false {
+                      alartFlag = true
 
-    }
+                      let finishAlert = UIAlertController(title: "タイマーが終了しました", message: nil, preferredStyle: .alert)
+                      let okAction = UIAlertAction(title: "OK", style: .default)
+                      finishAlert.addAction(okAction)
+                      present(finishAlert, animated: true)
+                  }
+                  extTime += 1.0  // extTimeは常に加算
+                  timerUIUpdate(time: extTime)
+              } else {
+                  time -= 1.0
+                  timerUIUpdate(time: time)
+              }
+          })
+      }
     
     //タイマーがストップされた時の残り時間をとってくる
     func timerStop(){
             restTime = time
             self.timer.invalidate()
+    }
+    
+    func finishedTimerStop(){
+        self.timer.invalidate()
+        time = 0
+        extTime = 0
     }
     
     //タイマーをリセットする
@@ -205,6 +187,7 @@ class RecordViewController: UIViewController, AVCapturePhotoCaptureDelegate {
             captureButton.setImage(finishImage, for: state)
         case 3:
             onGoing = false
+            finishedTimerStop() //タイマーを止める
             repost()
             tabBarController?.tabBar.isHidden = false
             let previousViewController = self.tabBarController?.viewControllers?[0]
@@ -341,7 +324,7 @@ class RecordViewController: UIViewController, AVCapturePhotoCaptureDelegate {
         let semaphore = DispatchSemaphore(value: 0)
         
         let currentTimeStampInSecond = NSDate().timeIntervalSince1970
-        let storage = Storage.storage().reference(forURL: "gs://original-app-31d37.appspot.com")
+        let storage = Storage.storage().reference(forURL: "gs://sharestudy-e58f3.appspot.com")
         
         // 保存する場所を指定
         let storageRef = storage.child("ShareStudyImage").child(user.uid).child("\(user.uid)+\(currentTimeStampInSecond).jpg")

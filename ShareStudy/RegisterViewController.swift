@@ -138,7 +138,7 @@ class RegisterViewController: UIViewController,UITextFieldDelegate,UIScrollViewD
     
     func postImage(user: User, image: Data, completion: @escaping (Result<String, Error>) -> Void) {
         let currentTimeStampInSecond = NSDate().timeIntervalSince1970
-        let storage = Storage.storage().reference(forURL: "gs://original-app-31d37.appspot.com")
+        let storage = Storage.storage().reference(forURL: "gs://sharestudy-e58f3.appspot.com")
         
         let storageRef = storage.child("ShareStudyImage").child(user.uid).child("\(user.uid)+\(currentTimeStampInSecond).jpg")
         

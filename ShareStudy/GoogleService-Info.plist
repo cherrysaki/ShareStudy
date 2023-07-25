@@ -3,21 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>33022915258-ic0ta56lcj6ck7rk33rlp7d6tp790khf.apps.googleusercontent.com</string>
+	<string>528066983929-vd5m5qgtkhggouoetr7kjcskgt37jvpd.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.33022915258-ic0ta56lcj6ck7rk33rlp7d6tp790khf</string>
+	<string>com.googleusercontent.apps.528066983929-vd5m5qgtkhggouoetr7kjcskgt37jvpd</string>
 	<key>API_KEY</key>
-	<string>AIzaSyDU--VjRt-Soa0XbhmV_WlJpQHpTDouC6A</string>
+	<string>AIzaSyAodsFaXr47Z0Fn2eRgSi3raSffqoAz2rk</string>
 	<key>GCM_SENDER_ID</key>
-	<string>33022915258</string>
+	<string>528066983929</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.saki.kambayashi.ShareStudy</string>
+	<string>com.saki.kambayashi.ShareStudy.</string>
 	<key>PROJECT_ID</key>
-	<string>original-app-31d37</string>
+	<string>sharestudy-e58f3</string>
 	<key>STORAGE_BUCKET</key>
-	<string>original-app-31d37.appspot.com</string>
+	<string>sharestudy-e58f3.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,6 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:33022915258:ios:5c930be8c5c970fab08883</string>
+	<string>1:528066983929:ios:b17cfc2ad271d351c02f28</string>
 </dict>
 </plist>
