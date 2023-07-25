@@ -14,7 +14,7 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
     @IBOutlet var tableView: UITableView!
     
     var searchHistory: [String] = []
-    var searchResults: [String] = []
+    var searchResults: [Profile] = [] // 検索結果を格納するための配列
     var profiles: [Profile] = [] // プロフィール情報を格納するための配列
     
     
@@ -26,6 +26,9 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        tableView.register(UINib(nibName: "SearchTableViewCell", bundle: nil), forCellReuseIdentifier: "profileCell")
+        tableView.register(UINib(nibName: "NoResultTableViewCell", bundle: nil), forCellReuseIdentifier: "noResultCell")
         
         searchBar.delegate = self
         tableView.dataSource = self
@@ -63,7 +66,7 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
         // 一致するアカウントがある場合とない場合の2つのセクションを持つ
         return profiles.isEmpty ? 1 : 2
     }
-
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == 0 && !profiles.isEmpty {
             // セクション0で、かつプロフィール情報がある場合
@@ -73,7 +76,7 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
             return 1 // 特別なセルを1つだけ表示する
         }
     }
-
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0 && !profiles.isEmpty {
             // セクション0で、かつプロフィール情報がある場合は通常のプロフィール情報を表示する
@@ -89,7 +92,7 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
             return cell
         }
     }
-
+    
     
     // Firestoreで一致するドキュメントを取得して結果を表示
     func fetchSearchResults(keyword: String) {
@@ -115,7 +118,6 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
                         return
                     }
                     
-                    // クエリ結果の処理
                     if let profileDocuments = profileSnapshot?.documents {
                         for profileDocument in profileDocuments {
                             let data = profileDocument.data()
@@ -124,15 +126,16 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
                                let id = data["userID"] as? String,
                                let imageUrl = data["profileImage"] as? String {
                                 let profile = Profile(userName: name, userID: id, profileImage: imageUrl)
-                                self.profiles.append(profile)
-                                self.tableView.reloadData()
+                                self.searchResults.append(profile) // 検索結果をsearchResultsに追加
                             }
                         }
                     }
+                    self.tableView.reloadData() // テーブルビューをリロード
                 }
             }
         }
     }
+    
     
     // 検索ボタンが押された時の処理
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
@@ -155,6 +158,42 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
             tableView.reloadData()
         }
     }
+    
+    func addFriend(keyword: String) {
+        // 1. キーワードを使用して、指定されたユーザーIDの人のコレクションにwaitfollowerを作成する
+        if let currentUserID = Auth.auth().currentUser?.uid {
+            let targetUserID = keyword // セルに表示されている文字をキーワードとして使用
+            
+            // Firestoreの参照を取得
+            let db = Firestore.firestore()
+            let targetUserCollection = db.collection("users").document(targetUserID)
+            
+            // waitfollowerコレクションを作成
+            targetUserCollection.collection("waitfollower").document(currentUserID).setData([
+                "timestamp": FieldValue.serverTimestamp()
+            ]) { error in
+                if let error = error {
+                    print("waitfollower追加エラー: \(error.localizedDescription)")
+                } else {
+                    print("waitfollowerに追加されました")
+                }
+            }
+            
+            // 2. 自分のコレクションの中にwatifollowを作成し、キーワードを追加する
+            let currentUserCollection = db.collection("users").document(currentUserID)
+            
+            // watifollowコレクションを作成
+            currentUserCollection.collection("watifollow").document(targetUserID).setData([
+                "waitFollowUser": keyword,
+                "timestamp": FieldValue.serverTimestamp()
+            ]) { error in
+                if let error = error {
+                    print("watifollow追加エラー: \(error.localizedDescription)")
+                } else {
+                    print("watifollowに追加されました")
+                }
+            }
+        }
+    }
+
 }
-
-

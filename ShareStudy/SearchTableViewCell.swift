@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Firebase
 
 class SearchTableViewCell: UITableViewCell {
     
@@ -16,7 +17,7 @@ class SearchTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        
+        addButton.isEnabled = false
 //        iconImage.layer.cornerRadius = 23
        
     }
@@ -24,6 +25,10 @@ class SearchTableViewCell: UITableViewCell {
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 
+    }
+    
+  @IBAction func addButtonTapped(){
+        
     }
     
 }
