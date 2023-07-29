@@ -80,10 +80,10 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if indexPath.section == 0 && !profiles.isEmpty {
+        if indexPath.section == 0 && !searchResults.isEmpty {
             // セクション0で、かつプロフィール情報がある場合は通常のプロフィール情報を表示する
             let cell = tableView.dequeueReusableCell(withIdentifier: "profileCell", for: indexPath) as! SearchTableViewCell
-            let profile = profiles[indexPath.row]
+            let profile = searchResults[indexPath.row]
             cell.nameLabel.text = profile.userName
             cell.idLabel.text = profile.userID
             cell.delegate = self
@@ -121,13 +121,13 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
                         return
                     }
                     
-                    if let profileDocuments = profileSnapshot?.documents {
+                    if let profileDocuments = profileSnapshot?.documents  {
                         for profileDocument in profileDocuments {
                             let data = profileDocument.data()
                             // データの処理
                             if let name = data["userName"] as? String,
                                let id = data["userID"] as? String,
-                               let imageUrl = data["profileImage"] as? String {
+                               let imageUrl = data["profileImageName"] as? String {
                                 let profile = Profile(userName: name, userID: id, profileImage: imageUrl)
                                 self.searchResults.append(profile) // 検索結果をsearchResultsに追加
                             }
