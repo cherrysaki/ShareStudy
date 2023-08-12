@@ -11,7 +11,7 @@ class HomeTableViewCell: UITableViewCell {
     
     @IBOutlet var iconImageView: UIImageView!
     @IBOutlet var onGoingImage: UIImageView!
-    @IBOutlet var studyImage: UIImageView!
+    @IBOutlet var studyImageView: UIImageView!
     @IBOutlet var studyTimeLabel: UILabel!
     @IBOutlet var nameLabel: UILabel!
     @IBOutlet var userIdLabel: UILabel!

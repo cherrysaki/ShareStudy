@@ -38,7 +38,7 @@
                                 </prototypes>
                             </tableView>
                             <navigationBar contentMode="scaleToFill" fixedFrame="YES" shadowImage="Line 7" translatesAutoresizingMaskIntoConstraints="NO" id="Dkp-dr-Zgd">
-                                <rect key="frame" x="-3" y="47" width="388" height="44"/>
+                                <rect key="frame" x="-5" y="47" width="387" height="44"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <color key="barTintColor" systemColor="systemBackgroundColor"/>
@@ -51,7 +51,7 @@
                         <color key="backgroundColor" red="0.97647058959999999" green="0.98431372640000003" blue="0.98823523520000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                     </view>
                     <navigationItem key="navigationItem" id="3hm-Fx-yM9">
-                        <barButtonItem key="leftBarButtonItem" title="Item" id="J2x-Kz-66H">
+                        <barButtonItem key="leftBarButtonItem" image="magnifyingglass" catalog="system" id="J2x-Kz-66H">
                             <connections>
                                 <segue destination="tv1-Kb-A19" kind="presentation" id="xi4-P3-x5T"/>
                             </connections>
@@ -71,6 +71,7 @@
                     </navigationItem>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
+                        <outlet property="iconBarItem" destination="WnC-8K-0RJ" id="Qg7-eE-1G6"/>
                         <outlet property="tableView" destination="9hq-xm-mDR" id="Yye-5t-7Bk"/>
                     </connections>
                 </viewController>
@@ -87,7 +88,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <searchBar contentMode="redraw" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="XWT-Bk-Nq6">
-                                <rect key="frame" x="0.0" y="81" width="389" height="44"/>
+                                <rect key="frame" x="-1" y="81" width="390" height="44"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                 <textInputTraits key="textInputTraits"/>
                                 <connections>
@@ -95,7 +96,7 @@
                                 </connections>
                             </searchBar>
                             <navigationBar contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4Vj-pX-wb1">
-                                <rect key="frame" x="0.0" y="37" width="389" height="44"/>
+                                <rect key="frame" x="-1" y="37" width="390" height="44"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                 <color key="barTintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <items>
@@ -156,7 +157,7 @@
                                 </prototypes>
                             </tableView>
                             <navigationBar contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="arQ-Mq-wrM">
-                                <rect key="frame" x="0.0" y="35" width="389" height="44"/>
+                                <rect key="frame" x="-1" y="35" width="390" height="44"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                 <color key="barTintColor" systemColor="systemBackgroundColor"/>
                                 <items>
@@ -214,7 +215,7 @@
                                 <buttonConfiguration key="configuration" style="plain" title="Button"/>
                             </button>
                             <navigationBar contentMode="scaleToFill" fixedFrame="YES" shadowImage="Line 7" translatesAutoresizingMaskIntoConstraints="NO" id="wnX-Wa-4Tu">
-                                <rect key="frame" x="-2" y="27" width="387" height="44"/>
+                                <rect key="frame" x="-4" y="27" width="387" height="44"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                 <color key="barTintColor" systemColor="systemBackgroundColor"/>
                                 <items>
@@ -263,12 +264,12 @@
                                 </connections>
                             </button>
                             <datePicker contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="countDownTimer" minuteInterval="1" useCurrentDate="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1Dy-VQ-SLN">
-                                <rect key="frame" x="-1" y="564" width="388" height="59"/>
+                                <rect key="frame" x="-3" y="564" width="387" height="59"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                 <locale key="locale" localeIdentifier="ja_JP"/>
                             </datePicker>
                             <navigationBar contentMode="scaleToFill" fixedFrame="YES" shadowImage="Line 7" translatesAutoresizingMaskIntoConstraints="NO" id="Ugs-Pt-Svw">
-                                <rect key="frame" x="-4" y="44" width="387" height="44"/>
+                                <rect key="frame" x="-6" y="44" width="387" height="44"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                 <color key="barTintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <items>
@@ -352,7 +353,7 @@
                                 <viewLayoutGuide key="frameLayoutGuide" id="gfO-Ci-Wi4"/>
                             </scrollView>
                             <navigationBar contentMode="scaleToFill" fixedFrame="YES" shadowImage="Line 7" translatesAutoresizingMaskIntoConstraints="NO" id="0UH-ey-V9F">
-                                <rect key="frame" x="-4" y="39" width="390" height="44"/>
+                                <rect key="frame" x="-6" y="39" width="390" height="44"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                 <color key="barTintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <items>
@@ -574,6 +575,7 @@
         <image name="house" catalog="system" width="128" height="104"/>
         <image name="house.fill" catalog="system" width="128" height="104"/>
         <image name="icon" width="512" height="512"/>
+        <image name="magnifyingglass" catalog="system" width="128" height="117"/>
         <image name="trophy" catalog="system" width="128" height="128"/>
         <image name="trophy.fill" catalog="system" width="128" height="128"/>
         <image name="リセット" width="60" height="60"/>
