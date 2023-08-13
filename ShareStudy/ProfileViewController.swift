@@ -22,41 +22,76 @@ class ProfileViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         fetchMyProfile()
+        iconImageView.layer.cornerRadius = iconImageView.frame.width / 2
+        iconImageView.clipsToBounds = true
+        
     }
     
    
 
     func fetchMyProfile(){
+        
+        let loadingView = createLoadingView()
+        UIApplication.shared.windows.filter{$0.isKeyWindow}.first?.addSubview(loadingView)
+        
         // ログインしているユーザーのUIDを取得
         if let currentUserID = Auth.auth().currentUser?.uid {
             // ユーザーのドキュメント参照を作成
-            let userDocRef = db.collection("user").document(currentUserID)
+            let userDocRef = db.collection("user").document(currentUserID).collection("profile")
             
             // ユーザーのデータを取得
-            userDocRef.getDocument { (document, error) in
-                if let document = document, document.exists {
-                    // ドキュメントが存在する場合、データを取得
-                    if let data = document.data(),
-                       let userName = data["userName"] as? String,
-                       let userId = data["userId"] as? String,
-                       let iconImageURL = URL(string: data["profileImageName"] as! String){
-                        print("名前: \(userName)")
-                        print("id: \(userId)")
-                        
-                        self.userNameLabel.text = userName
-                        self.userIdlabel.text = userId
-                        
-                        let iconData = NSData(contentsOf: iconImageURL)
-                        let iconImage = UIImage(data: iconData! as Data)!
-                        self.iconImageView.image = iconImage
-                        
+            userDocRef.getDocuments { (querySnapshot, error) in
+                if let error = error {
+                                print("データ取得エラー: \(error.localizedDescription)")
+                                return
+                            }
+
+                if let documents = querySnapshot?.documents{
+                    for document in documents {
+                        let data = document.data()
+                        if let userName = data["userName"] as? String,
+                           let userId = data["userID"] as? String,
+                           let iconImageURL = URL(string: data["profileImageName"] as! String){
+                            print("名前: \(userName)")
+                            print("id: \(userId)")
+                            
+                            self.userNameLabel.text = userName
+                            self.userIdlabel.text = userId
+                            
+                            let iconData = NSData(contentsOf: iconImageURL)
+                            let iconImage = UIImage(data: iconData! as Data)!
+                            self.iconImageView.image = iconImage
+                            
+                            loadingView.removeFromSuperview()
+                            
+                        }
                     }
-                } else {
-                    print("ユーザーのドキュメントが存在しないかエラーが発生しました")
+                }
                 }
             }
         }
+    func createLoadingView() -> UIView {
+        //Loading View
+        let loadingView = UIView(frame: UIScreen.main.bounds)
+        loadingView.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)
         
+        let activityIndicator = UIActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
+        activityIndicator.center = loadingView.center
+        activityIndicator.color = UIColor.white
+        activityIndicator.style = UIActivityIndicatorView.Style.large
+        activityIndicator.hidesWhenStopped = true
+        activityIndicator.startAnimating()
+        loadingView.addSubview(activityIndicator)
+        
+        let label = UILabel(frame: CGRect(x: 0, y: 0, width: 300, height: 30))
+        label.center = CGPoint(x: activityIndicator.frame.origin.x + activityIndicator.frame.size.width / 2, y: activityIndicator.frame.origin.y + 90)
+        label.textColor = UIColor.white
+        label.textAlignment = .center
+        loadingView.addSubview(label)
+        
+        return loadingView
+    }
+    
     }
 
-}
+

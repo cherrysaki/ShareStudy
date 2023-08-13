@@ -242,13 +242,16 @@ class RegisterViewController: UIViewController,UITextFieldDelegate,UIScrollViewD
     
     func setupUI(){
         imageView.layer.masksToBounds = true
-        imageView.layer.cornerRadius = 75
+        imageView.layer.cornerRadius = imageView.frame.width / 2
         imageView.layer.borderColor = UIColor.lightGray.cgColor
         imageView.layer.borderWidth  = 0.1
+        imageView.clipsToBounds = true
         //        skipButton.layer.cornerRadius = 3
         nextButton.layer.cornerRadius = 3
         
     }
+    
+    
     
 }
 
