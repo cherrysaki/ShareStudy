@@ -72,12 +72,11 @@ class HomeViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         
         if let currentUserID = Auth.auth().currentUser?.uid {
             // Firestoreからデータを取得
-            db.collection("user").getDocuments { (querySnapshot, error) in
+            db.collection("user/\(currentUserID)").order(by: "date", descending: true).getDocuments { (querySnapshot, error) in
                 if let error = error {
                     print("データ取得エラー: \(error.localizedDescription)")
                     return
                 }
-                
                 // データ取得成功時の処理
                 if let documents = querySnapshot?.documents {
                     for document in documents {
