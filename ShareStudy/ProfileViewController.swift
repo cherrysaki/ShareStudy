@@ -12,6 +12,7 @@ class ProfileViewController: UIViewController {
 
     @IBOutlet var userNameLabel:UILabel!
     @IBOutlet var userIdlabel: UILabel!
+    @IBOutlet var introLabel: UILabel!
     @IBOutlet var iconImageView: UIImageView!
     
     let db = Firestore.firestore()
@@ -51,13 +52,14 @@ class ProfileViewController: UIViewController {
                         let data = document.data()
                         if let userName = data["userName"] as? String,
                            let userId = data["userID"] as? String,
+                           let introduction = data["selfIntroduction"] as?String,
                            let iconImageURL = URL(string: data["profileImageName"] as! String){
                             print("名前: \(userName)")
                             print("id: \(userId)")
                             
                             self.userNameLabel.text = userName
                             self.userIdlabel.text = userId
-                            
+                            self.introLabel.text = introduction
                             let iconData = NSData(contentsOf: iconImageURL)
                             let iconImage = UIImage(data: iconData! as Data)!
                             self.iconImageView.image = iconImage
@@ -70,6 +72,51 @@ class ProfileViewController: UIViewController {
                 }
             }
         }
+    
+    func fetchMyStudy(){
+        let loadingView = createLoadingView()
+        UIApplication.shared.windows.filter{$0.isKeyWindow}.first?.addSubview(loadingView)
+        
+        // ログインしているユーザーのUIDを取得
+        if let currentUserID = Auth.auth().currentUser?.uid {
+            // ユーザーのドキュメント参照を作成
+            let userDocRef = db.collection("user").document(currentUserID).collection("study")
+            
+            // ユーザーのデータを取得
+            userDocRef.getDocuments { (querySnapshot, error) in
+                if let error = error {
+                                print("データ取得エラー: \(error.localizedDescription)")
+                                return
+                            }
+
+                if let documents = querySnapshot?.documents{
+                    for document in documents {
+                        let data = document.data()
+                        if let userName = data["userName"] as? String,
+                           let userId = data["userID"] as? String,
+                           let introduction = data["selfIntroduction"] as?String,
+                           let iconImageURL = URL(string: data["profileImageName"] as! String){
+                            print("名前: \(userName)")
+                            print("id: \(userId)")
+                            
+                            self.userNameLabel.text = userName
+                            self.userIdlabel.text = userId
+                            self.introLabel.text = introduction
+                            let iconData = NSData(contentsOf: iconImageURL)
+                            let iconImage = UIImage(data: iconData! as Data)!
+                            self.iconImageView.image = iconImage
+                            
+                            loadingView.removeFromSuperview()
+                            
+                        }
+                    }
+                }
+                }
+            }
+        
+    }
+    
+    
     func createLoadingView() -> UIView {
         //Loading View
         let loadingView = UIView(frame: UIScreen.main.bounds)

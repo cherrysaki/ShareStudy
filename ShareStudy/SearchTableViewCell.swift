@@ -31,7 +31,24 @@ class SearchTableViewCell: UITableViewCell {
     @IBAction func addButtonTapped(){
         delegate?.addFriend(cell: self)
     }
+    enum ButtonState {
+        case addFriend
+        case requestSent
+        case isFriend
+    }
     
+    func setButtonState(_ state: ButtonState) {
+           switch state {
+           case .addFriend:
+               addButton.isHidden = false
+               addButton.setTitle("友達申請", for: .normal)
+           case .requestSent:
+               addButton.isHidden = false
+               addButton.setTitle("申請済", for: .normal)
+           case .isFriend:
+               addButton.isHidden = true
+           }
+       }
 }
 
 protocol FriendSearchViewDelegate: AnyObject{

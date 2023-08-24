@@ -20,12 +20,6 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
     var keyword: String = ""
     
     
-    struct Profile {
-        let userName: String
-        let userID: String
-        let profileImage: String
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -43,9 +37,7 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        
-        // 保存された検索履歴を読み出す
-        searchHistory = getSearchHistory()
+        searchHistory = getSearchHistory()// 保存された検索履歴を読み出す
         
         tableView.reloadData()
     }
@@ -87,6 +79,21 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
             cell.nameLabel.text = profile.userName
             cell.idLabel.text = profile.userID
             cell.delegate = self
+            
+            // フレンド申請の状態を確認してボタンの表示を設定する
+            let currentUserID = Auth.auth().currentUser?.uid ?? ""
+            let targetUserID = profile.userID
+            checkFriendRequestStatus(currentUserID: currentUserID, targetUserID: targetUserID) { status in
+                switch status {
+                case .requestSent:
+                    cell.setButtonState(.requestSent)
+                case .isFriend:
+                    cell.setButtonState(.isFriend)
+                case .none:
+                    cell.setButtonState(.addFriend)
+                }
+            }
+            
             return cell
         } else {
             // セクション1またはプロフィール情報がない場合は特別なセルを表示する
@@ -200,6 +207,24 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
         }
     }
     
-    
+    func checkFriendRequestStatus(currentUserID: String, targetUserID: String, completion: @escaping (FriendRequestStatus) -> Void) {
+            // ここにフレンド申請の状態を確認するロジックを実装します
+            // もし申請済みなら .requestSent、友達なら .isFriend、どちらでもないなら .none を completion で返すようにします
+        }
 
+        // ...
+
+        // 友達関係の状態を確認する関数
+        func checkFriendStatus(currentUserID: String, targetUserID: String, completion: @escaping (Bool) -> Void) {
+            // ここに友達関係の状態を確認するロジックを実装します
+            // もし友達なら true、そうでなければ false を completion で返すようにします
+        }
+
+}
+
+
+struct Profile {
+    let userName: String
+    let userID: String
+    let profileImage: String
 }

@@ -27,6 +27,8 @@
 		E44719A0298D26E4002C98C6 /* NotoSansJP-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = E4471999298D26E4002C98C6 /* NotoSansJP-Bold.otf */; };
 		E44719A1298D26E4002C98C6 /* OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = E447199A298D26E4002C98C6 /* OFL.txt */; };
 		E44719A2298D26E4002C98C6 /* NotoSansJP-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = E447199B298D26E4002C98C6 /* NotoSansJP-Black.otf */; };
+		E44E4FFE2A97091500570E75 /* NotificationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44E4FFC2A97091500570E75 /* NotificationTableViewCell.swift */; };
+		E44E4FFF2A97091500570E75 /* NotificationTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = E44E4FFD2A97091500570E75 /* NotificationTableViewCell.xib */; };
 		E459484A2A6792DA0087FA2E /* FriendSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E45948492A6792DA0087FA2E /* FriendSearchViewController.swift */; };
 		E459484C2A6793140087FA2E /* NotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E459484B2A6793140087FA2E /* NotificationViewController.swift */; };
 		E45F9AB42A9487480039704E /* EditProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E45F9AB32A9487480039704E /* EditProfileViewController.swift */; };
@@ -40,7 +42,7 @@
 		E4E3948F2A67DE78004BB946 /* SearchTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = E4E3948D2A67DE78004BB946 /* SearchTableViewCell.xib */; };
 		E4E394962A67F502004BB946 /* NoResultTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4E394942A67F502004BB946 /* NoResultTableViewCell.swift */; };
 		E4E394972A67F502004BB946 /* NoResultTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = E4E394952A67F502004BB946 /* NoResultTableViewCell.xib */; };
-		E4F9E354299F8B16004EE261 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E4F9E353299F8B16004EE261 /* GoogleService-Info.plist */; };
+		E4E84EFB2A94D0CA001A235C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E4E84EFA2A94D0CA001A235C /* GoogleService-Info.plist */; };
 		E4F9E357299F8F86004EE261 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = E4F9E356299F8F86004EE261 /* GoogleSignIn */; };
 		E4F9E35B299F903E004EE261 /* SignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4F9E35A299F903E004EE261 /* SignInViewController.swift */; };
 /* End PBXBuildFile section */
@@ -83,6 +85,8 @@
 		E4471999298D26E4002C98C6 /* NotoSansJP-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NotoSansJP-Bold.otf"; sourceTree = "<group>"; };
 		E447199A298D26E4002C98C6 /* OFL.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = OFL.txt; sourceTree = "<group>"; };
 		E447199B298D26E4002C98C6 /* NotoSansJP-Black.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NotoSansJP-Black.otf"; sourceTree = "<group>"; };
+		E44E4FFC2A97091500570E75 /* NotificationTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationTableViewCell.swift; sourceTree = "<group>"; };
+		E44E4FFD2A97091500570E75 /* NotificationTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NotificationTableViewCell.xib; sourceTree = "<group>"; };
 		E45948492A6792DA0087FA2E /* FriendSearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendSearchViewController.swift; sourceTree = "<group>"; };
 		E459484B2A6793140087FA2E /* NotificationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewController.swift; sourceTree = "<group>"; };
 		E45F9AB32A9487480039704E /* EditProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileViewController.swift; sourceTree = "<group>"; };
@@ -96,7 +100,7 @@
 		E4E3948D2A67DE78004BB946 /* SearchTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SearchTableViewCell.xib; sourceTree = "<group>"; };
 		E4E394942A67F502004BB946 /* NoResultTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoResultTableViewCell.swift; sourceTree = "<group>"; };
 		E4E394952A67F502004BB946 /* NoResultTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NoResultTableViewCell.xib; sourceTree = "<group>"; };
-		E4F9E353299F8B16004EE261 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		E4E84EFA2A94D0CA001A235C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		E4F9E35A299F903E004EE261 /* SignInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -163,8 +167,10 @@
 				E4C93AC32A1CB96700427DFF /* RankingViewController.swift */,
 				E4C93AC72A1CBBFF00427DFF /* ProfileViewController.swift */,
 				E45F9AB32A9487480039704E /* EditProfileViewController.swift */,
-				E459484B2A6793140087FA2E /* NotificationViewController.swift */,
 				E45948492A6792DA0087FA2E /* FriendSearchViewController.swift */,
+				E459484B2A6793140087FA2E /* NotificationViewController.swift */,
+				E44E4FFC2A97091500570E75 /* NotificationTableViewCell.swift */,
+				E44E4FFD2A97091500570E75 /* NotificationTableViewCell.xib */,
 				E4E394942A67F502004BB946 /* NoResultTableViewCell.swift */,
 				E4C93ACB2A386EAE00427DFF /* HomeTableViewCell.swift */,
 				E4E3948C2A67DE78004BB946 /* SearchTableViewCell.swift */,
@@ -174,8 +180,8 @@
 				E4471951298D0C39002C98C6 /* Main.storyboard */,
 				E4471956298D0C3B002C98C6 /* LaunchScreen.storyboard */,
 				E4C93AC92A1CCD7F00427DFF /* Assets.xcassets */,
+				E4E84EFA2A94D0CA001A235C /* GoogleService-Info.plist */,
 				E4471959298D0C3B002C98C6 /* Info.plist */,
-				E4F9E353299F8B16004EE261 /* GoogleService-Info.plist */,
 			);
 			path = ShareStudy;
 			sourceTree = "<group>";
@@ -339,15 +345,16 @@
 				E447199D298D26E4002C98C6 /* NotoSansJP-Medium.otf in Resources */,
 				E4C93ACA2A1CCD8000427DFF /* Assets.xcassets in Resources */,
 				E44719A1298D26E4002C98C6 /* OFL.txt in Resources */,
+				E44E4FFF2A97091500570E75 /* NotificationTableViewCell.xib in Resources */,
 				E447199E298D26E4002C98C6 /* NotoSansJP-Light.otf in Resources */,
 				E4471953298D0C39002C98C6 /* Main.storyboard in Resources */,
 				E44719A2298D26E4002C98C6 /* NotoSansJP-Black.otf in Resources */,
 				E447199F298D26E4002C98C6 /* NotoSansJP-Thin.otf in Resources */,
 				E447199C298D26E4002C98C6 /* NotoSansJP-Regular.otf in Resources */,
-				E4F9E354299F8B16004EE261 /* GoogleService-Info.plist in Resources */,
 				E4C93ACE2A386EAE00427DFF /* HomeTableViewCell.xib in Resources */,
 				E44719A0298D26E4002C98C6 /* NotoSansJP-Bold.otf in Resources */,
 				E4E3948F2A67DE78004BB946 /* SearchTableViewCell.xib in Resources */,
+				E4E84EFB2A94D0CA001A235C /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -378,6 +385,7 @@
 				E4E394962A67F502004BB946 /* NoResultTableViewCell.swift in Sources */,
 				E447194E298D0C39002C98C6 /* SceneDelegate.swift in Sources */,
 				E459484A2A6792DA0087FA2E /* FriendSearchViewController.swift in Sources */,
+				E44E4FFE2A97091500570E75 /* NotificationTableViewCell.swift in Sources */,
 				E4C93AC62A1CBBC800427DFF /* RecordViewController.swift in Sources */,
 				E45F9AB42A9487480039704E /* EditProfileViewController.swift in Sources */,
 				E447197C298D109A002C98C6 /* HomeViewController.swift in Sources */,

@@ -200,9 +200,9 @@ class RegisterViewController: UIViewController,UITextFieldDelegate,UIScrollViewD
                let userName = self.userNameTextField.text{
                 // Firestoreへの参照を取得
                 let db = Firestore.firestore()
-                // Firestore.firestore().collection("user/\(user.uid)/study").addDocument(data: [
+                print(user.uid)
                 // "users"コレクション内でuserIDが一致するドキュメントを検索
-                db.collection("user/\(user.uid)/profile").whereField("userID", isEqualTo: userID).getDocuments { (querySnapshot, err) in
+                db.collection("user").document(user.uid).collection("profile").whereField("userID", isEqualTo: userID).getDocuments { (querySnapshot, err) in
                     if let err = err {
                         print("エラー: \(err)")
                     } else {
@@ -216,10 +216,10 @@ class RegisterViewController: UIViewController,UITextFieldDelegate,UIScrollViewD
                             // userIDが存在しない場合は新規ユーザーを登録
                             var ref: DocumentReference? = nil
                             
-                            ref = db.collection("user/\(user.uid)/profile").addDocument(data: [
+                            ref = db.collection("user").document(user.uid).collection("profile").addDocument(data: [
                                 "userID": userID,
                                 "userName": userName,
-                                "profileImageName": profileImageName
+                                "profileImageName": profileImageName,
                                 
                             ]) { err in
                                 if let err = err {
