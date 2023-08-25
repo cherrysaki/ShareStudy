@@ -29,7 +29,6 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
     
     var searchHistory: [String] = []
     var searchResults: [Profile] = [] // 検索結果を格納するための配列
-    var profiles: [Profile] = [] // プロフィール情報を格納するための配列
     var keyword: String = ""
     let imageCache = NSCache<NSString, UIImage>()
     let dispatchGroup = DispatchGroup()
@@ -61,7 +60,7 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
     
     func numberOfSections(in tableView: UITableView) -> Int {
         // 一致するアカウントがある場合とない場合の2つのセクションを持つ
-        return profiles.isEmpty ? 1 : 2
+        return searchResults.isEmpty ? 1 : 2
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -196,20 +195,16 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
     }
     
     // SearchBarが編集された時の処理
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        if searchText.isEmpty {
-            tableView.reloadData() // テーブルビューをリロードして検索結果をクリア
-            
-            if !searchHistory.isEmpty {
-                // 検索履歴がある場合は履歴を表示
-                profiles = searchHistory.map { Profile(userName: $0, userID: "", profileImage: "") }
-                tableView.reloadData()
+        func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+            if searchText.isEmpty {
+                searchResults = searchHistory.map { Profile(userName: $0, userID: "", profileImage: "") }
+            } else {
+                searchResults = [] // テキストが入力されている場合は検索結果をクリア
             }
-        } else {
-            profiles = [] // テキストが入力されている場合は検索結果をクリア
             tableView.reloadData()
         }
-    }
+        
+    
     
     
     func addFriend(cell: SearchTableViewCell) {
@@ -319,7 +314,6 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
     func setupSearchBar() {
         searchBar.delegate = self
         searchBar.showsCancelButton = true
-        searchBar.showsSearchResultsButton = true
     }
 }
 
