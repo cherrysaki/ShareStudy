@@ -8,8 +8,21 @@
 import UIKit
 import Firebase
 
+// フレンド申請の状態を表す列挙型
+enum FriendRequestStatus {
+    case requestSent
+    case isFriend
+    case none
+}
+
+struct Profile {
+    let userName: String
+    let userID: String
+    let profileImage: String
+}
+
 class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITableViewDataSource, UITableViewDelegate, FriendSearchViewDelegate {
- 
+    
     
     @IBOutlet var searchBar: UISearchBar!
     @IBOutlet var tableView: UITableView!
@@ -18,27 +31,17 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
     var searchResults: [Profile] = [] // 検索結果を格納するための配列
     var profiles: [Profile] = [] // プロフィール情報を格納するための配列
     var keyword: String = ""
-    
+    let imageCache = NSCache<NSString, UIImage>()
+    let dispatchGroup = DispatchGroup()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        tableView.register(UINib(nibName: "SearchTableViewCell", bundle: nil), forCellReuseIdentifier: "profileCell")
-        tableView.register(UINib(nibName: "NoResultTableViewCell", bundle: nil), forCellReuseIdentifier: "noResultCell")
-        
-        searchBar.delegate = self
-        tableView.dataSource = self
-        tableView.delegate = self
-        
-        searchBar.text = "友達ID検索"
-        searchBar.showsCancelButton = true
-        searchBar.showsSearchResultsButton = true
-        
+        setupTableView()
+        setupSearchBar()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         searchHistory = getSearchHistory()// 保存された検索履歴を読み出す
-        
         tableView.reloadData()
     }
     
@@ -62,11 +65,9 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section == 0 && !profiles.isEmpty {
-            // セクション0で、かつプロフィール情報がある場合
-            return profiles.count
+        if section == 0 && !searchResults.isEmpty {
+            return searchResults.count
         } else {
-            // セクション1またはプロフィール情報がない場合
             return 1 // 特別なセルを1つだけ表示する
         }
     }
@@ -78,21 +79,18 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
             let profile = searchResults[indexPath.row]
             cell.nameLabel.text = profile.userName
             cell.idLabel.text = profile.userID
+            // ダウンロードが失敗した場合はキャッシュから取得
+            if let cachedImage = imageCache.object(forKey: profile.profileImage as NSString) {
+                cell.iconImageView.image = cachedImage
+            } else {
+                // ダウンロードが失敗した場合にはデフォルトの画像を表示する
+                cell.iconImageView.image = UIImage(named: "defaultProfileImage")
+                
+                // ダウンロードを試みる
+                downloadIcons(for: cell, with: profile)
+            }  // プロフィール画像のダウンロードを行う
             cell.delegate = self
-            
-            // フレンド申請の状態を確認してボタンの表示を設定する
-            let currentUserID = Auth.auth().currentUser?.uid ?? ""
-            let targetUserID = profile.userID
-            checkFriendRequestStatus(currentUserID: currentUserID, targetUserID: targetUserID) { status in
-                switch status {
-                case .requestSent:
-                    cell.setButtonState(.requestSent)
-                case .isFriend:
-                    cell.setButtonState(.isFriend)
-                case .none:
-                    cell.setButtonState(.addFriend)
-                }
-            }
+            configureButton(for: cell, with: profile) // ボタンの処理を設定
             
             return cell
         } else {
@@ -103,48 +101,78 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
         }
     }
     
-    
-    // Firestoreで一致するドキュメントを取得して結果を表示
-    func fetchSearchResults(keyword: String) {
-        searchResults = [] // 検索結果をクリア
-        
-        let usersCollection = Firestore.firestore().collection("user")
-        
-        usersCollection.getDocuments { (usersSnapshot, error) in
-            if let error = error {
-                // エラーハンドリング
-                print("クエリ実行中にエラーが発生しました: \(error.localizedDescription)")
-                return
-            }
-            // usersコレクション内のドキュメントを順に処理
-            for userDocument in usersSnapshot!.documents {
-                let profileCollection = userDocument.reference.collection("profile")
-                let query = profileCollection.whereField("userID", isEqualTo: keyword)
-//                let query = profileCollection
-                query.getDocuments { (profileSnapshot, error) in
-                    if let error = error {
-                        // エラーハンドリング
-                        print("クエリ実行中にエラーが発生しました: \(error.localizedDescription)")
-                        return
-                    }
+    func downloadIcons(for cell: SearchTableViewCell, with profile: Profile) {
+        // キャッシュに画像が存在する場合はそれを使用
+        if let cachedImage = imageCache.object(forKey: profile.profileImage as NSString) {
+            cell.iconImageView.image = cachedImage
+        } else {
+            DispatchQueue.global().async {
+                if let iconImageURL = URL(string: profile.profileImage),
+                   let iconImageData = try? Data(contentsOf: iconImageURL),
+                   let iconImage = UIImage(data: iconImageData) {
+                    // ダウンロードした画像をキャッシュに保存
+                    self.imageCache.setObject(iconImage, forKey: profile.profileImage as NSString)
                     
-                    if let profileDocuments = profileSnapshot?.documents  {
-                        for profileDocument in profileDocuments {
-                            let data = profileDocument.data()
-                            // データの処理
-                            if let name = data["userName"] as? String,
-                               let id = data["userID"] as? String,
-                               let imageUrl = data["profileImageName"] as? String {
-                                let profile = Profile(userName: name, userID: id, profileImage: imageUrl)
-                                self.searchResults.append(profile) // 検索結果をsearchResultsに追加
-                            }
-                        }
+                    DispatchQueue.main.async {
+                        // メインスレッドでUIの更新を行う
+                        cell.iconImageView.image = iconImage
                     }
-                    self.tableView.reloadData() // テーブルビューをリロード
                 }
             }
         }
     }
+    
+    func fetchSearchResults(keyword: String, completion: @escaping (Bool) -> Void) {
+        let usersCollection = Firestore.firestore().collection("user")
+        
+        usersCollection.getDocuments { [weak self] (usersSnapshot, error) in
+            if let error = error {
+                print("クエリ実行中にエラーが発生しました: \(error.localizedDescription)")
+                return
+            }
+            
+            self?.searchResults = []
+            
+            for userDocument in usersSnapshot!.documents {
+                self?.dispatchGroup.enter()
+                
+                self?.fetchProfile(for: userDocument, keyword: keyword)
+            }
+            
+            self?.dispatchGroup.notify(queue: .main) {
+                self?.tableView.reloadData()
+            }
+        }
+    }
+    
+    func fetchProfile(for userDocument: QueryDocumentSnapshot, keyword: String) {
+        let profileCollection = userDocument.reference.collection("profile")
+        let query = profileCollection.whereField("userID", isEqualTo: keyword)
+        
+        query.getDocuments { [weak self] (profileSnapshot, error) in
+            if let error = error {
+                print("クエリ実行中にエラーが発生しました: \(error.localizedDescription)")
+                self?.dispatchGroup.leave()
+                return
+            }
+            
+            if let profileDocuments = profileSnapshot?.documents  {
+                for profileDocument in profileDocuments {
+                    let data = profileDocument.data()
+                    if let name = data["userName"] as? String,
+                       let id = data["userID"] as? String,
+                       let imageUrl = data["profileImageName"] as? String {
+                        let profile = Profile(userName: name, userID: id, profileImage: imageUrl)
+                        self?.searchResults.append(profile)
+                    }
+                }
+            }
+            
+            self?.dispatchGroup.leave()
+        }
+    }
+    
+    
     
     
     // 検索ボタンが押された時の処理
@@ -152,23 +180,37 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
         if let keyword = searchBar.text, !keyword.isEmpty {
             self.keyword = keyword
             searchResults = [] // 新たな検索が始まるたびにリセット
-            // 検索キーワードを保存
             saveSearchKeyword(keyword: keyword)
             
-            // Firestoreで一致するドキュメントを取得して結果を表示
-            fetchSearchResults(keyword: keyword)
+            fetchSearchResults(keyword: keyword) { [weak self] success in
+                if success {
+                    DispatchQueue.main.async {
+                        self?.tableView.reloadData()
+                    }
+                } else {
+                    print("検索結果の取得に失敗しました")
+                }
+            }
         }
         searchBar.resignFirstResponder()
     }
     
-    
     // SearchBarが編集された時の処理
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        // SearchBarのテキストが空の場合は履歴を表示
         if searchText.isEmpty {
+            tableView.reloadData() // テーブルビューをリロードして検索結果をクリア
+            
+            if !searchHistory.isEmpty {
+                // 検索履歴がある場合は履歴を表示
+                profiles = searchHistory.map { Profile(userName: $0, userID: "", profileImage: "") }
+                tableView.reloadData()
+            }
+        } else {
+            profiles = [] // テキストが入力されている場合は検索結果をクリア
             tableView.reloadData()
         }
     }
+    
     
     func addFriend(cell: SearchTableViewCell) {
         // 1. キーワードを使用して、指定されたユーザーIDの人のコレクションにwaitfollowerを作成する
@@ -207,24 +249,78 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
         }
     }
     
+    // フレンド申請の状態を確認してボタンの表示を設定する関数
+    func configureButton(for cell: SearchTableViewCell, with profile: Profile) {
+        let currentUserID = Auth.auth().currentUser?.uid ?? ""
+        let targetUserID = profile.userID
+        checkFriendRequestStatus(currentUserID: currentUserID, targetUserID: targetUserID) { status in
+            switch status {
+            case .requestSent:
+                cell.setButtonState(.requestSent)
+            case .isFriend:
+                cell.setButtonState(.isFriend)
+            case .none:
+                cell.setButtonState(.addFriend)
+            }
+        }
+    }
+    
+    // 友達関係の状態を確認する関数
+    func checkFriendStatus(currentUserID: String, targetUserID: String, completion: @escaping (Bool) -> Void) {
+        let db = Firestore.firestore()
+        let currentUserFriendsCollection = db.collection("user").document(currentUserID).collection("friends")
+        
+        currentUserFriendsCollection.document(targetUserID).getDocument { (document, error) in
+            if let document = document, document.exists {
+                // 友達関係が存在する場合
+                completion(true)
+            } else {
+                // 友達関係が存在しない場合
+                completion(false)
+            }
+        }
+    }
+    
     func checkFriendRequestStatus(currentUserID: String, targetUserID: String, completion: @escaping (FriendRequestStatus) -> Void) {
-            // ここにフレンド申請の状態を確認するロジックを実装します
-            // もし申請済みなら .requestSent、友達なら .isFriend、どちらでもないなら .none を completion で返すようにします
+        let db = Firestore.firestore()
+        let currentUserWaitFollowCollection = db.collection("user").document(currentUserID).collection("waitfollow") // 自分のwaitfollowリストを参照
+        
+        currentUserWaitFollowCollection.document(targetUserID).getDocument { [weak self] (document, error) in
+            if let document = document, document.exists {
+                let targetUserWaitFollowerCollection = db.collection("user").document(targetUserID).collection("waitfollower")  // 相手のwaitfollowerリストを参照
+                targetUserWaitFollowerCollection.document(currentUserID).getDocument { (targetDocument, targetError) in
+                    if let targetDocument = targetDocument, targetDocument.exists {
+                        completion(.requestSent)// 自分と相手のwaitリストの両方に存在する場合
+                    } else {
+                        completion(.none) // 自分のwaitfollowリストには存在するが、相手のwaitfollowerリストには存在しない場合
+                    }
+                }
+            } else { // 自分のwaitfollowリストにも存在しない場合
+                // その他の条件を満たすかどうかを確認し、友達関係があるかどうかを判定
+                self?.checkFriendStatus(currentUserID: currentUserID, targetUserID: targetUserID) { isFriend in
+                    if isFriend {
+                        completion(.isFriend)
+                    } else {
+                        completion(.none)
+                    }
+                }
+            }
         }
-
-        // ...
-
-        // 友達関係の状態を確認する関数
-        func checkFriendStatus(currentUserID: String, targetUserID: String, completion: @escaping (Bool) -> Void) {
-            // ここに友達関係の状態を確認するロジックを実装します
-            // もし友達なら true、そうでなければ false を completion で返すようにします
-        }
-
+    }
+    
+    func setupTableView() {
+        tableView.register(UINib(nibName: "SearchTableViewCell", bundle: nil), forCellReuseIdentifier: "profileCell")
+        tableView.register(UINib(nibName: "NoResultTableViewCell", bundle: nil), forCellReuseIdentifier: "noResultCell")
+        
+        tableView.dataSource = self
+        tableView.delegate = self
+    }
+    
+    func setupSearchBar() {
+        searchBar.delegate = self
+        searchBar.showsCancelButton = true
+        searchBar.showsSearchResultsButton = true
+    }
 }
 
 
-struct Profile {
-    let userName: String
-    let userID: String
-    let profileImage: String
-}

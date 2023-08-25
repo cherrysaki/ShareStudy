@@ -90,7 +90,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <searchBar contentMode="redraw" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="XWT-Bk-Nq6">
+                            <searchBar contentMode="redraw" fixedFrame="YES" placeholder="ユーザーID検索" translatesAutoresizingMaskIntoConstraints="NO" id="XWT-Bk-Nq6">
                                 <rect key="frame" x="-6" y="81" width="390" height="44"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                 <textInputTraits key="textInputTraits"/>

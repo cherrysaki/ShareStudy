@@ -10,16 +10,22 @@ import Firebase
 
 class SearchTableViewCell: UITableViewCell {
     
-    @IBOutlet var iconImage: UIImageView!
+    @IBOutlet var iconImageView: UIImageView!
     @IBOutlet var nameLabel:UILabel!
     @IBOutlet var idLabel: UILabel!
-    @IBOutlet var addButton: UIButton!
+    @IBOutlet var friendButton: UIButton!
     
     weak var delegate: FriendSearchViewDelegate?
+    
+    enum ButtonState {
+        case requestSent
+        case isFriend
+        case addFriend
+    }
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        addButton.isEnabled = false
+        friendButton.isEnabled = false
 //        iconImage.layer.cornerRadius = 23
        
     }
@@ -31,22 +37,22 @@ class SearchTableViewCell: UITableViewCell {
     @IBAction func addButtonTapped(){
         delegate?.addFriend(cell: self)
     }
-    enum ButtonState {
-        case addFriend
-        case requestSent
-        case isFriend
-    }
     
-    func setButtonState(_ state: ButtonState) {
+    // ボタンの状態を設定するメソッド
+       func setButtonState(_ state: ButtonState) {
            switch state {
-           case .addFriend:
-               addButton.isHidden = false
-               addButton.setTitle("友達申請", for: .normal)
            case .requestSent:
-               addButton.isHidden = false
-               addButton.setTitle("申請済", for: .normal)
+               // フレンド申請が送信された状態の処理
+               friendButton.setTitle("申請中", for: .normal)
+               friendButton.isEnabled = false
            case .isFriend:
-               addButton.isHidden = true
+               // フレンド関係が成立した状態の処理
+               friendButton.setTitle("友達", for: .normal)
+               friendButton.isEnabled = false
+           case .addFriend:
+               // フレンド申請を送ることができる状態の処理
+               friendButton.setTitle("友達申請", for: .normal)
+               friendButton.isEnabled = true
            }
        }
 }
@@ -54,3 +60,4 @@ class SearchTableViewCell: UITableViewCell {
 protocol FriendSearchViewDelegate: AnyObject{
     func addFriend(cell: SearchTableViewCell)
 }
+

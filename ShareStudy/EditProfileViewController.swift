@@ -217,33 +217,33 @@ class EditProfileViewController: UIViewController,UITextFieldDelegate,UITextView
     
     
     
-//    //保存
-//    func save() {
-//        if let image = iconImageView.image, let imageData = image.jpegData(compressionQuality: 0.8) {
-//            if let user = Auth.auth().currentUser {
-//                postImage(user: user, image: imageData) { result in
-//                    switch result {
-//                    case .success(let urlString):
-//                        print("ダウンロードURL: \(urlString)")
-//                        // ここでダウンロードURLを使った処理を行う
-//                        self.updateProfile(user: user,profileImageName: urlString)
-//                        
-//                        //画面遷移
-//                        let storyboard: UIStoryboard = self.storyboard!
-//                        let next = storyboard.instantiateViewController(withIdentifier: "ProfileViewController")
-//                        self.present(next, animated: true, completion: nil)
-//                        
-//                    case .failure(let error):
-//                        print("エラー: \(error)")
-//                        // エラー発生時の処理を行う
-//                    }
-//                }
-//            }else {
-//                print("Error: ユーザーがログインしていません。")
-//                return
-//            }
-//        }
-//    }
+    //保存
+    func save() {
+        if let image = iconImageView.image, let imageData = image.jpegData(compressionQuality: 0.8) {
+            if let user = Auth.auth().currentUser {
+                postImage(user: user, image: imageData) { result in
+                    switch result {
+                    case .success(let urlString):
+                        print("ダウンロードURL: \(urlString)")
+                        // ここでダウンロードURLを使った処理を行う
+                        self.updateProfile(user: user,profileImageName: urlString)
+                        
+                        //画面遷移
+                        let storyboard: UIStoryboard = self.storyboard!
+                        let next = storyboard.instantiateViewController(withIdentifier: "ProfileViewController")
+                        self.present(next, animated: true, completion: nil)
+                        
+                    case .failure(let error):
+                        print("エラー: \(error)")
+                        // エラー発生時の処理を行う
+                    }
+                }
+            }else {
+                print("Error: ユーザーがログインしていません。")
+                return
+            }
+        }
+    }
     
     func postImage(user: User, image: Data, completion: @escaping (Result<String, Error>) -> Void) {
         let currentTimeStampInSecond = NSDate().timeIntervalSince1970
@@ -289,55 +289,39 @@ class EditProfileViewController: UIViewController,UITextFieldDelegate,UITextView
     
     
     
-//    func updateProfile(user: User, profileImageName: String) {
-//
-//        if userIdTextField.text! != "" && userNameTextField.text! != "" {
-//            if let userID = self.userIdTextField.text,
-//               let userName = self.userNameTextField.text{
-//                // Firestoreへの参照を取得
-//                let db = Firestore.firestore()
-//                let userRef = db.collection("user").document(user.uid).collection("profile")
-//                // "users"コレクション内でuserIDが一致するドキュメントを検索
-//                userRef.whereField("userID", isEqualTo: userID).getDocuments { (querySnapshot, err) in
-//                    if let err = err {
-//                        print("エラー: \(err)")
-//                    } else {
-//                        // userIDが既に存在する場合はエラーメッセージを表示
-//                        if querySnapshot!.documents.count > 0 {
-//                            print("エラー: このユーザーIDはすでに存在します。")
-//                            let dialog = UIAlertController(title: "登録失敗", message: "このユーザーIDはすでに存在します", preferredStyle: .alert)
-//                            dialog.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-//                            self.present(dialog, animated: true, completion: nil)
-//                        } else {
-//                            // userIDが存在しない場合は新規ユーザーを登録
-//                            var ref: DocumentReference? = nil
-//                            // 更新したいデータを指定
-//                            let updatedData: [String: Any] = [
-//                                "userID": userID,
-//                                "userName": userName,
-//                                "profileImageName": profileImageName
-//                               ]
-//                            ref = userRef.setData(updatedData, merge: true) { err in
-//                                if let err = err {
-//                                    print("エラー: \(err)")
-//                                } else {
-//                                    print("新規ユーザーが登録されました。ID: \(ref!.documentID)")
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }else{
-//            //アラート
-//            let dialog = UIAlertController(title: "登録失敗", message: "ユーザーネームとユーザーIDを入力してください", preferredStyle: .alert)
-//            dialog.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-//            self.present(dialog, animated: true, completion: nil)
-//        }
-//    }
+    func updateProfile(user: User, profileImageName: String) {
+        if let userID = self.userIdTextField.text,
+           let userName = self.userNameTextField.text,
+           let introduction = self.introTextView.text {
+            // Firestoreへの参照を取得
+            let db = Firestore.firestore()
+            let userRef = db.collection("user").document(user.uid).collection("profile").document(user.uid) // ここで既存のドキュメントを指定
+            
+            // 更新したいデータを指定
+            let updatedData: [String: Any] = [
+                "userID": userID,
+                "userName": userName,
+                "profileImageName": profileImageName,
+                "selfIntroduction": introduction
+            ]
+            
+            userRef.setData(updatedData, merge: true) { err in
+                if let err = err {
+                    print("エラー: \(err)")
+                } else {
+                    print("ユーザープロフィールが更新されました。")
+                }
+            }
+        } else {
+            //アラート
+            let dialog = UIAlertController(title: "登録失敗", message: "ユーザーネームとユーザーIDを入力してください", preferredStyle: .alert)
+            dialog.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+            self.present(dialog, animated: true, completion: nil)
+        }
+    }
+
     
-    
-    //以下UIのセットアップ
+//    以下UIのセットアップ
     
     func setupImageViewUI(){
         iconImageView.layer.masksToBounds = true

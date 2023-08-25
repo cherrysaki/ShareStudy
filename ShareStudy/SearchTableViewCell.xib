@@ -49,8 +49,8 @@
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
-                <outlet property="addButton" destination="J6N-SU-eTj" id="NN2-hQ-PqD"/>
-                <outlet property="iconImage" destination="FIZ-RS-rxW" id="xDx-ht-cbR"/>
+                <outlet property="friendButton" destination="J6N-SU-eTj" id="NN2-hQ-PqD"/>
+                <outlet property="iconImageView" destination="FIZ-RS-rxW" id="xDx-ht-cbR"/>
                 <outlet property="idLabel" destination="4v3-gp-8c3" id="mBY-5A-b54"/>
                 <outlet property="nameLabel" destination="LeR-Nk-Jg8" id="zhg-ea-IIj"/>
             </connections>

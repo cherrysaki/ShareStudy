@@ -139,48 +139,6 @@ class NotificationViewController: UIViewController,UITableViewDelegate,UITableVi
             }
         }
     }
-
-    
-    //    func approveFriendRequest(targetUserID: String) {
-    //        guard let currentUserID = Auth.auth().currentUser?.uid else {
-    //            return
-    //        }
-    //
-    //        let db = Firestore.firestore()
-    //
-    //        // 自分のwaitfollowerリストから相手のユーザーIDを削除
-    //        let currentUserWaitFollowerRef = db.collection("user").document(currentUserID).collection("waitfollower").document(targetUserID)
-    //        currentUserWaitFollowerRef.delete { error in
-    //            if let error = error {
-    //                print("現在のユーザーの waitfollower リストから削除中にエラーが発生しました:: \(error.localizedDescription)")
-    //            }
-    //        }
-    //
-    //        // 自分のfriendリストに相手のユーザーIDを追加
-    //        let currentUserFriendRef = db.collection("user").document(currentUserID).collection("friends").document(targetUserID)
-    //        currentUserFriendRef.setData([
-    //            "friendUser": targetUserID,
-    //            "timestamp": FieldValue.serverTimestamp()
-    //        ]) { error in
-    //            if let error = error {
-    //                print("現在のユーザーの友達リストへの追加中にエラーが発生しました: \(error.localizedDescription)")
-    //            }
-    //        }
-    //
-    //        // 相手のfriendリストに自分のユーザーIDを追加
-    //        let targetUserFriendRef = db.collection("user").document(targetUserID).collection("friends").document(currentUserID)
-    //        targetUserFriendRef.setData([
-    //            "friendUser": currentUserID,
-    //            "timestamp": FieldValue.serverTimestamp()
-    //        ]) { error in
-    //            if let error = error {
-    //                print("対象ユーザーの友達リストへの追加中にエラーが発生しました: \(error.localizedDescription)")
-    //            }
-    //        }
-    //    }
-    
-    
-    
     
     
 }
