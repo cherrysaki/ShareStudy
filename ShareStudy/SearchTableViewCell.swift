@@ -47,7 +47,7 @@ class SearchTableViewCell: UITableViewCell {
                friendButton.isEnabled = false
            case .isFriend:
                // フレンド関係が成立した状態の処理
-               friendButton.setTitle("友達", for: .normal)
+               friendButton.isHidden = true
                friendButton.isEnabled = false
            case .addFriend:
                // フレンド申請を送ることができる状態の処理

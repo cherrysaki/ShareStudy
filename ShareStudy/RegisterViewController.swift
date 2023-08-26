@@ -10,20 +10,21 @@ import Firebase
 import FirebaseStorage
 
 class RegisterViewController: UIViewController,UITextFieldDelegate,UIScrollViewDelegate,UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-    
-    
+
+
     @IBOutlet var iconImageButton: UIButton!
     @IBOutlet var userNameTextField: UITextField!
     @IBOutlet var userIdTextField: UITextField!
-    //    @IBOutlet var skipButton: UIButton!
     @IBOutlet var nextButton: UIButton!
     @IBOutlet var imageView: UIImageView!
     @IBOutlet var scrollView: UIScrollView!
-    
+
     let imagePicker = UIImagePickerController()
-    
+
     var screenHeight:CGFloat!
     var screenWidth:CGFloat!
+
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -200,9 +201,9 @@ class RegisterViewController: UIViewController,UITextFieldDelegate,UIScrollViewD
                let userName = self.userNameTextField.text{
                 // Firestoreへの参照を取得
                 let db = Firestore.firestore()
-                print(user.uid)
+                // Firestore.firestore().collection("user/\(user.uid)/study").addDocument(data: [
                 // "users"コレクション内でuserIDが一致するドキュメントを検索
-                db.collection("user").document(user.uid).collection("profile").whereField("userID", isEqualTo: userID).getDocuments { (querySnapshot, err) in
+                db.collection("user/\(user.uid)/profile").whereField("userID", isEqualTo: userID).getDocuments { (querySnapshot, err) in
                     if let err = err {
                         print("エラー: \(err)")
                     } else {
@@ -216,11 +217,11 @@ class RegisterViewController: UIViewController,UITextFieldDelegate,UIScrollViewD
                             // userIDが存在しない場合は新規ユーザーを登録
                             var ref: DocumentReference? = nil
                             
-                            ref = db.collection("user").document(user.uid).collection("profile").addDocument(data: [
+                            ref = db.collection("user/\(user.uid)/profile").addDocument(data: [
                                 "userID": userID,
                                 "userName": userName,
                                 "profileImageName": profileImageName,
-                                
+                                "selfIntroduction": "自己紹介を記入しよう"
                             ]) { err in
                                 if let err = err {
                                     print("エラー: \(err)")
@@ -254,6 +255,7 @@ class RegisterViewController: UIViewController,UITextFieldDelegate,UIScrollViewD
     
     
 }
+
 
 
 

@@ -30,6 +30,7 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
     var searchHistory: [String] = []
     var searchResults: [Profile] = [] // 検索結果を格納するための配列
     var keyword: String = ""
+    let db = Firestore.firestore()
     let imageCache = NSCache<NSString, UIImage>()
     let dispatchGroup = DispatchGroup()
     
@@ -204,41 +205,66 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
             tableView.reloadData()
         }
         
+    // ユーザーIDを使ってFirestoreから該当するユーザーのuidを取得する関数
+    func fetchUIDByUserID(userID: String, completion: @escaping (String?) -> Void) {
+        let usersRef = db.collection("user")
+        // ユーザーIDで検索
+        usersRef.whereField("userID", isEqualTo: userID).getDocuments { (snapshot, error) in
+            if let error = error {
+                print("Error fetching documents: \(error)")
+                completion(nil)
+                return
+            }
+            
+            if let doc = snapshot?.documents.first {
+                // ユーザーのuidを取得して返す
+                let uid = doc.documentID
+                completion(uid)
+            } else {
+                // 該当するユーザーがいない場合
+                completion(nil)
+            }
+        }
+    }
     
     
     
     func addFriend(cell: SearchTableViewCell) {
         // 1. キーワードを使用して、指定されたユーザーIDの人のコレクションにwaitfollowerを作成する
         if let currentUserID = Auth.auth().currentUser?.uid {
-            let targetUserID = keyword // セルに表示されている文字をキーワードとして使用
-            
-            // Firestoreの参照を取得
-            let db = Firestore.firestore()
-            let targetUserCollection = db.collection("user").document(targetUserID)
-            
-            // waitfollowerコレクションを作成
-            targetUserCollection.collection("waitfollower").document(currentUserID).setData([
-                "timestamp": FieldValue.serverTimestamp()
-            ]) { error in
-                if let error = error {
-                    print("waitfollower追加エラー: \(error.localizedDescription)")
+            fetchUIDByUserID(userID: keyword) { (uid) in
+                if let uid = uid {
+                    print("Found user with uid: \(uid)")
+                    let targetUserID = uid // セルに表示されている文字をキーワードとして使用
+                    let targetUserCollection = self.db.collection("user").document(targetUserID)  // Firestoreの参照を取得
+                    // waitfollowerコレクションを作成
+                    targetUserCollection.collection("waitfollower").addDocument(data:[
+                        "waitFollowerUser": currentUserID,
+                        "timestamp": FieldValue.serverTimestamp()
+                    ]) { error in
+                        if let error = error {
+                            print("waitfollower追加エラー: \(error.localizedDescription)")
+                        } else {
+                            print("waitfollowerに追加されました")
+                        }
+                    }
+                    
+                    // 2. 自分のコレクションの中にwatifollowを作成し、キーワードを追加する
+                    let currentUserCollection = self.db.collection("user").document(currentUserID)
+                    // watifollowコレクションを作成
+                    currentUserCollection.collection("watifollow").addDocument(data:[
+                        "waitFollowUser": targetUserID,
+                        "timestamp": FieldValue.serverTimestamp()
+                    ]) { error in
+                        if let error = error {
+                            print("watifollow追加エラー: \(error.localizedDescription)")
+                        } else {
+                            print("watifollowに追加されました")
+                        }
+                    }
                 } else {
-                    print("waitfollowerに追加されました")
-                }
-            }
-            
-            // 2. 自分のコレクションの中にwatifollowを作成し、キーワードを追加する
-            let currentUserCollection = db.collection("user").document(currentUserID)
-            
-            // watifollowコレクションを作成
-            currentUserCollection.collection("watifollow").document(targetUserID).setData([
-                "waitFollowUser": keyword,
-                "timestamp": FieldValue.serverTimestamp()
-            ]) { error in
-                if let error = error {
-                    print("watifollow追加エラー: \(error.localizedDescription)")
-                } else {
-                    print("watifollowに追加されました")
+                    print("ユーザーが見つかりませんでした")
+                    
                 }
             }
         }
@@ -246,23 +272,38 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
     
     // フレンド申請の状態を確認してボタンの表示を設定する関数
     func configureButton(for cell: SearchTableViewCell, with profile: Profile) {
-        let currentUserID = Auth.auth().currentUser?.uid ?? ""
-        let targetUserID = profile.userID
-        checkFriendRequestStatus(currentUserID: currentUserID, targetUserID: targetUserID) { status in
-            switch status {
-            case .requestSent:
-                cell.setButtonState(.requestSent)
-            case .isFriend:
+        guard let currentUserID = Auth.auth().currentUser?.uid else {
+            return
+        }
+        
+        fetchUIDByUserID(userID: profile.userID) { [weak self] uid in
+            guard let self = self, let targetUserID = uid else {
+                print("User not found")
+                return
+            }
+            
+            if currentUserID == targetUserID {
+                // 自分自身のIDと一致する場合、ボタンを非表示にする
                 cell.setButtonState(.isFriend)
-            case .none:
-                cell.setButtonState(.addFriend)
+            } else {
+                self.checkFriendRequestStatus(currentUserID: currentUserID, targetUserID: targetUserID) { status in
+                    switch status {
+                    case .requestSent:
+                        cell.setButtonState(.requestSent)
+                    case .isFriend:
+                        cell.setButtonState(.isFriend)
+                    case .none:
+                        cell.setButtonState(.addFriend)
+                    }
+                }
             }
         }
     }
+
+
     
     // 友達関係の状態を確認する関数
     func checkFriendStatus(currentUserID: String, targetUserID: String, completion: @escaping (Bool) -> Void) {
-        let db = Firestore.firestore()
         let currentUserFriendsCollection = db.collection("user").document(currentUserID).collection("friends")
         
         currentUserFriendsCollection.document(targetUserID).getDocument { (document, error) in
@@ -277,13 +318,12 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
     }
     
     func checkFriendRequestStatus(currentUserID: String, targetUserID: String, completion: @escaping (FriendRequestStatus) -> Void) {
-        let db = Firestore.firestore()
         let currentUserWaitFollowCollection = db.collection("user").document(currentUserID).collection("waitfollow") // 自分のwaitfollowリストを参照
         
         currentUserWaitFollowCollection.document(targetUserID).getDocument { [weak self] (document, error) in
             if let document = document, document.exists {
-                let targetUserWaitFollowerCollection = db.collection("user").document(targetUserID).collection("waitfollower")  // 相手のwaitfollowerリストを参照
-                targetUserWaitFollowerCollection.document(currentUserID).getDocument { (targetDocument, targetError) in
+                let targetUserWaitFollowerCollection = self.db.collection("user").document(targetUserID).collection("waitfollower")  // 相手のwaitfollowerリストを参照
+                targetUserWaitFollowerCollection?.document(currentUserID).getDocument { (targetDocument, targetError) in
                     if let targetDocument = targetDocument, targetDocument.exists {
                         completion(.requestSent)// 自分と相手のwaitリストの両方に存在する場合
                     } else {

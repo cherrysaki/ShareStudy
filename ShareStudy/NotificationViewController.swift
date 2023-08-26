@@ -75,18 +75,16 @@ class NotificationViewController: UIViewController,UITableViewDelegate,UITableVi
                 print("Error fetching friend requests: \(error.localizedDescription)")
                 return
             }
-            
-            // waitfollowerから申請されたユーザーIDを取得
-            let friendRequestUserIDs = snapshot?.documents.compactMap { $0.documentID } ?? []
-            
             // 申請されたユーザーIDのプロフィール情報を取得してfriendRequestsに格納
-            for userID in friendRequestUserIDs {
+            for document in snapshot?.documents ?? [] {
+                let userID = document.documentID
                 let profileCollection = db.collection("user").document(userID).collection("profile")
                 profileCollection.getDocuments { (profileSnapshot, profileError) in
                     if let profileError = profileError {
                         print("Error fetching profile for user \(userID): \(profileError.localizedDescription)")
                         return
                     }
+                    
                     if let profileDocument = profileSnapshot?.documents.first,
                        let userName = profileDocument["userName"] as? String,
                        let profileImage = profileDocument["profileImageName"] as? String {
@@ -94,9 +92,9 @@ class NotificationViewController: UIViewController,UITableViewDelegate,UITableVi
                         self.friendRequests.append(profile)
                         self.tableView.reloadData()
                     }
-                    
                 }
             }
+
         }
     }
     // NotificationTableViewCellDelegate メソッドの実装

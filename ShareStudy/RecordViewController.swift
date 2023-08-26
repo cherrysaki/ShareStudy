@@ -41,7 +41,7 @@ class RecordViewController: UIViewController, AVCapturePhotoCaptureDelegate {
     var extTime: Double = 0.0
     var timer: Timer = Timer()
     var alartFlag: Bool = false
-    
+    var documentID = ""
     
     let takeImage = UIImage(named: "Take")
     let startImage = UIImage(named: "Start")
@@ -65,6 +65,7 @@ class RecordViewController: UIViewController, AVCapturePhotoCaptureDelegate {
         alartFlag = false
         isFinished = false
         onGoing = false
+        documentID = ""
         stopButton.setImage(pauseImage, for: state)
         captureButton.setImage(takeImage, for: state)
         BackButton.isHidden = true
@@ -188,7 +189,7 @@ class RecordViewController: UIViewController, AVCapturePhotoCaptureDelegate {
         case 3:
             onGoing = false
             finishedTimerStop() //タイマーを止める
-            repost()
+            repost(documentID: documentID)
             tabBarController?.tabBar.isHidden = false
             let previousViewController = self.tabBarController?.viewControllers?[0]
             self.tabBarController?.selectedViewController = previousViewController
@@ -371,7 +372,7 @@ class RecordViewController: UIViewController, AVCapturePhotoCaptureDelegate {
     
     
     func post(user: User, imageUrlString: String) {
-        Firestore.firestore().collection("user/\(user.uid)/study").addDocument(data: [
+        let newDocumentRef = Firestore.firestore().collection("user/\(user.uid)/study").addDocument(data: [
             "date": FieldValue.serverTimestamp(),
             "studyTime": studyTime,
             "extTime": extTime,
@@ -386,15 +387,16 @@ class RecordViewController: UIViewController, AVCapturePhotoCaptureDelegate {
                 dialog.addAction(UIAlertAction(title: "OK", style: .default))
                 self.present(dialog, animated: true, completion: nil)
             } else {
-                print("投稿成功")
+                print("投稿成功。ドキュメントID: \(newDocumentRef.documentID)")
+                self.documentID = newDocumentRef.documentID
             }
             return
         }
     }
     
-    func repost() {
+    func repost(documentID: String) {
         if let user = Auth.auth().currentUser {
-            Firestore.firestore().collection("user/\(user.uid)/study").addDocument(data: [
+            Firestore.firestore().collection("user/\(user.uid)/study").document(documentID).setData( [
                 "extTime": extTime,
                 "onGoing": onGoing,
                 "isFinished": isFinished
@@ -406,7 +408,7 @@ class RecordViewController: UIViewController, AVCapturePhotoCaptureDelegate {
                     dialog.addAction(UIAlertAction(title: "OK", style: .default))
                     self.present(dialog, animated: true, completion: nil)
                 } else {
-                    print("投稿成功")
+                    print("投稿更新成功")
                 }
                 return
             }

@@ -163,10 +163,10 @@
 				E4F9E35A299F903E004EE261 /* SignInViewController.swift */,
 				E41C33112A62E67A0023FB03 /* RegisterViewController.swift */,
 				E4C93AC52A1CBBC800427DFF /* RecordViewController.swift */,
-				E447197B298D109A002C98C6 /* HomeViewController.swift */,
 				E4C93AC32A1CB96700427DFF /* RankingViewController.swift */,
 				E4C93AC72A1CBBFF00427DFF /* ProfileViewController.swift */,
 				E45F9AB32A9487480039704E /* EditProfileViewController.swift */,
+				E447197B298D109A002C98C6 /* HomeViewController.swift */,
 				E4C93ACB2A386EAE00427DFF /* HomeTableViewCell.swift */,
 				E4C93ACC2A386EAE00427DFF /* HomeTableViewCell.xib */,
 				E459484B2A6793140087FA2E /* NotificationViewController.swift */,
@@ -180,8 +180,8 @@
 				E4471951298D0C39002C98C6 /* Main.storyboard */,
 				E4471956298D0C3B002C98C6 /* LaunchScreen.storyboard */,
 				E4C93AC92A1CCD7F00427DFF /* Assets.xcassets */,
-				E4E84EFA2A94D0CA001A235C /* GoogleService-Info.plist */,
 				E4471959298D0C3B002C98C6 /* Info.plist */,
+				E4E84EFA2A94D0CA001A235C /* GoogleService-Info.plist */,
 			);
 			path = ShareStudy;
 			sourceTree = "<group>";
