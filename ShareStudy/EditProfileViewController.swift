@@ -165,6 +165,7 @@ class EditProfileViewController: UIViewController,UITextFieldDelegate,UITextView
             
             // ImageViewに選択した画像を表示
             iconImageView.image = image
+            
         }
         picker.dismiss(animated: true, completion: nil)
     }
@@ -363,7 +364,9 @@ class EditProfileViewController: UIViewController,UITextFieldDelegate,UITextView
         iconImageView.layer.cornerRadius = iconImageView.frame.width / 2
         iconImageView.layer.borderColor = UIColor.lightGray.cgColor
         iconImageView.layer.borderWidth  = 0.1
+        iconImageView.contentMode = .scaleAspectFill
         iconImageView.clipsToBounds = true
+        
     }
     
     func setupTextFieldUI(_ textField: UITextField){

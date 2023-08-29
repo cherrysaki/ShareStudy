@@ -39,8 +39,10 @@
                         <rect key="frame" x="253" y="21" width="74" height="47"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <state key="normal" title="Button"/>
-                        <buttonConfiguration key="configuration" style="plain" title="申請">
-                            <fontDescription key="titleFontDescription" name="NotoSansJP-Regular" family="Noto Sans JP" pointSize="13"/>
+                        <buttonConfiguration key="configuration" style="plain">
+                            <backgroundConfiguration key="background">
+                                <color key="backgroundColor" red="0.93333339689999995" green="0.48627454040000001" blue="0.52941179279999995" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                            </backgroundConfiguration>
                         </buttonConfiguration>
                         <connections>
                             <action selector="addButtonTapped" destination="KGk-i7-Jjw" eventType="touchUpInside" id="RBa-Uw-dvU"/>

@@ -26,7 +26,9 @@ class SearchTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         friendButton.isEnabled = false
-//        iconImage.layer.cornerRadius = 23
+        iconImageView.layer.cornerRadius = 30
+        iconImageView.contentMode = .scaleAspectFill
+        iconImageView.clipsToBounds = true
        
     }
 

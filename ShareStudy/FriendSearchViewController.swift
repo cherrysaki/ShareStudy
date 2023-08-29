@@ -59,22 +59,16 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
         return UserDefaults.standard.stringArray(forKey: "SearchHistory") ?? []
     }
     
-    func numberOfSections(in tableView: UITableView) -> Int {
-        // 一致するアカウントがある場合とない場合の2つのセクションを持つ
-        return searchResults.isEmpty ? 1 : 2
-    }
-    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section == 0 && !searchResults.isEmpty {
             return searchResults.count
-        } else {
-            return 1 // 特別なセルを1つだけ表示する
         }
-    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+            return 80
+        }
+
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if indexPath.section == 0 && !searchResults.isEmpty {
-            // セクション0で、かつプロフィール情報がある場合は通常のプロフィール情報を表示する
             let cell = tableView.dequeueReusableCell(withIdentifier: "profileCell", for: indexPath) as! SearchTableViewCell
             let profile = searchResults[indexPath.row]
             cell.nameLabel.text = profile.userName
@@ -91,12 +85,6 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
             configureButton(for: cell, with: profile) // ボタンの処理を設定
             
             return cell
-        } else {
-            // セクション1またはプロフィール情報がない場合は特別なセルを表示する
-            let cell = tableView.dequeueReusableCell(withIdentifier: "noResultCell", for: indexPath) as! NoResultTableViewCell
-            cell.noResultLabel.text = "一致するものがありません"
-            return cell
-        }
     }
     
     func downloadIcons(for cell: SearchTableViewCell, with profile: Profile) {
@@ -126,50 +114,56 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
         usersCollection.getDocuments { [weak self] (usersSnapshot, error) in
             if let error = error {
                 print("クエリ実行中にエラーが発生しました: \(error.localizedDescription)")
+                completion(false) // 検索結果の取得に失敗したことを通知
                 return
             }
             
             self?.searchResults = []
             
-            for userDocument in usersSnapshot!.documents {
-                self?.dispatchGroup.enter()
-                
-                self?.fetchProfile(for: userDocument, keyword: keyword)
-            }
-            
+
+                for userDocument in usersSnapshot!.documents {
+                    self?.dispatchGroup.enter()
+                    self?.fetchProfile(for: userDocument, keyword: keyword)
+                }
             self?.dispatchGroup.notify(queue: .main) {
                 self?.tableView.reloadData()
+                completion(true) // 検索結果の取得に成功したことを通知
             }
         }
     }
     
     func fetchProfile(for userDocument: QueryDocumentSnapshot, keyword: String) {
-        let profileCollection = userDocument.reference.collection("profile")
-        let query = profileCollection.whereField("userID", isEqualTo: keyword)
-        
-        query.getDocuments { [weak self] (profileSnapshot, error) in
-            if let error = error {
-                print("クエリ実行中にエラーが発生しました: \(error.localizedDescription)")
-                self?.dispatchGroup.leave()
-                return
-            }
-            
-            if let profileDocuments = profileSnapshot?.documents  {
-                for profileDocument in profileDocuments {
-                    let data = profileDocument.data()
-                    if let name = data["userName"] as? String,
-                       let id = data["userID"] as? String,
-                       let imageUrl = data["profileImageName"] as? String {
-                        let profile = Profile(userName: name, userID: id, profileImage: imageUrl)
-                        self?.searchResults.append(profile)
-                    }
-                }
-            }
-            
-            self?.dispatchGroup.leave()
-        }
-    }
-    
+           let profileCollection = userDocument.reference.collection("profile")
+           let query = profileCollection.whereField("userID", isEqualTo: keyword)
+           
+           query.getDocuments { [weak self] (profileSnapshot, error) in
+               if let error = error {
+                   print("クエリ実行中にエラーが発生しました: \(error.localizedDescription)")
+                   self?.dispatchGroup.leave()
+                   return
+               }
+               
+               guard let profileDocuments = profileSnapshot?.documents, !profileDocuments.isEmpty else {
+                   print("一致しません")
+                   self?.createAlert()
+                   self?.dispatchGroup.leave()
+                   return
+               }
+               
+               for profileDocument in profileDocuments {
+                   let data = profileDocument.data()
+                   if let name = data["userName"] as? String,
+                      let id = data["userID"] as? String,
+                      let imageUrl = data["profileImageName"] as? String {
+                       let profile = Profile(userName: name, userID: id, profileImage: imageUrl)
+                       self?.searchResults.append(profile)
+                       self?.dispatchGroup.leave()
+                   }
+               }
+               
+               self?.dispatchGroup.leave()
+           }
+       }
     
     
     
@@ -339,6 +333,13 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
                 }
             }
         }
+    }
+    
+    func createAlert(){
+        // アラートを表示する
+        let alertController = UIAlertController(title: "検索結果なし", message: "一致するものが見つかりませんでした。", preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        self.present(alertController, animated: true, completion: nil)
     }
     
     func setupTableView() {

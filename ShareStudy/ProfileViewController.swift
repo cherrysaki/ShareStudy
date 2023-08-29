@@ -20,6 +20,7 @@ class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         iconImageView.layer.cornerRadius = iconImageView.frame.width / 2
+        iconImageView.contentMode = .scaleAspectFill
         iconImageView.clipsToBounds = true
     }
     
