@@ -22,20 +22,13 @@ class HomeViewController: UIViewController,UITableViewDelegate, UITableViewDataS
     @IBOutlet var tableView: UITableView!
     @IBOutlet var iconBarItem: UIBarItem!
     
-    var profilesArray:[Profile] = []{
-        didSet {
-            tableView?.reloadData()
-        }
-    }
-    var postArray:[StudyPost]  = []{
-        didSet {
-            tableView?.reloadData()
-        }
-    }
+    var profilesArray:[Profile] = []
+    var postArray:[StudyPost]  = []
     
     var data: Dictionary<String, Any> = [:]
     
     let db = Firestore.firestore()
+    let dispatchGroup = DispatchGroup()
     
     
     override func viewDidLoad() {
@@ -49,6 +42,8 @@ class HomeViewController: UIViewController,UITableViewDelegate, UITableViewDataS
     }
     
     override func viewWillAppear(_ animated: Bool) {
+         profilesArray = []
+         postArray = []
         print("viewWillAppear")
         fetchAllUsersData()
         print(postArray)
@@ -121,6 +116,7 @@ class HomeViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         db.collection("user").document(userID).collection("study").getDocuments { (querySnapshot, error) in
             if let error = error {
                 print("データ取得エラー: \(error.localizedDescription)")
+                self.dispatchGroup.leave()
                 return
             }
             if let documents = querySnapshot?.documents {
@@ -149,8 +145,10 @@ class HomeViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         db.collection("user").document(userID).collection("profile").getDocuments { (querySnapshot, error) in
             if let error = error {
                 print("データ取得エラー: \(error.localizedDescription)")
+                self.dispatchGroup.leave()
                 return
             }
+            print(querySnapshot)
             if let documents = querySnapshot?.documents {
                 for document in documents {
                     let data = document.data()
@@ -161,6 +159,7 @@ class HomeViewController: UIViewController,UITableViewDelegate, UITableViewDataS
                         print(userID)
                         let profile = Profile(userName: name, userID: userID, profileImage: iconImageURL)
                         self.profilesArray.append(profile)
+                        print(self.profilesArray)
                     }
                 }
             }
@@ -172,13 +171,16 @@ class HomeViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         guard let currentUserID = Auth.auth().currentUser?.uid else {
             return
         }
+        self.dispatchGroup.enter()
         // 自分のデータを取得
         fetchUserStudy(userID: currentUserID)
         print("自分のデータを取った")
+        print("自分のデータ取得後",postArray)
         //友達のデータを取得
         db.collection("user").document(currentUserID).collection("friends").getDocuments { (querySnapshot, error) in
             if let error = error {
                 print("データ取得エラー: \(error.localizedDescription)")
+                self.dispatchGroup.leave()
                 return
             }
             if let documents = querySnapshot?.documents {
@@ -186,20 +188,27 @@ class HomeViewController: UIViewController,UITableViewDelegate, UITableViewDataS
                 for friendUserID in friendUserIDs {
                     self.fetchUserStudy(userID: friendUserID)
                 }
+                self.dispatchGroup.leave()
             }
         }
-        print("友達取得後",postArray)
-        // すべてのデータ取得が完了したのでsortを行う
-        self.sortPostArray()
-        print("sort後",postArray)
-        //sortが行われた後、postArray.uidを使ってfetchUserProfileを行う
-        for post in postArray {
-            print(post)
-            fetchUserProfile(userID: post.uid)
+        self.dispatchGroup.notify(queue: .main) {
+            print("友達取得後",self.postArray)
+            // すべてのデータ取得が完了したのでsortを行う
+            self.sortPostArray()
+            print("sort後",self.postArray)
+            //sortが行われた後、postArray.uidを使ってfetchUserProfileを行う
+            for post in self.postArray {
+                self.dispatchGroup.enter()
+                self.fetchUserProfile(userID: post.uid)
+            }
+            self.dispatchGroup.leave()
+            print(self.profilesArray)
+            //全てのデータが揃ったらtableViewを更新する
+            self.dispatchGroup.notify(queue: .main) {
+                self.tableView.reloadData()
+            }
+           
         }
-        print(profilesArray)
-        //全てのデータが揃ったらtableViewを更新する
-        self.tableView.reloadData()
     }
     
     
@@ -208,7 +217,6 @@ class HomeViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         postArray.sort { (post1, post2) -> Bool in
             return post1.postTime > post2.postTime
         }
-        print("sortなう")
     }
     
     
