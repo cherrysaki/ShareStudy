@@ -30,6 +30,7 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
     var searchHistory: [String] = []
     var searchResults: [Profile] = [] // 検索結果を格納するための配列
     var keyword: String = ""
+    var uid: String = ""
     let db = Firestore.firestore()
     let imageCache = NSCache<NSString, UIImage>()
     let dispatchGroup = DispatchGroup()
@@ -109,61 +110,95 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
     }
     
     func fetchSearchResults(keyword: String, completion: @escaping (Bool) -> Void) {
-        let usersCollection = Firestore.firestore().collection("user")
-        
-        usersCollection.getDocuments { [weak self] (usersSnapshot, error) in
-            if let error = error {
-                print("クエリ実行中にエラーが発生しました: \(error.localizedDescription)")
-                completion(false) // 検索結果の取得に失敗したことを通知
-                return
-            }
+            let usersCollection = Firestore.firestore().collection("user")
             
-            self?.searchResults = []
-            
+            usersCollection.getDocuments { [weak self] (usersSnapshot, error) in
+                if let error = error {
+                    print("クエリ実行中にエラーが発生しました: \(error.localizedDescription)")
+                    completion(false)
+                    return
+                }
+                
+                self?.searchResults = []
 
                 for userDocument in usersSnapshot!.documents {
                     self?.dispatchGroup.enter()
                     self?.fetchProfile(for: userDocument, keyword: keyword)
                 }
-            self?.dispatchGroup.notify(queue: .main) {
-                self?.tableView.reloadData()
-                completion(true) // 検索結果の取得に成功したことを通知
+                self?.dispatchGroup.notify(queue: .main) {
+                    self?.tableView.reloadData()
+                    if self?.searchResults.isEmpty ?? true {
+                        print("一致するプロフィールが見つかりません")
+                        self?.createAlert()
+                    }
+                    completion(true)
+                }
             }
         }
-    }
+
+        func fetchProfile(for userDocument: QueryDocumentSnapshot, keyword: String) {
+            let profileCollection = userDocument.reference.collection("profile")
+            let query = profileCollection.whereField("userID", isEqualTo: keyword)
+            
+            query.getDocuments { [weak self] (profileSnapshot, error) in
+                if let error = error {
+                    print("クエリ実行中にエラーが発生しました: \(error.localizedDescription)")
+                    self?.dispatchGroup.leave()
+                    return
+                }
+                
+                guard let profileDocuments = profileSnapshot?.documents, !profileDocuments.isEmpty else {
+                    self?.dispatchGroup.leave()
+                    return
+                }
+                
+                for profileDocument in profileDocuments {
+                    let data = profileDocument.data()
+                    if let name = data["userName"] as? String,
+                       let id = data["userID"] as? String,
+                       let imageUrl = data["profileImageName"] as? String {
+                        let profile = Profile(userName: name, userID: id, profileImage: imageUrl)
+                        self?.searchResults.append(profile)
+                        //こっちでdocumenIDも取得したい。
+                        guard let doc = profileSnapshot?.documents.first else {
+                            print("エラー")
+                            return
+                            }
+                        self?.uid = doc.documentID
+                        print(self?.uid)
+                                
+                    }
+                }
+                
+                self?.dispatchGroup.leave()
+            }
+        }
     
-    func fetchProfile(for userDocument: QueryDocumentSnapshot, keyword: String) {
-           let profileCollection = userDocument.reference.collection("profile")
-           let query = profileCollection.whereField("userID", isEqualTo: keyword)
-           
-           query.getDocuments { [weak self] (profileSnapshot, error) in
-               if let error = error {
-                   print("クエリ実行中にエラーが発生しました: \(error.localizedDescription)")
-                   self?.dispatchGroup.leave()
-                   return
-               }
-               
-               guard let profileDocuments = profileSnapshot?.documents, !profileDocuments.isEmpty else {
-                   print("一致しません")
-                   self?.createAlert()
-                   self?.dispatchGroup.leave()
-                   return
-               }
-               
-               for profileDocument in profileDocuments {
-                   let data = profileDocument.data()
-                   if let name = data["userName"] as? String,
-                      let id = data["userID"] as? String,
-                      let imageUrl = data["profileImageName"] as? String {
-                       let profile = Profile(userName: name, userID: id, profileImage: imageUrl)
-                       self?.searchResults.append(profile)
-                       self?.dispatchGroup.leave()
-                   }
-               }
-               
-               self?.dispatchGroup.leave()
-           }
-       }
+//    // ユーザーIDを使ってFirestoreから該当するユーザーのuidを取得する関数
+//    func fetchUIDByUserID(userID: String, completion: @escaping (String?) -> Void) {
+//
+//        let usersRef = db.collection("user")
+//        // ユーザーIDで検索
+//        usersRef.whereField("userID", isEqualTo: userID).getDocuments { (snapshot, error) in
+//            if let error = error {
+//                print("Error fetching documents: \(error)")
+//                completion(nil)
+//                return
+//            }
+//
+//            if let doc = snapshot?.documents.first {
+//                // ユーザーのuidを取得して返す
+//                let uid = doc.documentID
+//                completion(uid)
+//            } else {
+//                // 該当するユーザーがいない場合
+//                print(snapshot?.documents.first)
+//                completion(nil)
+//            }
+//        }
+//    }
+
+
     
     
     
@@ -197,68 +232,46 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
             tableView.reloadData()
         }
         
-    // ユーザーIDを使ってFirestoreから該当するユーザーのuidを取得する関数
-    func fetchUIDByUserID(userID: String, completion: @escaping (String?) -> Void) {
-        let usersRef = db.collection("user")
-        // ユーザーIDで検索
-        usersRef.whereField("userID", isEqualTo: userID).getDocuments { (snapshot, error) in
-            if let error = error {
-                print("Error fetching documents: \(error)")
-                completion(nil)
-                return
-            }
-            
-            if let doc = snapshot?.documents.first {
-                // ユーザーのuidを取得して返す
-                let uid = doc.documentID
-                completion(uid)
-            } else {
-                // 該当するユーザーがいない場合
-                completion(nil)
-            }
-        }
-    }
-    
-    
+  
     
     func addFriend(cell: SearchTableViewCell) {
         // 1. キーワードを使用して、指定されたユーザーIDの人のコレクションにwaitfollowerを作成する
         if let currentUserID = Auth.auth().currentUser?.uid {
-            fetchUIDByUserID(userID: keyword) { (uid) in
-                if let uid = uid {
-                    print("Found user with uid: \(uid)")
-                    let targetUserID = uid // セルに表示されている文字をキーワードとして使用
-                    let targetUserCollection = self.db.collection("user").document(targetUserID)  // Firestoreの参照を取得
-                    // waitfollowerコレクションを作成
-                    targetUserCollection.collection("waitfollower").addDocument(data:[
-                        "waitFollowerUser": currentUserID,
-                        "timestamp": FieldValue.serverTimestamp()
-                    ]) { error in
-                        if let error = error {
-                            print("waitfollower追加エラー: \(error.localizedDescription)")
-                        } else {
-                            print("waitfollowerに追加されました")
-                        }
-                    }
-                    
-                    // 2. 自分のコレクションの中にwatifollowを作成し、キーワードを追加する
-                    let currentUserCollection = self.db.collection("user").document(currentUserID)
-                    // watifollowコレクションを作成
-                    currentUserCollection.collection("waitfollow").addDocument(data:[
-                        "waitFollowUser": targetUserID,
-                        "timestamp": FieldValue.serverTimestamp()
-                    ]) { error in
-                        if let error = error {
-                            print("watifollow追加エラー: \(error.localizedDescription)")
-                        } else {
-                            print("watifollowに追加されました")
-                        }
-                    }
+//            fetchUIDByUserID(userID: keyword) { (uid) in
+//                if let uid = uid {
+            print("Found user with uid: \(uid)")
+            let targetUserID = uid // セルに表示されている文字をキーワードとして使用
+            let targetUserCollection = self.db.collection("user").document(targetUserID)  // Firestoreの参照を取得
+            // waitfollowerコレクションを作成
+            targetUserCollection.collection("waitfollower").addDocument(data:[
+                "waitFollowerUser": currentUserID,
+                "timestamp": FieldValue.serverTimestamp()
+            ]) { error in
+                if let error = error {
+                    print("waitfollower追加エラー: \(error.localizedDescription)")
                 } else {
-                    print("ユーザーが見つかりませんでした")
-                    
+                    print("waitfollowerに追加されました")
                 }
             }
+            
+            // 2. 自分のコレクションの中にwatifollowを作成し、キーワードを追加する
+            let currentUserCollection = self.db.collection("user").document(currentUserID)
+            // watifollowコレクションを作成
+            currentUserCollection.collection("waitfollow").addDocument(data:[
+                "waitFollowUser": targetUserID,
+                "timestamp": FieldValue.serverTimestamp()
+            ]) { error in
+                if let error = error {
+                    print("watifollow追加エラー: \(error.localizedDescription)")
+                } else {
+                    print("watifollowに追加されました")
+                }
+            }
+//                } else {
+//                    print("ユーザーが見つかりませんでした")
+//
+//                }
+//            }
         }
     }
     
@@ -268,11 +281,12 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
             return
         }
         
-        fetchUIDByUserID(userID: profile.userID) { [weak self] uid in
-            guard let self = self, let targetUserID = uid else {
-                print("User not found")
-                return
-            }
+//        fetchUIDByUserID(userID: profile.userID) { [weak self] uid in
+//            guard let self = self, let targetUserID = self.uid else {
+//                print("User not found")
+//                return
+//            }
+        let targetUserID = self.uid
             
             if currentUserID == targetUserID {
                 // 自分自身のIDと一致する場合、ボタンを非表示にする
@@ -287,9 +301,10 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
                     case .none:
                         cell.setButtonState(.addFriend)
                     }
+                    print(status)
                 }
             }
-        }
+//        }
     }
 
 
@@ -344,7 +359,7 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
     
     func setupTableView() {
         tableView.register(UINib(nibName: "SearchTableViewCell", bundle: nil), forCellReuseIdentifier: "profileCell")
-        tableView.register(UINib(nibName: "NoResultTableViewCell", bundle: nil), forCellReuseIdentifier: "noResultCell")
+//        tableView.register(UINib(nibName: "NoResultTableViewCell", bundle: nil), forCellReuseIdentifier: "noResultCell")
         
         tableView.dataSource = self
         tableView.delegate = self

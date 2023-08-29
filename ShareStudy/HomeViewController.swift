@@ -11,7 +11,7 @@ import Firebase
 struct StudyPost{
     let uid: String
     let postTime: Date
-    let studyTime: String
+    let studyTime: Int
     let studyImage: String
     let isFinished: Bool
     let onGoing: Bool
@@ -19,12 +19,19 @@ struct StudyPost{
 
 class HomeViewController: UIViewController,UITableViewDelegate, UITableViewDataSource {
     
-    
-    @IBOutlet var tableView:UITableView!
+    @IBOutlet var tableView: UITableView!
     @IBOutlet var iconBarItem: UIBarItem!
     
-    var profilesArray:[Profile] = []
-    var postArray:[StudyPost]  = []
+    var profilesArray:[Profile] = []{
+        didSet {
+            tableView?.reloadData()
+        }
+    }
+    var postArray:[StudyPost]  = []{
+        didSet {
+            tableView?.reloadData()
+        }
+    }
     
     var data: Dictionary<String, Any> = [:]
     
@@ -42,10 +49,9 @@ class HomeViewController: UIViewController,UITableViewDelegate, UITableViewDataS
     }
     
     override func viewWillAppear(_ animated: Bool) {
-//        fetchMyProfile()
+        print("viewWillAppear")
         fetchAllUsersData()
-        tableView.reloadData()
-        
+        print(postArray)
     }
     
     
@@ -54,16 +60,20 @@ class HomeViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         return postArray.count
     }
     
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+            return 500
+        }
+
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "postCell", for: indexPath) as! HomeTableViewCell
         let post = postArray[indexPath.row]
         let profile = profilesArray[indexPath.row]
         
         // セルにデータを表示
-        cell.studyTimeLabel.text = post.studyTime
+//        cell.studyTimeLabel.text = post.studyTime
         cell.nameLabel.text = profile.userName
         cell.userIdLabel.text = profile.userID
-        
         let formattedTime = self.formatPostTime(post.postTime)
         cell.postTimeLabel.text = formattedTime
         
@@ -114,10 +124,11 @@ class HomeViewController: UIViewController,UITableViewDelegate, UITableViewDataS
                 return
             }
             if let documents = querySnapshot?.documents {
+                print(documents)
                 for document in documents {
                     let data = document.data()
                     if let uid = data["userUid"] as? String,
-                       let studyTime = data["studyTime"] as? String,
+                       let studyTime = data["studyTime"] as? Int,
                        let studyImageURL = data["image"] as? String,
                        let isFinished = data["isFinished"] as? Bool,
                        let onGoing = data["onGoing"] as? Bool,
@@ -126,6 +137,7 @@ class HomeViewController: UIViewController,UITableViewDelegate, UITableViewDataS
                         let postDates: Date = postTime.dateValue()
                         let post = StudyPost(uid: uid, postTime: postDates, studyTime: studyTime, studyImage: studyImageURL, isFinished: isFinished, onGoing: onGoing)
                         self.postArray.append(post)
+                        print("今の",self.postArray)
                     }
                 }
             }
@@ -146,6 +158,7 @@ class HomeViewController: UIViewController,UITableViewDelegate, UITableViewDataS
                        let userID = data["userID"] as? String,
                        let iconImageURL = data["profileImageName"] as? String
                     {
+                        print(userID)
                         let profile = Profile(userName: name, userID: userID, profileImage: iconImageURL)
                         self.profilesArray.append(profile)
                     }
@@ -161,7 +174,7 @@ class HomeViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         }
         // 自分のデータを取得
         fetchUserStudy(userID: currentUserID)
-        
+        print("自分のデータを取った")
         //友達のデータを取得
         db.collection("user").document(currentUserID).collection("friends").getDocuments { (querySnapshot, error) in
             if let error = error {
@@ -175,13 +188,16 @@ class HomeViewController: UIViewController,UITableViewDelegate, UITableViewDataS
                 }
             }
         }
+        print("友達取得後",postArray)
         // すべてのデータ取得が完了したのでsortを行う
         self.sortPostArray()
-        
+        print("sort後",postArray)
         //sortが行われた後、postArray.uidを使ってfetchUserProfileを行う
         for post in postArray {
+            print(post)
             fetchUserProfile(userID: post.uid)
         }
+        print(profilesArray)
         //全てのデータが揃ったらtableViewを更新する
         self.tableView.reloadData()
     }
@@ -190,8 +206,9 @@ class HomeViewController: UIViewController,UITableViewDelegate, UITableViewDataS
     // 投稿データをソートする関数
     func sortPostArray() {
         postArray.sort { (post1, post2) -> Bool in
-            return post1.postTime < post2.postTime
+            return post1.postTime > post2.postTime
         }
+        print("sortなう")
     }
     
     
