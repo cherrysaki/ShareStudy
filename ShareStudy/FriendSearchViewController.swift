@@ -84,9 +84,7 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
                 cell.iconImageView.image = cachedImage
             } else {
                 // ダウンロードが失敗した場合にはデフォルトの画像を表示する
-                cell.iconImageView.image = UIImage(named: "defaultProfileImage")
-                
-                // ダウンロードを試みる
+                cell.iconImageView.image = UIImage(named: "icon")
                 downloadIcons(for: cell, with: profile)
             }  // プロフィール画像のダウンロードを行う
             cell.delegate = self
@@ -252,7 +250,7 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
                     // 2. 自分のコレクションの中にwatifollowを作成し、キーワードを追加する
                     let currentUserCollection = self.db.collection("user").document(currentUserID)
                     // watifollowコレクションを作成
-                    currentUserCollection.collection("watifollow").addDocument(data:[
+                    currentUserCollection.collection("waitfollow").addDocument(data:[
                         "waitFollowUser": targetUserID,
                         "timestamp": FieldValue.serverTimestamp()
                     ]) { error in
@@ -322,8 +320,8 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
         
         currentUserWaitFollowCollection.document(targetUserID).getDocument { [weak self] (document, error) in
             if let document = document, document.exists {
-                let targetUserWaitFollowerCollection = self.db.collection("user").document(targetUserID).collection("waitfollower")  // 相手のwaitfollowerリストを参照
-                targetUserWaitFollowerCollection?.document(currentUserID).getDocument { (targetDocument, targetError) in
+                let targetUserWaitFollowerCollection = self!.db.collection("user").document(targetUserID).collection("waitfollower")  // 相手のwaitfollowerリストを参照
+                targetUserWaitFollowerCollection.document(currentUserID).getDocument { (targetDocument, targetError) in
                     if let targetDocument = targetDocument, targetDocument.exists {
                         completion(.requestSent)// 自分と相手のwaitリストの両方に存在する場合
                     } else {
@@ -354,6 +352,7 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
     func setupSearchBar() {
         searchBar.delegate = self
         searchBar.showsCancelButton = true
+        searchBar.autocapitalizationType = .none
     }
 }
 

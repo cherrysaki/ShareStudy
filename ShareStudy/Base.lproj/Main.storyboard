@@ -31,19 +31,18 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="czK-i1-fBE">
-                                        <rect key="frame" x="0.0" y="50" width="390" height="43.666667938232422"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="500" id="czK-i1-fBE">
+                                        <rect key="frame" x="0.0" y="50" width="390" height="500"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="czK-i1-fBE" id="KR4-46-uKJ">
-                                            <rect key="frame" x="0.0" y="0.0" width="390" height="43.666667938232422"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="390" height="500"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
-                            <navigationBar contentMode="scaleToFill" fixedFrame="YES" shadowImage="Line 7" translatesAutoresizingMaskIntoConstraints="NO" id="Dkp-dr-Zgd">
-                                <rect key="frame" x="-18" y="47" width="394" height="44"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            <navigationBar contentMode="scaleToFill" shadowImage="Line 7" translatesAutoresizingMaskIntoConstraints="NO" id="Dkp-dr-Zgd">
+                                <rect key="frame" x="0.0" y="50" width="390" height="44"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <color key="barTintColor" systemColor="systemBackgroundColor"/>
                                 <items>
@@ -53,6 +52,12 @@
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="eDz-7J-q76"/>
                         <color key="backgroundColor" red="0.97647058959999999" green="0.98431372640000003" blue="0.98823523520000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="Dkp-dr-Zgd" secondAttribute="trailing" id="2tK-Oq-cwc"/>
+                            <constraint firstItem="Dkp-dr-Zgd" firstAttribute="top" secondItem="P7D-Ac-T5C" secondAttribute="top" constant="50" id="7AG-lp-ivZ"/>
+                            <constraint firstItem="Dkp-dr-Zgd" firstAttribute="leading" secondItem="P7D-Ac-T5C" secondAttribute="leading" id="VU9-mB-X65"/>
+                            <constraint firstItem="Dkp-dr-Zgd" firstAttribute="centerX" secondItem="P7D-Ac-T5C" secondAttribute="centerX" id="iaB-7v-ksU"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="3hm-Fx-yM9">
                         <barButtonItem key="leftBarButtonItem" image="magnifyingglass" catalog="system" id="J2x-Kz-66H">
@@ -63,7 +68,7 @@
                         <rightBarButtonItems>
                             <barButtonItem title="Item" id="WnC-8K-0RJ">
                                 <connections>
-                                    <segue destination="R2O-Fb-LvS" kind="show" id="6nx-Hq-Fb4"/>
+                                    <segue destination="R2O-Fb-LvS" kind="show" id="bt8-pX-lT1"/>
                                 </connections>
                             </barButtonItem>
                             <barButtonItem title="Item" image="bell" catalog="system" id="09f-Zi-bxK">
@@ -91,34 +96,31 @@
                         <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <searchBar contentMode="redraw" fixedFrame="YES" placeholder="ユーザーID検索" translatesAutoresizingMaskIntoConstraints="NO" id="XWT-Bk-Nq6">
-                                <rect key="frame" x="-9" y="81" width="389" height="44"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            <searchBar contentMode="redraw" placeholder="ユーザーID検索" translatesAutoresizingMaskIntoConstraints="NO" id="XWT-Bk-Nq6">
+                                <rect key="frame" x="0.0" y="90" width="390" height="56"/>
                                 <textInputTraits key="textInputTraits"/>
                                 <connections>
                                     <outlet property="delegate" destination="tv1-Kb-A19" id="A98-zH-G43"/>
                                 </connections>
                             </searchBar>
                             <navigationBar contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4Vj-pX-wb1">
-                                <rect key="frame" x="-9" y="37" width="389" height="44"/>
+                                <rect key="frame" x="-13" y="43" width="401" height="44"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                 <color key="barTintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <items>
-                                    <navigationItem title="ShareStudy" id="jAP-JN-YZG">
-                                        <barButtonItem key="rightBarButtonItem" title="Item" id="yVW-pr-Zz7"/>
-                                    </navigationItem>
+                                    <navigationItem title="ShareStudy" id="jAP-JN-YZG"/>
                                 </items>
                             </navigationBar>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="TuP-NK-pJU">
-                                <rect key="frame" x="0.0" y="125" width="390" height="719"/>
+                                <rect key="frame" x="0.0" y="146" width="390" height="698"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="mz6-m0-tsT">
-                                        <rect key="frame" x="0.0" y="50" width="390" height="43.666667938232422"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="80" id="mz6-m0-tsT">
+                                        <rect key="frame" x="0.0" y="50" width="390" height="80"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="mz6-m0-tsT" id="g7Y-h0-LqY">
-                                            <rect key="frame" x="0.0" y="0.0" width="390" height="43.666667938232422"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="390" height="80"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </tableViewCellContentView>
                                     </tableViewCell>
@@ -127,8 +129,13 @@
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="ZcV-oM-QcH"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="ZcV-oM-QcH" firstAttribute="trailing" secondItem="XWT-Bk-Nq6" secondAttribute="trailing" id="0FD-Ji-8XR"/>
+                            <constraint firstItem="XWT-Bk-Nq6" firstAttribute="centerX" secondItem="R1U-QX-6Hv" secondAttribute="centerX" id="g4v-S5-0eg"/>
+                            <constraint firstItem="XWT-Bk-Nq6" firstAttribute="leading" secondItem="ZcV-oM-QcH" secondAttribute="leading" id="nRN-Nn-fDI"/>
+                            <constraint firstItem="XWT-Bk-Nq6" firstAttribute="top" secondItem="R1U-QX-6Hv" secondAttribute="top" constant="90" id="usF-pO-P6K"/>
+                        </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="ntQ-a3-FxF"/>
                     <connections>
                         <outlet property="searchBar" destination="XWT-Bk-Nq6" id="S8d-dl-DWe"/>
                         <outlet property="tableView" destination="TuP-NK-pJU" id="ElO-GN-A1h"/>
@@ -146,32 +153,41 @@
                         <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="Wks-G1-gd6">
-                                <rect key="frame" x="0.0" y="79" width="390" height="765"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="AMl-Id-SDi">
-                                        <rect key="frame" x="0.0" y="50" width="390" height="43.666667938232422"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="AMl-Id-SDi" id="tlh-KJ-q4B">
-                                            <rect key="frame" x="0.0" y="0.0" width="390" height="43.666667938232422"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                        </tableViewCellContentView>
-                                    </tableViewCell>
-                                </prototypes>
-                            </tableView>
-                            <navigationBar contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="L10-KO-c7Z">
-                                <rect key="frame" x="-6" y="47" width="386" height="44"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="L10-KO-c7Z">
+                                <rect key="frame" x="0.0" y="50" width="390" height="44"/>
                                 <color key="barTintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <items>
                                     <navigationItem title="通知" id="ZJS-gN-IlR"/>
                                 </items>
                             </navigationBar>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="Wks-G1-gd6">
+                                <rect key="frame" x="0.0" y="94" width="390" height="750"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="80" id="AMl-Id-SDi">
+                                        <rect key="frame" x="0.0" y="50" width="390" height="80"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="AMl-Id-SDi" id="tlh-KJ-q4B">
+                                            <rect key="frame" x="0.0" y="0.0" width="390" height="80"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
+                            </tableView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="AoP-HF-M0W"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="Wks-G1-gd6" firstAttribute="trailing" secondItem="AoP-HF-M0W" secondAttribute="trailing" id="7oS-Xj-7DY"/>
+                            <constraint firstItem="Wks-G1-gd6" firstAttribute="leading" secondItem="AoP-HF-M0W" secondAttribute="leading" id="Kb2-xc-OOc"/>
+                            <constraint firstItem="L10-KO-c7Z" firstAttribute="leading" secondItem="yau-Pf-bXX" secondAttribute="leading" id="RqC-tB-EZh"/>
+                            <constraint firstItem="Wks-G1-gd6" firstAttribute="top" secondItem="L10-KO-c7Z" secondAttribute="bottom" id="bLM-2W-mTq"/>
+                            <constraint firstAttribute="bottom" secondItem="Wks-G1-gd6" secondAttribute="bottom" id="bpI-i1-nYt"/>
+                            <constraint firstItem="Wks-G1-gd6" firstAttribute="centerX" secondItem="yau-Pf-bXX" secondAttribute="centerX" id="jLZ-sR-ylW"/>
+                            <constraint firstItem="L10-KO-c7Z" firstAttribute="top" secondItem="yau-Pf-bXX" secondAttribute="top" constant="50" id="mGb-GM-soN"/>
+                            <constraint firstItem="L10-KO-c7Z" firstAttribute="centerX" secondItem="yau-Pf-bXX" secondAttribute="centerX" id="r7d-Uo-6d7"/>
+                            <constraint firstAttribute="trailing" secondItem="L10-KO-c7Z" secondAttribute="trailing" id="xQq-T1-ZZl"/>
+                        </constraints>
                     </view>
                     <connections>
                         <outlet property="tableView" destination="Wks-G1-gd6" id="gi7-Iq-BZh"/>
@@ -190,58 +206,23 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vSt-5k-iMR">
-                                <rect key="frame" x="165" y="110" width="96" height="21"/>
+                                <rect key="frame" x="135" y="125" width="96" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QLv-tc-8sh">
-                                <rect key="frame" x="165" y="139" width="217" height="61"/>
+                                <rect key="frame" x="149" y="162" width="217" height="61"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5mS-gB-b4G">
-                                <rect key="frame" x="269" y="110" width="114" height="21"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <navigationBar contentMode="scaleToFill" fixedFrame="YES" shadowImage="Line 7" translatesAutoresizingMaskIntoConstraints="NO" id="wnX-Wa-4Tu">
-                                <rect key="frame" x="-9" y="27" width="381" height="44"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                                <color key="barTintColor" systemColor="systemBackgroundColor"/>
-                                <items>
-                                    <navigationItem id="PIK-q6-Go7">
-                                        <leftBarButtonItems>
-                                            <barButtonItem id="lra-bR-sVO"/>
-                                            <barButtonItem image="＜" id="LXV-17-Swn"/>
-                                        </leftBarButtonItems>
-                                        <rightBarButtonItems>
-                                            <barButtonItem id="paZ-Ji-XhW"/>
-                                            <barButtonItem image="+" id="6ox-cf-Y6P"/>
-                                        </rightBarButtonItems>
-                                    </navigationItem>
-                                </items>
-                            </navigationBar>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="icon" translatesAutoresizingMaskIntoConstraints="NO" id="Vus-T9-3R0">
-                                <rect key="frame" x="41" y="106" width="85" height="89"/>
+                                <rect key="frame" x="16" y="125" width="85" height="89"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xbn-HL-cYy">
-                                <rect key="frame" x="269" y="157" width="64" height="43"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="plain" title="編集">
-                                    <fontDescription key="titleFontDescription" name="NotoSansJP-Regular" family="Noto Sans JP" pointSize="20"/>
-                                </buttonConfiguration>
-                                <connections>
-                                    <segue destination="orN-Cm-28e" kind="presentation" id="A59-wW-UxL"/>
-                                </connections>
-                            </button>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="JMz-Lr-HOG">
                                 <rect key="frame" x="1" y="262" width="389" height="582"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -277,12 +258,42 @@
                                     </collectionViewCell>
                                 </cells>
                             </collectionView>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xbn-HL-cYy">
+                                <rect key="frame" x="288" y="201" width="64" height="43"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" title="編集">
+                                    <fontDescription key="titleFontDescription" name="NotoSansJP-Regular" family="Noto Sans JP" pointSize="20"/>
+                                </buttonConfiguration>
+                                <connections>
+                                    <segue destination="orN-Cm-28e" kind="presentation" id="A59-wW-UxL"/>
+                                </connections>
+                            </button>
+                            <navigationBar contentMode="scaleToFill" shadowImage="Line 7" translatesAutoresizingMaskIntoConstraints="NO" id="b6w-9j-QnR">
+                                <rect key="frame" x="0.0" y="50" width="390" height="44"/>
+                                <color key="barTintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <items>
+                                    <navigationItem title="プロフィール" id="lbZ-6O-cME"/>
+                                </items>
+                            </navigationBar>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5mS-gB-b4G">
+                                <rect key="frame" x="260" y="125" width="114" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="ubk-2d-0Bz"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="b6w-9j-QnR" firstAttribute="top" secondItem="qgF-kC-pZv" secondAttribute="top" constant="50" id="GP1-8H-dX9"/>
+                            <constraint firstItem="b6w-9j-QnR" firstAttribute="centerX" secondItem="qgF-kC-pZv" secondAttribute="centerX" id="cki-9o-MeG"/>
+                            <constraint firstAttribute="trailing" secondItem="b6w-9j-QnR" secondAttribute="trailing" id="p7c-Jg-qYf"/>
+                            <constraint firstItem="b6w-9j-QnR" firstAttribute="leading" secondItem="qgF-kC-pZv" secondAttribute="leading" id="yL2-cD-lOv"/>
+                        </constraints>
                     </view>
                     <toolbarItems/>
-                    <navigationItem key="navigationItem" id="rxg-U4-lrZ"/>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="iconImageView" destination="Vus-T9-3R0" id="buy-DN-o2H"/>
@@ -310,19 +321,22 @@
                                     <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="名前" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="l3Q-DO-mJS">
                                         <rect key="frame" x="127" y="295" width="244" height="34"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <fontDescription key="fontDescription" name="NotoSansJP-Regular" family="Noto Sans JP" pointSize="15"/>
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
                                     <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="ユーザーID" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="od7-7F-Knw">
                                         <rect key="frame" x="126" y="352" width="244" height="34"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <fontDescription key="fontDescription" name="NotoSansJP-Regular" family="Noto Sans JP" pointSize="15"/>
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="名前" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tAi-zv-gpa">
-                                        <rect key="frame" x="31" y="295" width="42" height="34"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <fontDescription key="fontDescription" name="NotoSansJP-Regular" family="Noto Sans JP" pointSize="17"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="名前" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tAi-zv-gpa">
+                                        <rect key="frame" x="20" y="295" width="75" height="35"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="35" id="D0P-hW-Xal"/>
+                                            <constraint firstAttribute="width" constant="75" id="lAb-Nb-H3X"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" name="NotoSansJP-Regular" family="Noto Sans JP" pointSize="15"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
@@ -331,20 +345,26 @@
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                         <color key="textColor" systemColor="labelColor"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <fontDescription key="fontDescription" name="NotoSansJP-Regular" family="Noto Sans JP" pointSize="15"/>
                                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                     </textView>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="ユーザー名" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Vpj-hx-hF9">
-                                        <rect key="frame" x="31" y="352" width="87" height="34"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <fontDescription key="fontDescription" name="NotoSansJP-Regular" family="Noto Sans JP" pointSize="17"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="ユーザー名" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Vpj-hx-hF9">
+                                        <rect key="frame" x="20" y="352" width="75" height="35"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="35" id="NNx-dd-IMe"/>
+                                            <constraint firstAttribute="width" constant="75" id="ffT-df-PSq"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" name="NotoSansJP-Regular" family="Noto Sans JP" pointSize="15"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="自己紹介" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e5I-Hx-wKq">
-                                        <rect key="frame" x="31" y="405" width="87" height="34"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <fontDescription key="fontDescription" name="NotoSansJP-Regular" family="Noto Sans JP" pointSize="17"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="自己紹介" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e5I-Hx-wKq">
+                                        <rect key="frame" x="20" y="409" width="75" height="35"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="35" id="ffK-nj-F1w"/>
+                                            <constraint firstAttribute="width" constant="75" id="uU7-W2-RLq"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" name="NotoSansJP-Regular" family="Noto Sans JP" pointSize="15"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
@@ -364,23 +384,44 @@
                                         </connections>
                                     </button>
                                 </subviews>
+                                <constraints>
+                                    <constraint firstItem="e5I-Hx-wKq" firstAttribute="top" secondItem="Vpj-hx-hF9" secondAttribute="bottom" constant="22" id="1QZ-Kc-Uc5"/>
+                                    <constraint firstItem="Vpj-hx-hF9" firstAttribute="leading" secondItem="Dr3-qL-qtm" secondAttribute="leading" constant="20" id="Eiy-dS-fh7"/>
+                                    <constraint firstItem="Vpj-hx-hF9" firstAttribute="top" secondItem="tAi-zv-gpa" secondAttribute="bottom" constant="22" id="IeA-fY-nSS"/>
+                                    <constraint firstItem="tAi-zv-gpa" firstAttribute="top" secondItem="Dr3-qL-qtm" secondAttribute="top" constant="295" id="PPJ-yL-xKr"/>
+                                    <constraint firstItem="tAi-zv-gpa" firstAttribute="leading" secondItem="Dr3-qL-qtm" secondAttribute="leading" constant="20" id="kV8-3u-pqQ"/>
+                                    <constraint firstItem="e5I-Hx-wKq" firstAttribute="leading" secondItem="Dr3-qL-qtm" secondAttribute="leading" constant="20" id="peM-X7-uBG"/>
+                                </constraints>
                                 <viewLayoutGuide key="contentLayoutGuide" id="rT4-Y7-XmN"/>
                                 <viewLayoutGuide key="frameLayoutGuide" id="Dr3-qL-qtm"/>
                             </scrollView>
-                            <navigationBar contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1C8-GB-cSL">
-                                <rect key="frame" x="-7" y="47" width="395" height="44"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            <navigationBar contentMode="scaleToFill" shadowImage="Line 7" translatesAutoresizingMaskIntoConstraints="NO" id="1C8-GB-cSL">
+                                <rect key="frame" x="0.0" y="47" width="390" height="44"/>
                                 <color key="barTintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <items>
                                     <navigationItem title="プロフィールを編集" id="25F-l8-II1">
-                                        <barButtonItem key="leftBarButtonItem" title="キャンセル" id="UEP-Ex-GEN"/>
-                                        <barButtonItem key="rightBarButtonItem" title="保存" id="5nc-Lu-RXY"/>
+                                        <barButtonItem key="leftBarButtonItem" title="キャンセル" id="UEP-Ex-GEN">
+                                            <connections>
+                                                <action selector="cancelButtonTapped" destination="orN-Cm-28e" id="s7H-gY-hbO"/>
+                                            </connections>
+                                        </barButtonItem>
+                                        <barButtonItem key="rightBarButtonItem" title="保存" id="5nc-Lu-RXY">
+                                            <connections>
+                                                <action selector="saveProfile" destination="orN-Cm-28e" id="GlC-aE-8eK"/>
+                                            </connections>
+                                        </barButtonItem>
                                     </navigationItem>
                                 </items>
                             </navigationBar>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="r8V-Ad-1hp"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="1C8-GB-cSL" firstAttribute="centerX" secondItem="pfp-S4-bwy" secondAttribute="centerX" id="Dms-De-M1C"/>
+                            <constraint firstItem="1C8-GB-cSL" firstAttribute="top" secondItem="r8V-Ad-1hp" secondAttribute="top" id="T7R-lc-N0c"/>
+                            <constraint firstItem="1C8-GB-cSL" firstAttribute="leading" secondItem="pfp-S4-bwy" secondAttribute="leading" id="e7g-Vg-UC1"/>
+                            <constraint firstAttribute="trailing" secondItem="1C8-GB-cSL" secondAttribute="trailing" id="fTa-WB-VDY"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="hkv-UW-n9K">
                         <barButtonItem key="rightBarButtonItem" title="完了" id="TNC-uL-2YA"/>
@@ -416,9 +457,8 @@
                                     <action selector="mainButtonTapped:" destination="ca9-HA-YDp" eventType="touchUpInside" id="eZp-nE-k5t"/>
                                 </connections>
                             </button>
-                            <navigationBar contentMode="scaleToFill" fixedFrame="YES" shadowImage="Line 7" translatesAutoresizingMaskIntoConstraints="NO" id="Ugs-Pt-Svw">
-                                <rect key="frame" x="-16" y="44" width="386" height="44"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            <navigationBar contentMode="scaleToFill" shadowImage="Line 7" translatesAutoresizingMaskIntoConstraints="NO" id="Ugs-Pt-Svw">
+                                <rect key="frame" x="0.0" y="50" width="390" height="44"/>
                                 <color key="barTintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <items>
                                     <navigationItem title="記録" id="nxI-tR-8fn"/>
@@ -448,13 +488,19 @@
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </view>
                             <datePicker contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="countDownTimer" minuteInterval="1" useCurrentDate="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1Dy-VQ-SLN">
-                                <rect key="frame" x="-2" y="562" width="394" height="59"/>
+                                <rect key="frame" x="-4" y="562" width="395" height="59"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                 <locale key="locale" localeIdentifier="ja_JP"/>
                             </datePicker>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="lNl-Vh-6UJ"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="Ugs-Pt-Svw" firstAttribute="top" secondItem="7No-F0-GrT" secondAttribute="top" constant="50" id="5jL-pp-x1M"/>
+                            <constraint firstItem="Ugs-Pt-Svw" firstAttribute="centerX" secondItem="7No-F0-GrT" secondAttribute="centerX" id="X0N-YM-b3B"/>
+                            <constraint firstItem="Ugs-Pt-Svw" firstAttribute="leading" secondItem="7No-F0-GrT" secondAttribute="leading" id="bDN-fS-4JP"/>
+                            <constraint firstAttribute="trailing" secondItem="Ugs-Pt-Svw" secondAttribute="trailing" id="czl-FX-CsP"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="xUq-ub-aVr">
                         <barButtonItem key="leftBarButtonItem" title="＜Back" id="6T8-LU-nIK">
@@ -506,7 +552,7 @@
                                 <viewLayoutGuide key="frameLayoutGuide" id="gfO-Ci-Wi4"/>
                             </scrollView>
                             <navigationBar contentMode="scaleToFill" fixedFrame="YES" shadowImage="Line 7" translatesAutoresizingMaskIntoConstraints="NO" id="0UH-ey-V9F">
-                                <rect key="frame" x="-16" y="39" width="394" height="44"/>
+                                <rect key="frame" x="-18" y="39" width="395" height="44"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                 <color key="barTintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <items>
@@ -720,7 +766,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="+" width="13.666666984558105" height="15"/>
         <image name="Component 2" width="72" height="72"/>
         <image name="Line 7" width="390" height="3"/>
         <image name="Rectangle 14" width="350" height="204"/>
@@ -734,7 +779,6 @@
         <image name="trophy.fill" catalog="system" width="128" height="128"/>
         <image name="リセット" width="60" height="60"/>
         <image name="一時停止" width="60" height="60"/>
-        <image name="＜" width="16" height="16"/>
         <systemColor name="labelColor">
             <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>

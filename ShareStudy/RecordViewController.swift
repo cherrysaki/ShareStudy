@@ -372,8 +372,10 @@ class RecordViewController: UIViewController, AVCapturePhotoCaptureDelegate {
     
     
     func post(user: User, imageUrlString: String) {
-        let newDocumentRef = Firestore.firestore().collection("user/\(user.uid)/study").addDocument(data: [
+        var newDocumentRef: DocumentReference? = nil
+        newDocumentRef = Firestore.firestore().collection("user/\(user.uid)/study").addDocument(data: [
             "date": FieldValue.serverTimestamp(),
+            "userUid": user.uid,
             "studyTime": studyTime,
             "extTime": extTime,
             "image": imageUrlString,
@@ -387,12 +389,13 @@ class RecordViewController: UIViewController, AVCapturePhotoCaptureDelegate {
                 dialog.addAction(UIAlertAction(title: "OK", style: .default))
                 self.present(dialog, animated: true, completion: nil)
             } else {
-                print("投稿成功。ドキュメントID: \(newDocumentRef.documentID)")
-                self.documentID = newDocumentRef.documentID
+                print("投稿成功。ドキュメントID: \(newDocumentRef!.documentID)")
+                self.documentID = newDocumentRef!.documentID
             }
             return
         }
     }
+
     
     func repost(documentID: String) {
         if let user = Auth.auth().currentUser {
@@ -400,7 +403,7 @@ class RecordViewController: UIViewController, AVCapturePhotoCaptureDelegate {
                 "extTime": extTime,
                 "onGoing": onGoing,
                 "isFinished": isFinished
-            ]) { error in
+            ], merge: true) { error in
                 if let error = error {
                     // 失敗した場合
                     print("投稿失敗: " + error.localizedDescription)

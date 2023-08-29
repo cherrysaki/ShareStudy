@@ -25,7 +25,7 @@ class EditProfileViewController: UIViewController,UITextFieldDelegate,UITextView
     
     let db = Firestore.firestore()
     let imagePicker = UIImagePickerController()
-    let placeholder = "自己紹介"
+    let placeholder = "自己紹介を記入しよう"
     let maxCharacterCount = 100 // 制限する文字数
     
     override func viewDidLoad() {
@@ -40,7 +40,7 @@ class EditProfileViewController: UIViewController,UITextFieldDelegate,UITextView
         scrollView.delegate = self
         
         
-        fetchMyProfile()
+        displayMyProfile()
         
         setupTextFieldUI(userNameTextField)
         setupTextFieldUI(userIdTextField)
@@ -92,16 +92,16 @@ class EditProfileViewController: UIViewController,UITextFieldDelegate,UITextView
         let keyboardFrame = (info[UIResponder.keyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
         
         // bottom of textField
-        let bottomTextField = userIdTextField.frame.origin.y + userIdTextField.frame.height
+        let bottomTextField = introTextView.frame.origin.y + introTextView.frame.height
         // top of keyboard
         let topKeyboard = screenHeight - keyboardFrame.size.height
         // 重なり
         let distance = topKeyboard - bottomTextField
         print(distance)
         
-        if distance >= 0 {
+        if distance <= 0 {
             // scrollViewのコンテツを上へオフセット + (追加のオフセット)
-            scrollView.contentOffset.y = distance + 3.0
+            scrollView.contentOffset.y = distance + 70.0
         }
     }
     
@@ -146,7 +146,13 @@ class EditProfileViewController: UIViewController,UITextFieldDelegate,UITextView
         }
     }
     
+    @IBAction func saveProfile(){
+        save()
+    }
     
+    @IBAction func cancelButtonTapped(){
+        dismiss(animated: true)
+    }
     
     //写真選択まわり
     @IBAction func iconEditButtonTapped(_ sender: UIButton){
@@ -169,52 +175,81 @@ class EditProfileViewController: UIViewController,UITextFieldDelegate,UITextView
     }
     
     
-    //まずは既存のデータを取ってくる
-    func fetchMyProfile(){
+    func displayMyProfile() {
         let loadingView = createLoadingView()
-        UIApplication.shared.windows.filter{$0.isKeyWindow}.first?.addSubview(loadingView)
+        UIApplication.shared.windows.filter { $0.isKeyWindow }.first?.addSubview(loadingView)
         
-        // ログインしているユーザーのUIDを取得
-        if let currentUserID = Auth.auth().currentUser?.uid {
-            // ユーザーのドキュメント参照を作成
-            let userDocRef = db.collection("user").document(currentUserID).collection("profile")
-            
-            // ユーザーのデータを取得
-            userDocRef.getDocuments { (querySnapshot, error) in
-                if let error = error {
-                    print("データ取得エラー: \(error.localizedDescription)")
-                    return
+        guard let currentUserID = Auth.auth().currentUser?.uid else {
+            return
+        }
+        
+        fetchProfileData(for: currentUserID) { [weak self] profileData in
+            DispatchQueue.main.async {
+                if let profileData = profileData {
+                    self?.updateUI(with: profileData)
                 }
-                
-                if let documents = querySnapshot?.documents{
-                    for document in documents {
-                        let data = document.data()
-                        if let userName = data["userName"] as? String,
-                           let userId = data["userID"] as? String,
-                           let introduction = data["selfIntroduction"] as?String,
-                           let iconImageURL = URL(string: data["profileImageName"] as! String){
-                            print("名前: \(userName)")
-                            print("id: \(userId)")
-                            
-                            self.userNameTextField.text = userName
-                            self.userIdTextField.text = userId
-                            self.introTextView.text = introduction
-                            let iconData = NSData(contentsOf: iconImageURL)
-                            let iconImage = UIImage(data: iconData! as Data)!
-                            self.iconImageView.image = iconImage
-                            
-                            loadingView.removeFromSuperview()
-                            
-                        }
+                loadingView.removeFromSuperview()
+            }
+        }
+    }
+
+    func fetchProfileData(for userID: String, completion: @escaping ([String: Any]?) -> Void) {
+        let userDocRef = db.collection("user").document(userID).collection("profile")
+        
+        userDocRef.getDocuments { (querySnapshot, error) in
+            if let error = error {
+                print("データ取得エラー: \(error.localizedDescription)")
+                completion(nil)
+                return
+            }
+            
+            if let documents = querySnapshot?.documents {
+                for document in documents {
+                    let data = document.data()
+                    if let userName = data["userName"] as? String,
+                        let userId = data["userID"] as? String,
+                        let introduction = data["selfIntroduction"] as? String,
+                        let iconImageURL = URL(string: data["profileImageName"] as! String) {
+                        
+                        let profileData: [String: Any] = [
+                            "userName": userName,
+                            "userId": userId,
+                            "introduction": introduction,
+                            "iconImageURL": iconImageURL
+                        ]
+                        completion(profileData)
+                        return
                     }
+                }
+            }
+            completion(nil)
+        }
+    }
+
+    func updateUI(with profileData: [String: Any]) {
+        userNameTextField.text = profileData["userName"] as? String
+        userIdTextField.text = profileData["userId"] as? String
+        introTextView.text = profileData["introduction"] as? String
+        
+        if let iconImageURL = profileData["iconImageURL"] as? URL {
+            downloadIconImage(from: iconImageURL) { [weak self] iconImage in
+                DispatchQueue.main.async {
+                    self?.iconImageView.image = iconImage
                 }
             }
         }
     }
-    
-    
-    
-    
+
+    func downloadIconImage(from url: URL, completion: @escaping (UIImage?) -> Void) {
+        DispatchQueue.global().async {
+            if let iconData = try? Data(contentsOf: url),
+                let iconImage = UIImage(data: iconData) {
+                completion(iconImage)
+            } else {
+                completion(nil)
+            }
+        }
+    }
     
     
     //保存

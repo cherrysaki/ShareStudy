@@ -9,6 +9,7 @@ import UIKit
 import Firebase
 
 struct StudyPost{
+    let uid: String
     let postTime: Date
     let studyTime: String
     let studyImage: String
@@ -28,7 +29,7 @@ class HomeViewController: UIViewController,UITableViewDelegate, UITableViewDataS
     var data: Dictionary<String, Any> = [:]
     
     let db = Firestore.firestore()
-
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,8 +42,9 @@ class HomeViewController: UIViewController,UITableViewDelegate, UITableViewDataS
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        tableView.reloadData()
+//        fetchMyProfile()
         fetchAllUsersData()
+        tableView.reloadData()
         
     }
     
@@ -55,97 +57,112 @@ class HomeViewController: UIViewController,UITableViewDelegate, UITableViewDataS
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "postCell", for: indexPath) as! HomeTableViewCell
         let post = postArray[indexPath.row]
+        let profile = profilesArray[indexPath.row]
         
         // セルにデータを表示
         cell.studyTimeLabel.text = post.studyTime
-        // isFinishedやonGoingに応じてセルの表示を設定
+        cell.nameLabel.text = profile.userName
+        cell.userIdLabel.text = profile.userID
         
+        let formattedTime = self.formatPostTime(post.postTime)
+        cell.postTimeLabel.text = formattedTime
         
+        //画像の表示
+        let postImageURLString = post.studyImage
+        let profileImageURLString = profile.profileImage
         
-        // プロフィール情報の表示
-//        if let profile = profilesArray.first(where: { $0.userID == post.userID }) {
-//            cell.nameLabel.text = profile.userName
-//            cell.userIdLabel.text = profile.userID
-//            // アイコン画像を非同期でダウンロードして表示
-//            // 画像をダウンロードして表示する
-//            downloadImage(from: profile.profileImage) { image in
-//                if let downloadedImage = image {
-//                    // ダウンロードした画像を使って何か処理を行う（ここではUIImageViewに設定）
-//                    cell.iconImageView.image = downloadedImage
-//                } else {
-//                    // ダウンロードに失敗した場合の処理
-//                    print("画像のダウンロードに失敗しました")
+        // 画像のダウンロード
+        downloadImage(from: postImageURLString) { image in
+            self.setImage(image, for: cell.studyImageView)
+        }
+        
+        downloadImage(from: profileImageURLString) { image in
+            self.setImage(image, for: cell.iconImageView)
+        }
+        
+        return cell
+        
+    }
+    
+//    //    ①自分のプロフィールのデータを取ってくる
+//    func fetchMyProfile(){
+//        if let currentUserID = Auth.auth().currentUser?.uid {
+//            db.collection("user").document(currentUserID).collection("profile").getDocuments { (querySnapshot, error) in
+//                if let error = error {
+//                    print("データ取得エラー: \(error.localizedDescription)")
+//                    return
+//                }
+//                if let documents = querySnapshot?.documents {
+//                    for document in documents {
+//                        let data = document.data()
+//                        if let iconImageURL = data["profileImageName"] as? String
+//                        {
+//                            self.setupIconBarItem(iconImageURL: iconImageURL)
+//                        }
+//
+//                    }
 //                }
 //            }
-//
-            return cell
-        }
-        
-         // プロフィールデータを取ってくる
-        func fetchUserProfile(userID: String) {
-            db.collection("user").document(userID).collection("profile").getDocuments { (querySnapshot, error) in
-                if let error = error {
-                    print("データ取得エラー: \(error.localizedDescription)")
-                    return
-                }
-                if let documents = querySnapshot?.documents {
-                    for document in documents {
-                        let data = document.data()
-                        if let name = data["userName"] as? String,
-                           let userID = data["userID"] as? String,
-                           let iconImageURL = data["profileImageName"] as? String
-                        {
-                            let profile = Profile(userName: name, userID: userID, profileImage: iconImageURL)
-                            self.profilesArray.append(profile)
-                            // iconBarItemにアイコンをダウンロードする
-                        }
+//        }
+//    }
+    
+    // studyデータを取ってきて、posttimeによってsortする
+    func fetchUserStudy(userID: String) {
+        db.collection("user").document(userID).collection("study").getDocuments { (querySnapshot, error) in
+            if let error = error {
+                print("データ取得エラー: \(error.localizedDescription)")
+                return
+            }
+            if let documents = querySnapshot?.documents {
+                for document in documents {
+                    let data = document.data()
+                    if let uid = data["userUid"] as? String,
+                       let studyTime = data["studyTime"] as? String,
+                       let studyImageURL = data["image"] as? String,
+                       let isFinished = data["isFinished"] as? Bool,
+                       let onGoing = data["onGoing"] as? Bool,
+                       let postTime = data["date"] as? Timestamp
+                    {
+                        let postDates: Date = postTime.dateValue()
+                        let post = StudyPost(uid: uid, postTime: postDates, studyTime: studyTime, studyImage: studyImageURL, isFinished: isFinished, onGoing: onGoing)
+                        self.postArray.append(post)
                     }
                 }
             }
         }
-        
-        // 投稿を取ってくる
-        func fetchUserStudy(userID: String) {
-            db.collection("user").document(userID).collection("study").getDocuments { (querySnapshot, error) in
-                if let error = error {
-                    print("データ取得エラー: \(error.localizedDescription)")
-                    return
-                }
-                if let documents = querySnapshot?.documents {
-                    for document in documents {
-                        let data = document.data()
-                        if let studyTime = data["studyTime"] as? String,
-                           let studyImageURL = data["image"] as? String,
-                           let isFinished = data["isFinished"] as? Bool,
-                           let onGoing = data["onGoing"] as? Bool,
-                           let postTime = data["date"] as? Timestamp
-                        {
-//                            let formattedTime = self.formatPostTime(postTime)これはcellに表示するときに変換する
-                            let postDates: Date = postTime.dateValue()
-                            let post = StudyPost(postTime: postDates, studyTime: studyTime, studyImage: studyImageURL, isFinished: isFinished, onGoing: onGoing)
-                            self.postArray.append(post)
-                        }
+    }
+    
+    // プロフィールデータを取ってくる
+    func fetchUserProfile(userID: String) {
+        db.collection("user").document(userID).collection("profile").getDocuments { (querySnapshot, error) in
+            if let error = error {
+                print("データ取得エラー: \(error.localizedDescription)")
+                return
+            }
+            if let documents = querySnapshot?.documents {
+                for document in documents {
+                    let data = document.data()
+                    if let name = data["userName"] as? String,
+                       let userID = data["userID"] as? String,
+                       let iconImageURL = data["profileImageName"] as? String
+                    {
+                        let profile = Profile(userName: name, userID: userID, profileImage: iconImageURL)
+                        self.profilesArray.append(profile)
                     }
                 }
-                // TableViewをリロード
-                self.tableView.reloadData()
             }
         }
-        
-        
-        //  firebaseのfriendコレクションから友達のユーザーIDを取得して、実際にデータをとる
+    }
+    
+    //  firebaseのfriendコレクションから友達のユーザーIDを取得して、実際にデータをとる
     func fetchAllUsersData() {
         guard let currentUserID = Auth.auth().currentUser?.uid else {
             return
         }
-
-        let group = DispatchGroup() // DispatchGroupを作成
-
-        // 自分のデータを取得して表示
-        fetchUserProfile(userID: currentUserID)
+        // 自分のデータを取得
         fetchUserStudy(userID: currentUserID)
         
-
+        //友達のデータを取得
         db.collection("user").document(currentUserID).collection("friends").getDocuments { (querySnapshot, error) in
             if let error = error {
                 print("データ取得エラー: \(error.localizedDescription)")
@@ -153,81 +170,86 @@ class HomeViewController: UIViewController,UITableViewDelegate, UITableViewDataS
             }
             if let documents = querySnapshot?.documents {
                 let friendUserIDs = documents.compactMap { $0.documentID }
-                
-                group.enter() // グループに非同期処理が開始されたことを通知
                 for friendUserID in friendUserIDs {
-                    self.fetchUserProfile(userID: friendUserID)
                     self.fetchUserStudy(userID: friendUserID)
                 }
-                group.leave() // 非同期処理が完了したことを通知
             }
         }
-
-        // すべての非同期処理が完了するまで待つ
-        group.notify(queue: .main) {
-            // すべてのデータ取得が完了したのでUIを更新する
-            self.tableView.reloadData()
+        // すべてのデータ取得が完了したのでsortを行う
+        self.sortPostArray()
+        
+        //sortが行われた後、postArray.uidを使ってfetchUserProfileを行う
+        for post in postArray {
+            fetchUserProfile(userID: post.uid)
         }
+        //全てのデータが揃ったらtableViewを更新する
+        self.tableView.reloadData()
     }
     
-  
+    
     // 投稿データをソートする関数
     func sortPostArray() {
         postArray.sort { (post1, post2) -> Bool in
             return post1.postTime < post2.postTime
         }
     }
-
     
-//    // プロフィールデータをソートする関数
-//    func sortProfilesArray() {
-//        var sortedProfilesArray: [Profile] = []
-//        for post in postArray {
-//            if let profile = profilesArray.first(where: { $0.userID == post.userID }) {
-//                sortedProfilesArray.append(profile)
-//            }
-//        }
-//        profilesArray = sortedProfilesArray
-//    }
-
-        
-        //dateをstringに変える関数
-        func formatPostTime(_ postDates: Date) -> String {
-            let dateFormatter = DateFormatter()
-            dateFormatter.locale = Locale(identifier: "ja_JP")
-            dateFormatter.dateFormat = "yyyy/MM/dd HH:mm" // 日付と時刻のフォーマットを指定
-            return dateFormatter.string(from: postDates)
+    
+    
+    //dateをstringに変える関数
+    func formatPostTime(_ postDates: Date) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "ja_JP")
+        dateFormatter.dateFormat = "yyyy/MM/dd HH:mm" // 日付と時刻のフォーマットを指定
+        return dateFormatter.string(from: postDates)
+    }
+    
+    // 画像を非同期でダウンロードする関数
+    func downloadImage(from urlString: String, completion: @escaping (UIImage?) -> Void) {
+        guard let url = URL(string: urlString) else {
+            completion(nil)
+            return
         }
         
-        // 画像を非同期でダウンロードする関数
-        func downloadImage(from urlString: String, completion: @escaping (UIImage?) -> Void) {
-            guard let url = URL(string: urlString) else {
+        URLSession.shared.dataTask(with: url) { data, _, error in
+            if let error = error {
+                print("画像ダウンロードエラー: \(error.localizedDescription)")
                 completion(nil)
                 return
             }
             
-            URLSession.shared.dataTask(with: url) { data, _, error in
-                if let error = error {
-                    print("画像ダウンロードエラー: \(error.localizedDescription)")
-                    completion(nil)
-                    return
-                }
-                
-                if let data = data, let image = UIImage(data: data) {
-                    completion(image)
-                } else {
-                    completion(nil)
-                }
-            }.resume()
-        }
-        
-        
-        
-        
-        
-        
-        
+            if let data = data, let image = UIImage(data: data) {
+                completion(image)
+            } else {
+                completion(nil)
+            }
+        }.resume()
     }
+    
+    // ダウンロードした画像をセルに設定する関数
+    func setImage(_ image: UIImage?, for imageView: UIImageView) {
+        DispatchQueue.main.async {
+            imageView.image = image
+        }
+    }
+    
+    func setupIconBarItem(iconImageURL: String){
+        downloadImage(from: iconImageURL) { image in
+            if let downloadedImage = image {
+                // 画像がダウンロードされたら、それを使ってBarItemに設定
+                self.iconBarItem.image = downloadedImage
+            } else {
+                self.iconBarItem.image = UIImage(named: "icon")
+                print("画像のダウンロードに失敗しました")
+            }
+        }
+    }
+    
+    
+}
+
+
+
 
 
 
