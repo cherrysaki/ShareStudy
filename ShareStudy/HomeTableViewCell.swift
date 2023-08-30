@@ -17,16 +17,41 @@ class HomeTableViewCell: UITableViewCell {
     @IBOutlet var userIdLabel: UILabel!
     @IBOutlet var postTimeLabel: UILabel!
     @IBOutlet var onGoingLabel: UILabel!
-    
+    @IBOutlet var backView: UIView!
     
 
     override func awakeFromNib() {
         super.awakeFromNib()
+       setupIcon()
+        setupPostImageView()
         
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
     }
+    
+    func setupPostImageView(){
+        studyImageView.frame = CGRect(x: 25, y: 67, width: 280, height: 340) // サイズを指定
+        studyImageView.contentMode = .scaleAspectFill
+        studyImageView.clipsToBounds = true
+    }
+    
+    func setupIcon(){
+        iconImageView.layer.cornerRadius = 30
+        iconImageView.contentMode = .scaleAspectFill
+        iconImageView.clipsToBounds = true
+    }
+    
+    func setupLine(){
+        backView.layer.borderWidth = 1.0 //枠線の太さを指定
+        backView.layer.borderColor = UIColor.lightGray.cgColor //枠線の色を指定
+    }
+    
+    func progressCheck(){
+        
+    }
+    
+    
     
 }

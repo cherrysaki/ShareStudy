@@ -29,7 +29,7 @@ class HomeViewController: UIViewController,UITableViewDelegate, UITableViewDataS
     
     let db = Firestore.firestore()
     let dispatchGroup = DispatchGroup()
-    
+    let newSize = CGSize(width: 30, height: 30)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,15 +38,14 @@ class HomeViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         tableView.dataSource = self
         tableView.register(UINib(nibName: "HomeTableViewCell", bundle: nil), forCellReuseIdentifier: "postCell")
         
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
          profilesArray = []
          postArray = []
         print("viewWillAppear")
+        fetchMyIcon()
         fetchAllUsersData()
-        print(postArray)
     }
     
     
@@ -66,11 +65,14 @@ class HomeViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         let profile = profilesArray[indexPath.row]
         
         // セルにデータを表示
-//        cell.studyTimeLabel.text = post.studyTime
         cell.nameLabel.text = profile.userName
         cell.userIdLabel.text = profile.userID
         let formattedTime = self.formatPostTime(post.postTime)
         cell.postTimeLabel.text = formattedTime
+        let studyTime = self.timerUIUpdate(time: post.studyTime)
+        cell.studyTimeLabel.text = studyTime
+        
+        //達成状況の表示
         
         //画像の表示
         let postImageURLString = post.studyImage
@@ -89,27 +91,7 @@ class HomeViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         
     }
     
-//    //    ①自分のプロフィールのデータを取ってくる
-//    func fetchMyProfile(){
-//        if let currentUserID = Auth.auth().currentUser?.uid {
-//            db.collection("user").document(currentUserID).collection("profile").getDocuments { (querySnapshot, error) in
-//                if let error = error {
-//                    print("データ取得エラー: \(error.localizedDescription)")
-//                    return
-//                }
-//                if let documents = querySnapshot?.documents {
-//                    for document in documents {
-//                        let data = document.data()
-//                        if let iconImageURL = data["profileImageName"] as? String
-//                        {
-//                            self.setupIconBarItem(iconImageURL: iconImageURL)
-//                        }
-//
-//                    }
-//                }
-//            }
-//        }
-//    }
+
     
     // studyデータを取ってきて、posttimeによってsortする
     func fetchUserStudy(userID: String) {
@@ -140,15 +122,13 @@ class HomeViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         }
     }
     
-    // プロフィールデータを取ってくる
-    func fetchUserProfile(userID: String) {
+    func fetchUserProfile(userID: String, completion: @escaping (Profile?) -> Void) {
         db.collection("user").document(userID).collection("profile").getDocuments { (querySnapshot, error) in
             if let error = error {
                 print("データ取得エラー: \(error.localizedDescription)")
-                self.dispatchGroup.leave()
+                completion(nil)
                 return
             }
-            print(querySnapshot)
             if let documents = querySnapshot?.documents {
                 for document in documents {
                     let data = document.data()
@@ -156,27 +136,49 @@ class HomeViewController: UIViewController,UITableViewDelegate, UITableViewDataS
                        let userID = data["userID"] as? String,
                        let iconImageURL = data["profileImageName"] as? String
                     {
-                        print(userID)
                         let profile = Profile(userName: name, userID: userID, profileImage: iconImageURL)
-                        self.profilesArray.append(profile)
-                        print(self.profilesArray)
+                        completion(profile)
+                    }
+                }
+            }
+            completion(nil)
+        }
+    }
+    
+    func fetchMyIcon(){
+        guard let currentUserID = Auth.auth().currentUser?.uid else {
+            return
+        }
+        db.collection("user").document(currentUserID).collection("profile").getDocuments { (querySnapshot, error) in
+            if let error = error {
+                print("データ取得エラー: \(error.localizedDescription)")
+                return
+            }
+            if let documents = querySnapshot?.documents {
+                for document in documents {
+                    let data = document.data()
+                    if let iconImageURL = data["profileImageName"] as? String
+                    {
+                        print(iconImageURL)
+                        self.setupIconBarItem(iconImageURL: iconImageURL, newSize: self.newSize)
+                        }
                     }
                 }
             }
         }
-    }
+    
     
     //  firebaseのfriendコレクションから友達のユーザーIDを取得して、実際にデータをとる
     func fetchAllUsersData() {
         guard let currentUserID = Auth.auth().currentUser?.uid else {
             return
         }
+        
         self.dispatchGroup.enter()
         // 自分のデータを取得
         fetchUserStudy(userID: currentUserID)
-        print("自分のデータを取った")
-        print("自分のデータ取得後",postArray)
-        //友達のデータを取得
+        
+        // 友達のデータを取得
         db.collection("user").document(currentUserID).collection("friends").getDocuments { (querySnapshot, error) in
             if let error = error {
                 print("データ取得エラー: \(error.localizedDescription)")
@@ -191,23 +193,33 @@ class HomeViewController: UIViewController,UITableViewDelegate, UITableViewDataS
                 self.dispatchGroup.leave()
             }
         }
+
         self.dispatchGroup.notify(queue: .main) {
-            print("友達取得後",self.postArray)
-            // すべてのデータ取得が完了したのでsortを行う
+            print("友達取得後", self.postArray)
             self.sortPostArray()
-            print("sort後",self.postArray)
-            //sortが行われた後、postArray.uidを使ってfetchUserProfileを行う
+            
+            // プロフィールデータを取得してprofilesArrayに追加
+            self.dispatchGroup.enter()
+            var completedProfileCount = 0
+            
             for post in self.postArray {
-                self.dispatchGroup.enter()
-                self.fetchUserProfile(userID: post.uid)
+                self.fetchUserProfile(userID: post.uid) { profile in
+                    if let profile = profile {
+                        self.profilesArray.append(profile)
+                    }
+                    
+                    completedProfileCount += 1
+                    if completedProfileCount == self.postArray.count {
+                        self.dispatchGroup.leave()
+                    }
+                }
             }
-            self.dispatchGroup.leave()
-            print(self.profilesArray)
-            //全てのデータが揃ったらtableViewを更新する
+            
+            // プロフィールデータの取得が完了したらtableViewを更新
             self.dispatchGroup.notify(queue: .main) {
+                print("全てのデータが揃いました")
                 self.tableView.reloadData()
             }
-           
         }
     }
     
@@ -225,9 +237,26 @@ class HomeViewController: UIViewController,UITableViewDelegate, UITableViewDataS
     func formatPostTime(_ postDates: Date) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.locale = Locale(identifier: "ja_JP")
-        dateFormatter.dateFormat = "yyyy/MM/dd HH:mm" // 日付と時刻のフォーマットを指定
+        dateFormatter.dateFormat = "MM/dd HH:mm" // 日付と時刻のフォーマットを指定
         return dateFormatter.string(from: postDates)
     }
+    
+    //studyTimeをstringに変える関数
+    func timerUIUpdate(time: Int) -> String {
+        let hours = Int(time / 3600)
+        let resthours = Int(time) % 3600
+        let minutes = Int(resthours / 60)
+        if hours > 0 {
+            return String(format: "%2d時間%2d分", hours, minutes)
+        } else {
+            return String(format: "%2d分", minutes)
+        }
+    }
+    
+    func progressCheck(){
+        
+    }
+    
     
     // 画像を非同期でダウンロードする関数
     func downloadImage(from urlString: String, completion: @escaping (UIImage?) -> Void) {
@@ -257,15 +286,25 @@ class HomeViewController: UIViewController,UITableViewDelegate, UITableViewDataS
             imageView.image = image
         }
     }
-    
-    func setupIconBarItem(iconImageURL: String){
-        downloadImage(from: iconImageURL) { image in
-            if let downloadedImage = image {
-                // 画像がダウンロードされたら、それを使ってBarItemに設定
-                self.iconBarItem.image = downloadedImage
-            } else {
-                self.iconBarItem.image = UIImage(named: "icon")
-                print("画像のダウンロードに失敗しました")
+    func setupIconBarItem(iconImageURL: String, newSize: CGSize) {
+        downloadImage(from: iconImageURL) { [weak self] image in
+            DispatchQueue.main.async {
+                if let originalImage = image {
+                    // 画像を指定されたサイズにリサイズ
+                    let resizedImage = originalImage.resize(to: newSize)
+                    
+                    // 画像を丸くクリップする
+                    if let clippedImage = resizedImage.circularImage() {
+                        // 画像の色空間を sRGB に変更して再設定
+                        let srgbImage = clippedImage.withRenderingMode(.alwaysOriginal)
+                        self?.iconBarItem.image = srgbImage
+                    }
+                    
+                    print("アイコンが設定されました")
+                } else {
+                    self?.iconBarItem.image = UIImage(named: "icon")
+                    print("画像のダウンロードに失敗しました")
+                }
             }
         }
     }
@@ -273,6 +312,33 @@ class HomeViewController: UIViewController,UITableViewDelegate, UITableViewDataS
     
 }
 
+extension UIImage {
+    func resize(to newSize: CGSize) -> UIImage {
+        UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0)
+        self.draw(in: CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height))
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()!
+        UIGraphicsEndImageContext()
+        return newImage
+    }
+}
+
+extension UIImage {
+    func circularImage() -> UIImage? {
+        UIGraphicsBeginImageContextWithOptions(size, false, scale)
+        defer { UIGraphicsEndImageContext() }
+        
+        guard let context = UIGraphicsGetCurrentContext() else {
+            return nil
+        }
+        
+        let path = UIBezierPath(ovalIn: CGRect(origin: .zero, size: size))
+        context.addPath(path.cgPath)
+        context.clip()
+        draw(in: CGRect(origin: .zero, size: size))
+        
+        return UIGraphicsGetImageFromCurrentImageContext()
+    }
+}
 
 
 

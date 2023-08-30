@@ -31,6 +31,7 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
     var searchResults: [Profile] = [] // 検索結果を格納するための配列
     var keyword: String = ""
     var uid: String = ""
+    var status: FriendRequestStatus = .none
     let db = Firestore.firestore()
     let imageCache = NSCache<NSString, UIImage>()
     let dispatchGroup = DispatchGroup()
@@ -129,7 +130,7 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
                     self?.tableView.reloadData()
                     if self?.searchResults.isEmpty ?? true {
                         print("一致するプロフィールが見つかりません")
-                        self?.createAlert()
+                        self?.createAlert(title: "検索結果なし", message: "一致するものがありませんでした")
                     }
                     completion(true)
                 }
@@ -174,34 +175,7 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
             }
         }
     
-//    // ユーザーIDを使ってFirestoreから該当するユーザーのuidを取得する関数
-//    func fetchUIDByUserID(userID: String, completion: @escaping (String?) -> Void) {
-//
-//        let usersRef = db.collection("user")
-//        // ユーザーIDで検索
-//        usersRef.whereField("userID", isEqualTo: userID).getDocuments { (snapshot, error) in
-//            if let error = error {
-//                print("Error fetching documents: \(error)")
-//                completion(nil)
-//                return
-//            }
-//
-//            if let doc = snapshot?.documents.first {
-//                // ユーザーのuidを取得して返す
-//                let uid = doc.documentID
-//                completion(uid)
-//            } else {
-//                // 該当するユーザーがいない場合
-//                print(snapshot?.documents.first)
-//                completion(nil)
-//            }
-//        }
-//    }
 
-
-    
-    
-    
     // 検索ボタンが押された時の処理
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         if let keyword = searchBar.text, !keyword.isEmpty {
@@ -249,6 +223,7 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
             ]) { error in
                 if let error = error {
                     print("waitfollower追加エラー: \(error.localizedDescription)")
+                    self.createAlert(title: "友達申請エラー", message: "不明なエラーが発生しました")
                 } else {
                     print("waitfollowerに追加されました")
                 }
@@ -263,15 +238,13 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
             ]) { error in
                 if let error = error {
                     print("watifollow追加エラー: \(error.localizedDescription)")
+                    self.createAlert(title: "友達申請エラー", message: "不明なエラーが発生しました")
                 } else {
                     print("watifollowに追加されました")
+                    self.createAlert(title: "友達申請成功", message: "承認を待ってください")
+                    self.status = .requestSent
                 }
             }
-//                } else {
-//                    print("ユーザーが見つかりませんでした")
-//
-//                }
-//            }
         }
     }
     
@@ -280,12 +253,6 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
         guard let currentUserID = Auth.auth().currentUser?.uid else {
             return
         }
-        
-//        fetchUIDByUserID(userID: profile.userID) { [weak self] uid in
-//            guard let self = self, let targetUserID = self.uid else {
-//                print("User not found")
-//                return
-//            }
         let targetUserID = self.uid
             
             if currentUserID == targetUserID {
@@ -293,6 +260,8 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
                 cell.setButtonState(.isFriend)
             } else {
                 self.checkFriendRequestStatus(currentUserID: currentUserID, targetUserID: targetUserID) { status in
+                    self.status = status
+                    
                     switch status {
                     case .requestSent:
                         cell.setButtonState(.requestSent)
@@ -304,9 +273,9 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
                     print(status)
                 }
             }
-//        }
     }
 
+    
 
     
     // 友達関係の状態を確認する関数
@@ -350,6 +319,13 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
         }
     }
     
+    
+    func createAlert(title: String, message: String){
+        // アラートを表示する
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        self.present(alertController, animated: true, completion: nil)
+    }
     func createAlert(){
         // アラートを表示する
         let alertController = UIAlertController(title: "検索結果なし", message: "一致するものが見つかりませんでした。", preferredStyle: .alert)
@@ -359,8 +335,6 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
     
     func setupTableView() {
         tableView.register(UINib(nibName: "SearchTableViewCell", bundle: nil), forCellReuseIdentifier: "profileCell")
-//        tableView.register(UINib(nibName: "NoResultTableViewCell", bundle: nil), forCellReuseIdentifier: "noResultCell")
-        
         tableView.dataSource = self
         tableView.delegate = self
     }

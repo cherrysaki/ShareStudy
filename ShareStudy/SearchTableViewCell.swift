@@ -25,7 +25,8 @@ class SearchTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        friendButton.isEnabled = false
+        friendButton.titleLabel?.font = UIFont(name: "Noto_Sans_JP", size: 17) 
+
         iconImageView.layer.cornerRadius = 30
         iconImageView.contentMode = .scaleAspectFill
         iconImageView.clipsToBounds = true

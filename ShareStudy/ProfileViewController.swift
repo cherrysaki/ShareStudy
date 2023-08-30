@@ -22,6 +22,8 @@ class ProfileViewController: UIViewController {
         iconImageView.layer.cornerRadius = iconImageView.frame.width / 2
         iconImageView.contentMode = .scaleAspectFill
         iconImageView.clipsToBounds = true
+        introLabel.contentMode = .top
+
     }
     
     override func viewWillAppear(_ animated: Bool) {
