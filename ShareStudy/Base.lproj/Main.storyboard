@@ -6,7 +6,6 @@
         <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
-        <capability name="collection view cell content view" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <customFonts key="customFonts">
@@ -232,7 +231,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon" translatesAutoresizingMaskIntoConstraints="NO" id="Vus-T9-3R0">
-                                <rect key="frame" x="25" y="124" width="90" height="90"/>
+                                <rect key="frame" x="26" y="124" width="90" height="90"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="90" id="6Vz-7N-b2h"/>
                                     <constraint firstAttribute="height" constant="90" id="rBB-ba-CKC"/>
@@ -248,30 +247,22 @@
                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
-                                <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="IEV-w0-O06">
-                                        <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="UTf-NU-hjJ">
-                                            <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
+                                <tableView key="backgroundView" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" id="kKb-Xx-0Oa">
+                                    <rect key="frame" x="0.0" y="0.0" width="389" height="582"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                    <prototypes>
+                                        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="y89-eC-W49">
+                                            <rect key="frame" x="0.0" y="50" width="389" height="43.666667938232422"/>
                                             <autoresizingMask key="autoresizingMask"/>
-                                        </collectionViewCellContentView>
-                                    </collectionViewCell>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="myStudyCell" id="q3f-ZH-LGJ">
-                                        <rect key="frame" x="261" y="0.0" width="128" height="128"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="DgB-Ly-N3Y">
-                                            <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="l9G-af-cyD">
-                                                    <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                </imageView>
-                                            </subviews>
-                                        </collectionViewCellContentView>
-                                    </collectionViewCell>
-                                </cells>
+                                            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="y89-eC-W49" id="exo-sW-Ne7">
+                                                <rect key="frame" x="0.0" y="0.0" width="389" height="43.666667938232422"/>
+                                                <autoresizingMask key="autoresizingMask"/>
+                                            </tableViewCellContentView>
+                                        </tableViewCell>
+                                    </prototypes>
+                                </tableView>
+                                <cells/>
                             </collectionView>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xbn-HL-cYy">
                                 <rect key="frame" x="46" y="222" width="49" height="24"/>
@@ -309,7 +300,7 @@
                         <constraints>
                             <constraint firstItem="Vus-T9-3R0" firstAttribute="top" secondItem="b6w-9j-QnR" secondAttribute="bottom" constant="30" id="4sK-62-f4g"/>
                             <constraint firstItem="b6w-9j-QnR" firstAttribute="top" secondItem="qgF-kC-pZv" secondAttribute="top" constant="50" id="GP1-8H-dX9"/>
-                            <constraint firstItem="Vus-T9-3R0" firstAttribute="leading" secondItem="ubk-2d-0Bz" secondAttribute="leading" constant="25" id="MwD-Jh-xrD"/>
+                            <constraint firstItem="Vus-T9-3R0" firstAttribute="leading" secondItem="ubk-2d-0Bz" secondAttribute="leading" constant="26" id="MwD-Jh-xrD"/>
                             <constraint firstItem="b6w-9j-QnR" firstAttribute="centerX" secondItem="qgF-kC-pZv" secondAttribute="centerX" id="cki-9o-MeG"/>
                             <constraint firstAttribute="trailing" secondItem="b6w-9j-QnR" secondAttribute="trailing" id="p7c-Jg-qYf"/>
                             <constraint firstItem="b6w-9j-QnR" firstAttribute="leading" secondItem="qgF-kC-pZv" secondAttribute="leading" id="yL2-cD-lOv"/>
@@ -320,6 +311,7 @@
                     <connections>
                         <outlet property="iconImageView" destination="Vus-T9-3R0" id="buy-DN-o2H"/>
                         <outlet property="introLabel" destination="QLv-tc-8sh" id="zRm-xo-YzE"/>
+                        <outlet property="tableView" destination="kKb-Xx-0Oa" id="YOd-oB-a3i"/>
                         <outlet property="userIdlabel" destination="5mS-gB-b4G" id="gFb-kQ-hnR"/>
                         <outlet property="userNameLabel" destination="vSt-5k-iMR" id="96X-pv-RIE"/>
                     </connections>

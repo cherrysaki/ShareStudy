@@ -22,7 +22,7 @@ class HomeTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-       setupIcon()
+        setupIcon()
         setupPostImageView()
         
     }

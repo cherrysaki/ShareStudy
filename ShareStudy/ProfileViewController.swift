@@ -8,46 +8,64 @@
 import UIKit
 import Firebase
 
-class ProfileViewController: UIViewController {
+class ProfileViewController: UIViewController,UITableViewDelegate,UITableViewDataSource {
+    
     
     @IBOutlet var userNameLabel:UILabel!
     @IBOutlet var userIdlabel: UILabel!
     @IBOutlet var introLabel: UILabel!
     @IBOutlet var iconImageView: UIImageView!
+    @IBOutlet var tableView: UITableView!
     
     let db = Firestore.firestore()
     
+    var postArray:[StudyPost]  = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        iconImageView.layer.cornerRadius = iconImageView.frame.width / 2
-        iconImageView.contentMode = .scaleAspectFill
-        iconImageView.clipsToBounds = true
-        introLabel.contentMode = .top
-
+        setupUI()
+        setupTableView()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         fetchMyProfile()
-        fetchMyStudy()
+        fetchMystudy()
         
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 500
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return postArray.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "postCell", for: indexPath) as! HomeTableViewCell
+        let post = postArray[indexPath.row]
+        
+        let formattedTime = self.formatPostTime(post.postTime)
+        cell.postTimeLabel.text = formattedTime
+        let studyTime = self.timerUIUpdate(time: post.studyTime)
+        cell.studyTimeLabel.text = studyTime
+        
+        let postImageURLString = post.studyImage
+        downloadImage(from: postImageURLString) { image in
+            self.setImage(image, for: cell.studyImageView)
+        }
+        
+        return cell
     }
     
     
     
     func fetchMyProfile(){
-//        let loadingView = createLoadingView()
-//        UIApplication.shared.windows.filter{$0.isKeyWindow}.first?.addSubview(loadingView)
-//
-        // ログインしているユーザーのUIDを取得
         if let currentUserID = Auth.auth().currentUser?.uid {
-            // ユーザーのドキュメント参照を作成
             let userDocRef = db.collection("user").document(currentUserID).collection("profile")
-            
-            // ユーザーのデータを取得
             userDocRef.getDocuments { (querySnapshot, error) in
-//                loadingView.removeFromSuperview() // まずローディングビューを非表示に
                 if let error = error {
-                    print("データ取得エラー: \(error.localizedDescription)")
+                    self.showAlert(message: "データ取得エラー: \(error.localizedDescription)")
                     return
                 }
                 
@@ -55,10 +73,9 @@ class ProfileViewController: UIViewController {
                     for document in documents {
                         let data = document.data()
                         if let userName = data["userName"] as? String{
-                           let userId = data["userID"] as? String
-                           let introduction = data["selfIntroduction"] as?String
+                            let userId = data["userID"] as? String
+                            let introduction = data["selfIntroduction"] as?String
                             print("名前: \(userName)")
-                            
                             self.userNameLabel.text = userName
                             self.userIdlabel.text = userId
                             self.introLabel.text = introduction
@@ -81,50 +98,98 @@ class ProfileViewController: UIViewController {
         }
     }
     
-        func fetchMyStudy(){
-            // ログインしているユーザーのUIDを取得
-            if let currentUserID = Auth.auth().currentUser?.uid {
-                // ユーザーのドキュメント参照を作成
-                let userDocRef = db.collection("user").document(currentUserID).collection("study")
-    
-                // ユーザーのデータを取得
-                userDocRef.getDocuments { (querySnapshot, error) in
-                    if let error = error {
-                        self.showAlert(message: "データ取得エラー: \(error.localizedDescription)")
-                                    return
-                                }
-    
-                    if let documents = querySnapshot?.documents{
-                        for document in documents {
-                            let data = document.data()
-                            if let userName = data["userName"] as? String,
-                               let userId = data["userID"] as? String,
-                               let introduction = data["selfIntroduction"] as?String,
-                               let iconImageURL = URL(string: data["profileImageName"] as! String){
-                                print("名前: \(userName)")
-                                print("id: \(userId)")
-    
-                                self.userNameLabel.text = userName
-                                self.userIdlabel.text = userId
-                                self.introLabel.text = introduction
-                                let iconData = NSData(contentsOf: iconImageURL)
-                                let iconImage = UIImage(data: iconData! as Data)!
-                                self.iconImageView.image = iconImage
-    
-    
-                            }
+    func fetchMystudy() {
+        if let currentUserID = Auth.auth().currentUser?.uid {
+            let userDocRef = db.collection("user").document(currentUserID).collection("study")
+            userDocRef.getDocuments { (querySnapshot, error) in
+                if let error = error {
+                    self.showAlert(message: "データ取得エラー: \(error.localizedDescription)")
+                    return
+                }
+                
+                if let documents = querySnapshot?.documents {
+                    var fetchedPosts = [StudyPost]() // 取得したデータを一時的に格納する配列
+                    
+                    for document in documents {
+                        let data = document.data()
+                        if let uid = data["userUid"] as? String,
+                           let studyTime = data["studyTime"] as? Int,
+                           let studyImageURL = data["image"] as? String,
+                           let isFinished = data["isFinished"] as? Bool,
+                           let onGoing = data["onGoing"] as? Bool,
+                           let postTime = data["date"] as? Timestamp
+                        {
+                            let postDates: Date = postTime.dateValue()
+                            let post = StudyPost(uid: uid, postTime: postDates, studyTime: Int(studyTime), studyImage: studyImageURL, isFinished: isFinished, onGoing: onGoing)
+                            fetchedPosts.append(post)
                         }
                     }
-                    }
+                    
+                    // データ取得が完了した後に配列を更新し、tableViewをリロードする
+                    self.postArray = fetchedPosts
+                    self.tableView.reloadData()
+                    
+                    print("今の", self.postArray)
                 }
-    
+            }
         }
+    }
+
+    //dateをstringに変える関数
+    func formatPostTime(_ postDates: Date) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "ja_JP")
+        dateFormatter.dateFormat = "MM/dd HH:mm" // 日付と時刻のフォーマットを指定
+        return dateFormatter.string(from: postDates)
+    }
+    
+    //studyTimeをstringに変える関数
+    func timerUIUpdate(time: Int) -> String {
+        let hours = Int(time / 3600)
+        let resthours = Int(time) % 3600
+        let minutes = Int(resthours / 60)
+        if hours > 0 {
+            return String(format: "%2d時間%2d分", hours, minutes)
+        } else {
+            return String(format: "%2d分", minutes)
+        }
+    }
+    
+    
+    // 画像を非同期でダウンロードする関数
+    func downloadImage(from urlString: String, completion: @escaping (UIImage?) -> Void) {
+        guard let url = URL(string: urlString) else {
+            completion(nil)
+            return
+        }
+        
+        URLSession.shared.dataTask(with: url) { data, _, error in
+            if let error = error {
+                print("画像ダウンロードエラー: \(error.localizedDescription)")
+                completion(nil)
+                return
+            }
+            
+            if let data = data, let image = UIImage(data: data) {
+                completion(image)
+            } else {
+                completion(nil)
+            }
+        }.resume()
+    }
+    
+    // ダウンロードした画像をセルに設定する関数
+    func setImage(_ image: UIImage?, for imageView: UIImageView) {
+        DispatchQueue.main.async {
+            imageView.image = image
+        }
+    }
     
     func showAlert(message: String) {
-            let alert = UIAlertController(title: "エラー", message: message, preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-            self.present(alert, animated: true, completion: nil)
-        }
+        let alert = UIAlertController(title: "エラー", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+    }
     
     func showCreateStudyAlert() {
         let alert = UIAlertController(
@@ -141,6 +206,20 @@ class ProfileViewController: UIViewController {
         
         self.present(alert, animated: true, completion: nil)
     }
+    
+    func setupUI(){
+        iconImageView.layer.cornerRadius = iconImageView.frame.width / 2
+        iconImageView.contentMode = .scaleAspectFill
+        iconImageView.clipsToBounds = true
+        //        introLabel.contentMode = .top
+    }
+    
+    func setupTableView(){
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.register(UINib(nibName: "HomeTableViewCell", bundle: nil), forCellReuseIdentifier: "postCell")
+    }
+    
     
 }
 

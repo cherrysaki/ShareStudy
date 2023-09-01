@@ -49,15 +49,15 @@ class HomeViewController: UIViewController,UITableViewDelegate, UITableViewDataS
     }
     
     
-    // TableViewDataSourceのメソッド
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return postArray.count
-    }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
             return 500
         }
 
+    // TableViewDataSourceのメソッド
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return postArray.count
+    }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "postCell", for: indexPath) as! HomeTableViewCell
@@ -286,6 +286,7 @@ class HomeViewController: UIViewController,UITableViewDelegate, UITableViewDataS
             imageView.image = image
         }
     }
+    
     func setupIconBarItem(iconImageURL: String, newSize: CGSize) {
         downloadImage(from: iconImageURL) { [weak self] image in
             DispatchQueue.main.async {

@@ -254,7 +254,6 @@ class RecordViewController: UIViewController, AVCapturePhotoCaptureDelegate {
 
                         let scaledImage = self.resizeImage(trimmedImage, targetSize: cameraFrame.size)
 
-                        //グローバル変数にしてもいい？
                         let takedImageView = UIImageView(image: scaledImage)
                         takedImageView.contentMode = .scaleAspectFit
                         takedImageView.frame = self.cameraView.bounds
@@ -298,28 +297,33 @@ class RecordViewController: UIViewController, AVCapturePhotoCaptureDelegate {
     }
     
     
-    func save(){
+    func save() {
         // ユーザーがログインしているか確認する
         if let user = Auth.auth().currentUser {
+            let loadingView = createLoadingView()
+            UIApplication.shared.windows.filter { $0.isKeyWindow }.first?.addSubview(loadingView)
             let image = self.image.jpegData(compressionQuality: 0.01)!
             // データを保存
             DispatchQueue(label: "post data", qos: .default).async {
                 // 画像のアップロード
-                let ref = self.postImage(user: user,image: image)
+                let ref = self.postImage(user: user, image: image)
                 // ダウンロードURLの取得
                 let url = self.getDownloadUrl(storageRef: ref)
                 self.getData(self.Picker)
                 self.post(user: user, imageUrlString: url)
+                
+                // 非同期処理が完了した後にローディングビューを非表示にする
+                DispatchQueue.main.async {
+                    loadingView.removeFromSuperview()
+                    print("complete!")
+                }
             }
-            
-            print("complete!")
-            
-        }else {
+        } else {
             print("Error: ユーザーがログインしていません。")
             return
         }
-        
     }
+
     
     func postImage(user: User,image:Data) -> StorageReference {
         let semaphore = DispatchSemaphore(value: 0)
@@ -454,7 +458,28 @@ class RecordViewController: UIViewController, AVCapturePhotoCaptureDelegate {
         self.view.addSubview(timerLabel)
     }
     
-    
+    func createLoadingView() -> UIView {
+        //Loading View
+        let loadingView = UIView(frame: UIScreen.main.bounds)
+        loadingView.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)
+        
+        let activityIndicator = UIActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
+        activityIndicator.center = loadingView.center
+        activityIndicator.color = UIColor.white
+        activityIndicator.style = UIActivityIndicatorView.Style.large
+        activityIndicator.hidesWhenStopped = true
+        activityIndicator.startAnimating()
+        loadingView.addSubview(activityIndicator)
+        
+        let label = UILabel(frame: CGRect(x: 0, y: 0, width: 300, height: 30))
+        label.center = CGPoint(x: activityIndicator.frame.origin.x + activityIndicator.frame.size.width / 2, y: activityIndicator.frame.origin.y + 90)
+        label.textColor = UIColor.white
+        label.textAlignment = .center
+        label.text = "目標宣言送信中"
+        loadingView.addSubview(label)
+        
+        return loadingView
+    }
     
     
 }
