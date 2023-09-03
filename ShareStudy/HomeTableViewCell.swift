@@ -10,13 +10,13 @@ import UIKit
 class HomeTableViewCell: UITableViewCell {
     
     @IBOutlet var iconImageView: UIImageView!
-    @IBOutlet var onGoingImage: UIImageView!
+    @IBOutlet var statusImageView: UIImageView!
     @IBOutlet var studyImageView: UIImageView!
     @IBOutlet var studyTimeLabel: UILabel!
     @IBOutlet var nameLabel: UILabel!
     @IBOutlet var userIdLabel: UILabel!
     @IBOutlet var postTimeLabel: UILabel!
-    @IBOutlet var onGoingLabel: UILabel!
+    @IBOutlet var statusLabel: UILabel!
     @IBOutlet var backView: UIView!
     
 

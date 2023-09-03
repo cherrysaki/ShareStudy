@@ -1,15 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "アセット 4.png",
+      "filename" : "selectedRecord.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "selectedRecord (1).png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
+      "filename" : "selectedRecord (2).png",
       "idiom" : "universal",
       "scale" : "3x"
     }

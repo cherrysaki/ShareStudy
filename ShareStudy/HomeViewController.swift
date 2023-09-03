@@ -24,8 +24,8 @@ class HomeViewController: UIViewController,UITableViewDelegate, UITableViewDataS
     
     var profilesArray:[Profile] = []
     var postArray:[StudyPost]  = []
-    
     var data: Dictionary<String, Any> = [:]
+    var progressStatus: Int = 0
     
     let db = Firestore.firestore()
     let dispatchGroup = DispatchGroup()
@@ -41,19 +41,22 @@ class HomeViewController: UIViewController,UITableViewDelegate, UITableViewDataS
     }
     
     override func viewWillAppear(_ animated: Bool) {
-         profilesArray = []
-         postArray = []
-        print("viewWillAppear")
+        profilesArray = []
+        postArray = []
+        
+        self.setTabBarItem(index: 1, image: UIImage(named: "record")!, selectedImage: UIImage(named: "selectedRecord")!)
+      
         fetchMyIcon()
         fetchAllUsersData()
+        
     }
     
     
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-            return 500
-        }
-
+        return 500
+    }
+    
     // TableViewDataSourceのメソッド
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return postArray.count
@@ -73,6 +76,7 @@ class HomeViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         cell.studyTimeLabel.text = studyTime
         
         //達成状況の表示
+        setStatusForCell(cell, isFinished: post.isFinished, onGoing: post.onGoing)
         
         //画像の表示
         let postImageURLString = post.studyImage
@@ -91,7 +95,7 @@ class HomeViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         
     }
     
-
+    
     
     // studyデータを取ってきて、posttimeによってsortする
     func fetchUserStudy(userID: String) {
@@ -161,11 +165,11 @@ class HomeViewController: UIViewController,UITableViewDelegate, UITableViewDataS
                     {
                         print(iconImageURL)
                         self.setupIconBarItem(iconImageURL: iconImageURL, newSize: self.newSize)
-                        }
                     }
                 }
             }
         }
+    }
     
     
     //  firebaseのfriendコレクションから友達のユーザーIDを取得して、実際にデータをとる
@@ -193,7 +197,7 @@ class HomeViewController: UIViewController,UITableViewDelegate, UITableViewDataS
                 self.dispatchGroup.leave()
             }
         }
-
+        
         self.dispatchGroup.notify(queue: .main) {
             print("友達取得後", self.postArray)
             self.sortPostArray()
@@ -253,8 +257,20 @@ class HomeViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         }
     }
     
-    func progressCheck(){
-        
+    func setStatusForCell(_ cell: HomeTableViewCell, isFinished: Bool, onGoing: Bool) {
+        if !isFinished && !onGoing {
+            // 未達成の場合
+            cell.statusImageView.image = UIImage(named: "未達成") // 未達成のイメージ
+            cell.statusLabel.text = "未達成"
+        } else if !isFinished && onGoing {
+            // 進行中の場合
+            cell.statusImageView.image = UIImage(named: "進行中") // 進行中のイメージ
+            cell.statusLabel.text = "進行中"
+        } else {
+            // 達成済の場合
+            cell.statusImageView.image = UIImage(named: "達成") // 達成済のイメージ
+            cell.statusLabel.text = "達成済"
+        }
     }
     
     
@@ -311,6 +327,13 @@ class HomeViewController: UIViewController,UITableViewDelegate, UITableViewDataS
     }
     
     
+    func setTabBarItem(index: Int , image: UIImage, selectedImage: UIImage) -> Void {
+        let tabBarItem = self.tabBarController?.tabBar.items![index]
+        tabBarItem!.image = image.withRenderingMode(.alwaysOriginal)
+        tabBarItem!.selectedImage = selectedImage.withRenderingMode(.alwaysOriginal)
+    }
+    
+    
 }
 
 extension UIImage {
@@ -344,59 +367,4 @@ extension UIImage {
 
 
 
-
-//    //①自分のプロフィールのデータを取ってくる
-//    func fetchMyProfile(){
-//        if let currentUserID = Auth.auth().currentUser?.uid {
-//            db.collection("user").document(currentUserID).collection("profile").getDocuments { (querySnapshot, error) in
-//                if let error = error {
-//                    print("データ取得エラー: \(error.localizedDescription)")
-//                    return
-//                }
-//                if let documents = querySnapshot?.documents {
-//                    for document in documents {
-//                        let data = document.data()
-//                        if let name = data["userName"] as? String,
-//                           let userID = data["userID"] as? String,
-//                           let iconImageURL = data["profileImageName"] as? String
-//                        {
-//                            let profile = Profile(userName: name, userID: userID, profileImage: iconImageURL)
-//                            self.profilesArray.append(profile)
-//                            //iconBarItemにアイコンをダウンロードする
-//                        }
-//                    }
-//
-//                }
-//            }
-//        }
-//    }
-//
-//    //②自分の投稿を取ってくる
-//    func fetchMyStudy(){
-//        if let currentUserID = Auth.auth().currentUser?.uid {
-//            db.collection("user").document(currentUserID).collection("study").getDocuments { (querySnapshot, error) in
-//                if let error = error {
-//                    print("データ取得エラー: \(error.localizedDescription)")
-//                    return
-//                }
-//                if let documents = querySnapshot?.documents {
-//                    for document in documents {
-//                        let data = document.data()
-//                        if let studyTime = data["studyTime"] as? String,
-//                           let studyImageURL = data["image"] as? String,
-//                           let isFinished = data["isFinished"] as? Bool,
-//                           let onGoing = data["onGoing"] as? Bool,
-//                           let postTime = data["date"] as? Timestamp
-//                        {
-//                            let formattedTime = self.formatPostTime(postTime)
-//                            let post = StudyPost(studyTime: studyTime, studyImage: studyImageURL, isFinished: isFinished, onGoing: onGoing)
-//                            self.postArray.append(post)
-//                        }
-//                    }
-//                }
-//                //                // データ取得後にTableViewをリロード
-//                //                self.tableView.reloadData()
-//            }
-//        }
-//    }
 

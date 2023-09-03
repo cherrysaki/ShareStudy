@@ -20,6 +20,11 @@ class ProfileViewController: UIViewController,UITableViewDelegate,UITableViewDat
     let db = Firestore.firestore()
     
     var postArray:[StudyPost]  = []
+
+    var userName: String = "さき"
+    var userID: String = "saki0402"
+    var profileImage: String = ""
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,9 +33,9 @@ class ProfileViewController: UIViewController,UITableViewDelegate,UITableViewDat
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        self.navigationController?.navigationBar.isHidden = false
         fetchMyProfile()
         fetchMystudy()
-        
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -45,17 +50,29 @@ class ProfileViewController: UIViewController,UITableViewDelegate,UITableViewDat
         let cell = tableView.dequeueReusableCell(withIdentifier: "postCell", for: indexPath) as! HomeTableViewCell
         let post = postArray[indexPath.row]
         
+//        let loadingView = createLoadingView()
+//        UIApplication.shared.windows.filter { $0.isKeyWindow }.first?.addSubview(loadingView)
+//
         let formattedTime = self.formatPostTime(post.postTime)
         cell.postTimeLabel.text = formattedTime
         let studyTime = self.timerUIUpdate(time: post.studyTime)
         cell.studyTimeLabel.text = studyTime
+        setStatusForCell(cell, isFinished: post.isFinished, onGoing: post.onGoing)
+
+        cell.nameLabel.text = self.userName
+        cell.userIdLabel.text = self.userID
         
         let postImageURLString = post.studyImage
         downloadImage(from: postImageURLString) { image in
             self.setImage(image, for: cell.studyImageView)
         }
         
+        downloadImage(from: self.profileImage) { image in
+            self.setImage(image, for: cell.iconImageView)
+        }
+//        loadingView.removeFromSuperview()
         return cell
+       
     }
     
     
@@ -72,13 +89,19 @@ class ProfileViewController: UIViewController,UITableViewDelegate,UITableViewDat
                 if let documents = querySnapshot?.documents{
                     for document in documents {
                         let data = document.data()
-                        if let userName = data["userName"] as? String{
-                            let userId = data["userID"] as? String
-                            let introduction = data["selfIntroduction"] as?String
+                        if let userName = data["userName"] as? String,
+                           let userId = data["userID"] as? String,
+                           let introduction = data["selfIntroduction"] as? String,
+                           let profileImageName = data["profileImageName"] as? String{
                             print("名前: \(userName)")
                             self.userNameLabel.text = userName
                             self.userIdlabel.text = userId
                             self.introLabel.text = introduction
+                           
+                            self.userName = userName
+                            self.userID = userId
+                            self.profileImage = profileImageName
+                            
                             DispatchQueue.global().async {
                                 if let iconImageURL = URL(string: data["profileImageName"] as! String),
                                    let iconImageData = try? Data(contentsOf: iconImageURL),
@@ -134,7 +157,7 @@ class ProfileViewController: UIViewController,UITableViewDelegate,UITableViewDat
             }
         }
     }
-
+    
     //dateをstringに変える関数
     func formatPostTime(_ postDates: Date) -> String {
         let dateFormatter = DateFormatter()
@@ -155,6 +178,21 @@ class ProfileViewController: UIViewController,UITableViewDelegate,UITableViewDat
         }
     }
     
+    func setStatusForCell(_ cell: HomeTableViewCell, isFinished: Bool, onGoing: Bool) {
+        if !isFinished && !onGoing {
+            // 未達成の場合
+            cell.statusImageView.image = UIImage(named: "未達成") // 未達成のイメージ
+            cell.statusLabel.text = "未達成"
+        } else if !isFinished && onGoing {
+            // 進行中の場合
+            cell.statusImageView.image = UIImage(named: "進行中") // 進行中のイメージ
+            cell.statusLabel.text = "進行中"
+        } else {
+            // 達成済の場合
+            cell.statusImageView.image = UIImage(named: "達成") // 達成済のイメージ
+            cell.statusLabel.text = "達成済"
+        }
+    }
     
     // 画像を非同期でダウンロードする関数
     func downloadImage(from urlString: String, completion: @escaping (UIImage?) -> Void) {
@@ -218,6 +256,28 @@ class ProfileViewController: UIViewController,UITableViewDelegate,UITableViewDat
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(UINib(nibName: "HomeTableViewCell", bundle: nil), forCellReuseIdentifier: "postCell")
+    }
+    
+    func createLoadingView() -> UIView {
+        //Loading View
+        let loadingView = UIView(frame: UIScreen.main.bounds)
+        loadingView.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)
+        
+        let activityIndicator = UIActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
+        activityIndicator.center = loadingView.center
+        activityIndicator.color = UIColor.white
+        activityIndicator.style = UIActivityIndicatorView.Style.large
+        activityIndicator.hidesWhenStopped = true
+        activityIndicator.startAnimating()
+        loadingView.addSubview(activityIndicator)
+        
+        let label = UILabel(frame: CGRect(x: 0, y: 0, width: 300, height: 30))
+        label.center = CGPoint(x: activityIndicator.frame.origin.x + activityIndicator.frame.size.width / 2, y: activityIndicator.frame.origin.y + 90)
+        label.textColor = UIColor.white
+        label.textAlignment = .center
+        loadingView.addSubview(label)
+        
+        return loadingView
     }
     
     
