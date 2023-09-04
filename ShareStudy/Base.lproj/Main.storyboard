@@ -217,7 +217,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="名前" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vSt-5k-iMR">
-                                <rect key="frame" x="140" y="128" width="77" height="30"/>
+                                <rect key="frame" x="140" y="128" width="175" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="NotoSansJP-Bold" family="Noto Sans JP" pointSize="20"/>
                                 <nil key="textColor"/>
@@ -230,7 +230,7 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="IMG_6598 2" translatesAutoresizingMaskIntoConstraints="NO" id="Vus-T9-3R0">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Vus-T9-3R0">
                                 <rect key="frame" x="26" y="124" width="90" height="90"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="90" id="6Vz-7N-b2h"/>
@@ -288,7 +288,7 @@
                                 </items>
                             </navigationBar>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="ID" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5mS-gB-b4G">
-                                <rect key="frame" x="140" y="159" width="84" height="20"/>
+                                <rect key="frame" x="140" y="159" width="175" height="20"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="NotoSansJP-Regular" family="Noto Sans JP" pointSize="14"/>
                                 <color key="textColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -793,7 +793,6 @@
     </scenes>
     <resources>
         <image name="Component 2" width="72" height="72"/>
-        <image name="IMG_6598 2" width="2316" height="2518"/>
         <image name="Line 7" width="390" height="3"/>
         <image name="Rectangle 14" width="350" height="204"/>
         <image name="bell" catalog="system" width="125" height="128"/>

@@ -134,6 +134,7 @@ class HomeViewController: UIViewController,UITableViewDelegate, UITableViewDataS
                         let post = StudyPost(uid: uid, postTime: postDates, studyTime: studyTime, studyImage: studyImageURL, isFinished: isFinished, onGoing: onGoing)
                         self.postArray.append(post)
                         print("今の",self.postArray)
+                        
                     }
                 }
             }
