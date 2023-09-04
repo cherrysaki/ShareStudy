@@ -36,10 +36,15 @@ class NotificationTableViewCell: UITableViewCell {
     @IBAction func approveButtonTapped(_ sender: UIButton) {
         delegate?.approveButtonTapped(cell: self)
         }
+    
+    @IBAction func cancelButtonTapped(_ sender: UIButton) {
+        delegate?.cancelButtonTapped(cell: self)
+        }
 
     
 }
 
 protocol NotificationViewDelegate: AnyObject{
     func approveButtonTapped(cell: NotificationTableViewCell)
+    func cancelButtonTapped(cell: NotificationTableViewCell)
 }

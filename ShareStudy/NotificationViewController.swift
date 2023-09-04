@@ -64,6 +64,7 @@ class NotificationViewController: UIViewController,UITableViewDelegate,UITableVi
     
     // 申請された友達のプロフィール情報を取得して表示するメソッド
     func fetchFriendRequests() {
+        friendRequests = []
         guard let currentUserID = Auth.auth().currentUser?.uid else {
             return
         }
@@ -95,6 +96,7 @@ class NotificationViewController: UIViewController,UITableViewDelegate,UITableVi
                            let profileImage = profileDocument["profileImageName"] as? String {
                             let profile = Profile(userName: userName, userID: userID, profileImage: profileImage)
                             self.friendRequests.append(profile)
+                            print(self.friendRequests)
                             self.tableView.reloadData()
                         }
                     }
@@ -142,6 +144,40 @@ class NotificationViewController: UIViewController,UITableViewDelegate,UITableVi
             }
         }
     }
+    
+    func cancelButtonTapped(cell: NotificationTableViewCell) {
+        guard let indexPath = tableView.indexPath(for: cell) else {
+            return
+        }
+        let friendRequest = friendRequests[indexPath.row]
+        cancelFriendRequest(targetUserID: friendRequest.userID)
+    }
+    
+    func cancelFriendRequest(targetUserID: String) {
+        guard let currentUserID = Auth.auth().currentUser?.uid else {
+            return
+        }
+        
+        let db = Firestore.firestore()
+        let currentUserWaitFollowerRef = db.collection("user").document(currentUserID).collection("waitfollower").document(targetUserID)
+        let targetUserWaitFollowRef = db.collection("user").document(targetUserID).collection("waitfollow").document(currentUserID)
+        
+        // ドキュメントを削除する関数
+        func deleteDocument(_ documentRef: DocumentReference) {
+            documentRef.delete { error in
+                if let error = error {
+                    print("ドキュメントの削除エラー: \(error.localizedDescription)")
+                } else {
+                    print("ドキュメントが削除されました。")
+                }
+            }
+        }
+        
+        // ドキュメントを削除
+        deleteDocument(currentUserWaitFollowerRef)
+        deleteDocument(targetUserWaitFollowRef)
+    }
+
     
     
 }

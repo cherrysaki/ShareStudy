@@ -21,13 +21,13 @@ class SignInViewController: UIViewController {
         super.viewDidAppear(animated)
         
         print("viewDidAppear")
-        if let user = Auth.auth().currentUser {
-            print("user: \(user.uid)")
-            let storyboard: UIStoryboard = self.storyboard!
-            let next = storyboard.instantiateViewController(withIdentifier: "TabBarViewController")
-            self.present(next, animated: true, completion: nil)
-
-        }
+//        if let user = Auth.auth().currentUser {
+//            print("user: \(user.uid)")
+//            let storyboard: UIStoryboard = self.storyboard!
+//            let next = storyboard.instantiateViewController(withIdentifier: "TabBarViewController")
+//            self.present(next, animated: true, completion: nil)
+//
+//        }
     }
     
     @IBAction func didTapSignInButton(_ sender: Any) {

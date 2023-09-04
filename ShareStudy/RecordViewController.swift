@@ -117,6 +117,7 @@ class RecordViewController: UIViewController, AVCapturePhotoCaptureDelegate {
                       let finishAlert = UIAlertController(title: "タイマーが終了しました", message: nil, preferredStyle: .alert)
                       let okAction = UIAlertAction(title: "OK", style: .default)
                       finishAlert.addAction(okAction)
+                      isFinished = true
                       present(finishAlert, animated: true)
                   }
                   extTime += 1.0  // extTimeは常に加算

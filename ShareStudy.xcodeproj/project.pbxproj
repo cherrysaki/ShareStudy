@@ -33,10 +33,10 @@
 		E459484C2A6793140087FA2E /* NotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E459484B2A6793140087FA2E /* NotificationViewController.swift */; };
 		E45F9AB42A9487480039704E /* EditProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E45F9AB32A9487480039704E /* EditProfileViewController.swift */; };
 		E4ACD8DA2AA4BF8000079178 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4ACD8D92AA4BF8000079178 /* LoadingView.swift */; };
+		E4ACD8DC2AA6057200079178 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E4ACD8DB2AA6057200079178 /* Assets.xcassets */; };
 		E4C93AC42A1CB96700427DFF /* RankingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C93AC32A1CB96700427DFF /* RankingViewController.swift */; };
 		E4C93AC62A1CBBC800427DFF /* RecordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C93AC52A1CBBC800427DFF /* RecordViewController.swift */; };
 		E4C93AC82A1CBBFF00427DFF /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C93AC72A1CBBFF00427DFF /* ProfileViewController.swift */; };
-		E4C93ACA2A1CCD8000427DFF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E4C93AC92A1CCD7F00427DFF /* Assets.xcassets */; };
 		E4C93ACD2A386EAE00427DFF /* HomeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C93ACB2A386EAE00427DFF /* HomeTableViewCell.swift */; };
 		E4C93ACE2A386EAE00427DFF /* HomeTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = E4C93ACC2A386EAE00427DFF /* HomeTableViewCell.xib */; };
 		E4E3948E2A67DE78004BB946 /* SearchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4E3948C2A67DE78004BB946 /* SearchTableViewCell.swift */; };
@@ -90,10 +90,10 @@
 		E459484B2A6793140087FA2E /* NotificationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewController.swift; sourceTree = "<group>"; };
 		E45F9AB32A9487480039704E /* EditProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileViewController.swift; sourceTree = "<group>"; };
 		E4ACD8D92AA4BF8000079178 /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
+		E4ACD8DB2AA6057200079178 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E4C93AC32A1CB96700427DFF /* RankingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RankingViewController.swift; sourceTree = "<group>"; };
 		E4C93AC52A1CBBC800427DFF /* RecordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordViewController.swift; sourceTree = "<group>"; };
 		E4C93AC72A1CBBFF00427DFF /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
-		E4C93AC92A1CCD7F00427DFF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E4C93ACB2A386EAE00427DFF /* HomeTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTableViewCell.swift; sourceTree = "<group>"; };
 		E4C93ACC2A386EAE00427DFF /* HomeTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HomeTableViewCell.xib; sourceTree = "<group>"; };
 		E4E3948C2A67DE78004BB946 /* SearchTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchTableViewCell.swift; sourceTree = "<group>"; };
@@ -173,10 +173,10 @@
 				E45948492A6792DA0087FA2E /* FriendSearchViewController.swift */,
 				E4E3948C2A67DE78004BB946 /* SearchTableViewCell.swift */,
 				E4E3948D2A67DE78004BB946 /* SearchTableViewCell.xib */,
+				E4ACD8D92AA4BF8000079178 /* LoadingView.swift */,
 				E4471951298D0C39002C98C6 /* Main.storyboard */,
 				E4471956298D0C3B002C98C6 /* LaunchScreen.storyboard */,
-				E4ACD8D92AA4BF8000079178 /* LoadingView.swift */,
-				E4C93AC92A1CCD7F00427DFF /* Assets.xcassets */,
+				E4ACD8DB2AA6057200079178 /* Assets.xcassets */,
 				E4471959298D0C3B002C98C6 /* Info.plist */,
 				E4E84EFA2A94D0CA001A235C /* GoogleService-Info.plist */,
 			);
@@ -339,9 +339,9 @@
 			files = (
 				E4471958298D0C3B002C98C6 /* LaunchScreen.storyboard in Resources */,
 				E447199D298D26E4002C98C6 /* NotoSansJP-Medium.otf in Resources */,
-				E4C93ACA2A1CCD8000427DFF /* Assets.xcassets in Resources */,
 				E44719A1298D26E4002C98C6 /* OFL.txt in Resources */,
 				E44E4FFF2A97091500570E75 /* NotificationTableViewCell.xib in Resources */,
+				E4ACD8DC2AA6057200079178 /* Assets.xcassets in Resources */,
 				E447199E298D26E4002C98C6 /* NotoSansJP-Light.otf in Resources */,
 				E4471953298D0C39002C98C6 /* Main.storyboard in Resources */,
 				E44719A2298D26E4002C98C6 /* NotoSansJP-Black.otf in Resources */,
