@@ -32,6 +32,7 @@
 		E459484A2A6792DA0087FA2E /* FriendSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E45948492A6792DA0087FA2E /* FriendSearchViewController.swift */; };
 		E459484C2A6793140087FA2E /* NotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E459484B2A6793140087FA2E /* NotificationViewController.swift */; };
 		E45F9AB42A9487480039704E /* EditProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E45F9AB32A9487480039704E /* EditProfileViewController.swift */; };
+		E4ACD8DA2AA4BF8000079178 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4ACD8D92AA4BF8000079178 /* LoadingView.swift */; };
 		E4C93AC42A1CB96700427DFF /* RankingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C93AC32A1CB96700427DFF /* RankingViewController.swift */; };
 		E4C93AC62A1CBBC800427DFF /* RecordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C93AC52A1CBBC800427DFF /* RecordViewController.swift */; };
 		E4C93AC82A1CBBFF00427DFF /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C93AC72A1CBBFF00427DFF /* ProfileViewController.swift */; };
@@ -88,6 +89,7 @@
 		E45948492A6792DA0087FA2E /* FriendSearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendSearchViewController.swift; sourceTree = "<group>"; };
 		E459484B2A6793140087FA2E /* NotificationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewController.swift; sourceTree = "<group>"; };
 		E45F9AB32A9487480039704E /* EditProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileViewController.swift; sourceTree = "<group>"; };
+		E4ACD8D92AA4BF8000079178 /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		E4C93AC32A1CB96700427DFF /* RankingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RankingViewController.swift; sourceTree = "<group>"; };
 		E4C93AC52A1CBBC800427DFF /* RecordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordViewController.swift; sourceTree = "<group>"; };
 		E4C93AC72A1CBBFF00427DFF /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
@@ -173,6 +175,7 @@
 				E4E3948D2A67DE78004BB946 /* SearchTableViewCell.xib */,
 				E4471951298D0C39002C98C6 /* Main.storyboard */,
 				E4471956298D0C3B002C98C6 /* LaunchScreen.storyboard */,
+				E4ACD8D92AA4BF8000079178 /* LoadingView.swift */,
 				E4C93AC92A1CCD7F00427DFF /* Assets.xcassets */,
 				E4471959298D0C3B002C98C6 /* Info.plist */,
 				E4E84EFA2A94D0CA001A235C /* GoogleService-Info.plist */,
@@ -380,6 +383,7 @@
 				E44E4FFE2A97091500570E75 /* NotificationTableViewCell.swift in Sources */,
 				E4C93AC62A1CBBC800427DFF /* RecordViewController.swift in Sources */,
 				E45F9AB42A9487480039704E /* EditProfileViewController.swift in Sources */,
+				E4ACD8DA2AA4BF8000079178 /* LoadingView.swift in Sources */,
 				E447197C298D109A002C98C6 /* HomeViewController.swift in Sources */,
 				E4E3948E2A67DE78004BB946 /* SearchTableViewCell.swift in Sources */,
 				E4F9E35B299F903E004EE261 /* SignInViewController.swift in Sources */,

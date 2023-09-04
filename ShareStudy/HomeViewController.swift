@@ -38,6 +38,7 @@ class HomeViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         tableView.dataSource = self
         tableView.register(UINib(nibName: "HomeTableViewCell", bundle: nil), forCellReuseIdentifier: "postCell")
         
+        configureRefreshControl() //更新処理
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -54,7 +55,7 @@ class HomeViewController: UIViewController,UITableViewDelegate, UITableViewDataS
     
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 500
+        return 550
     }
     
     // TableViewDataSourceのメソッド
@@ -67,20 +68,18 @@ class HomeViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         let post = postArray[indexPath.row]
         let profile = profilesArray[indexPath.row]
         
-        // セルにデータを表示
+        let formattedTime = self.formatPostTime(post.postTime)
+        let studyTime = self.timerUIUpdate(time: post.studyTime)
+        let postImageURLString = post.studyImage
+        let profileImageURLString = profile.profileImage
+
         cell.nameLabel.text = profile.userName
         cell.userIdLabel.text = profile.userID
-        let formattedTime = self.formatPostTime(post.postTime)
         cell.postTimeLabel.text = formattedTime
-        let studyTime = self.timerUIUpdate(time: post.studyTime)
         cell.studyTimeLabel.text = studyTime
         
         //達成状況の表示
         setStatusForCell(cell, isFinished: post.isFinished, onGoing: post.onGoing)
-        
-        //画像の表示
-        let postImageURLString = post.studyImage
-        let profileImageURLString = profile.profileImage
         
         // 画像のダウンロード
         downloadImage(from: postImageURLString) { image in
@@ -95,10 +94,25 @@ class HomeViewController: UIViewController,UITableViewDelegate, UITableViewDataS
         
     }
     
+    func configureRefreshControl () {
+           //RefreshControlを追加する処理
+           tableView.refreshControl = UIRefreshControl()
+           tableView.refreshControl?.addTarget(self, action: #selector(handleRefreshControl), for: .valueChanged)
+        }
     
+    @objc func handleRefreshControl() {
+        fetchMyIcon()
+        fetchAllUsersData()
+
+           DispatchQueue.main.async {
+              self.tableView.reloadData()  //TableViewの中身を更新する場合はここでリロード処理
+              self.tableView.refreshControl?.endRefreshing()  //これを必ず記載すること
+           }
+        }
     
     // studyデータを取ってきて、posttimeによってsortする
     func fetchUserStudy(userID: String) {
+        postArray = []
         db.collection("user").document(userID).collection("study").getDocuments { (querySnapshot, error) in
             if let error = error {
                 print("データ取得エラー: \(error.localizedDescription)")
@@ -127,6 +141,7 @@ class HomeViewController: UIViewController,UITableViewDelegate, UITableViewDataS
     }
     
     func fetchUserProfile(userID: String, completion: @escaping (Profile?) -> Void) {
+        profilesArray = []
         db.collection("user").document(userID).collection("profile").getDocuments { (querySnapshot, error) in
             if let error = error {
                 print("データ取得エラー: \(error.localizedDescription)")

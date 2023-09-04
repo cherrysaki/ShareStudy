@@ -166,7 +166,7 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
                             return
                             }
                         self?.uid = doc.documentID
-                        print(self?.uid)
+                        print("uid",self?.uid)
                                 
                     }
                 }
@@ -211,8 +211,6 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
     func addFriend(cell: SearchTableViewCell) {
         // 1. キーワードを使用して、指定されたユーザーIDの人のコレクションにwaitfollowerを作成する
         if let currentUserID = Auth.auth().currentUser?.uid {
-//            fetchUIDByUserID(userID: keyword) { (uid) in
-//                if let uid = uid {
             print("Found user with uid: \(uid)")
             let targetUserID = uid // セルに表示されている文字をキーワードとして使用
             let targetUserCollection = self.db.collection("user").document(targetUserID)  // Firestoreの参照を取得
@@ -278,7 +276,7 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
     
 
     
-    // 友達関係の状態を確認する関数
+    // 友達であるかを確認する関数
     func checkFriendStatus(currentUserID: String, targetUserID: String, completion: @escaping (Bool) -> Void) {
         let currentUserFriendsCollection = db.collection("user").document(currentUserID).collection("friends")
         
@@ -293,31 +291,35 @@ class FriendSearchViewController: UIViewController, UISearchBarDelegate, UITable
         }
     }
     
+    // 友達申請を送ったかチェックする関数
     func checkFriendRequestStatus(currentUserID: String, targetUserID: String, completion: @escaping (FriendRequestStatus) -> Void) {
         let currentUserWaitFollowCollection = db.collection("user").document(currentUserID).collection("waitfollow") // 自分のwaitfollowリストを参照
         
-        currentUserWaitFollowCollection.document(targetUserID).getDocument { [weak self] (document, error) in
-            if let document = document, document.exists {
-                let targetUserWaitFollowerCollection = self!.db.collection("user").document(targetUserID).collection("waitfollower")  // 相手のwaitfollowerリストを参照
-                targetUserWaitFollowerCollection.document(currentUserID).getDocument { (targetDocument, targetError) in
-                    if let targetDocument = targetDocument, targetDocument.exists {
-                        completion(.requestSent)// 自分と相手のwaitリストの両方に存在する場合
-                    } else {
-                        completion(.none) // 自分のwaitfollowリストには存在するが、相手のwaitfollowerリストには存在しない場合
+        currentUserWaitFollowCollection.whereField("waitFollowUser", isEqualTo: targetUserID).getDocuments { [weak self] (querySnapshot, error) in
+            if let error = error {
+                print("Error fetching waitfollow documents: \(error.localizedDescription)")
+                completion(.isFriend)
+                return
+            }
+            
+            if let documents = querySnapshot?.documents {
+                if documents.isEmpty {
+                    // 自分のwaitfollowリストには存在しない場合
+                    // その他の条件を満たすかどうかを確認し、友達関係があるかどうかを判定
+                    self?.checkFriendStatus(currentUserID: currentUserID, targetUserID: targetUserID) { isFriend in
+                        if isFriend {
+                            completion(.isFriend)
+                        } else {
+                            completion(.none)
+                        }
                     }
-                }
-            } else { // 自分のwaitfollowリストにも存在しない場合
-                // その他の条件を満たすかどうかを確認し、友達関係があるかどうかを判定
-                self?.checkFriendStatus(currentUserID: currentUserID, targetUserID: targetUserID) { isFriend in
-                    if isFriend {
-                        completion(.isFriend)
-                    } else {
-                        completion(.none)
-                    }
+                } else {
+                    completion(.requestSent)
                 }
             }
         }
     }
+
     
     
     func createAlert(title: String, message: String){

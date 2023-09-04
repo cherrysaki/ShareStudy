@@ -24,12 +24,15 @@ class ProfileViewController: UIViewController,UITableViewDelegate,UITableViewDat
     var userName: String = "さき"
     var userID: String = "saki0402"
     var profileImage: String = ""
+//    var isLoading: Bool = false
+
 
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
         setupTableView()
+        configureRefreshControl() //更新処理
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -50,9 +53,6 @@ class ProfileViewController: UIViewController,UITableViewDelegate,UITableViewDat
         let cell = tableView.dequeueReusableCell(withIdentifier: "postCell", for: indexPath) as! HomeTableViewCell
         let post = postArray[indexPath.row]
         
-//        let loadingView = createLoadingView()
-//        UIApplication.shared.windows.filter { $0.isKeyWindow }.first?.addSubview(loadingView)
-//
         let formattedTime = self.formatPostTime(post.postTime)
         cell.postTimeLabel.text = formattedTime
         let studyTime = self.timerUIUpdate(time: post.studyTime)
@@ -70,11 +70,26 @@ class ProfileViewController: UIViewController,UITableViewDelegate,UITableViewDat
         downloadImage(from: self.profileImage) { image in
             self.setImage(image, for: cell.iconImageView)
         }
-//        loadingView.removeFromSuperview()
+
         return cell
        
     }
     
+    func configureRefreshControl () {
+           //RefreshControlを追加する処理
+           tableView.refreshControl = UIRefreshControl()
+           tableView.refreshControl?.addTarget(self, action: #selector(handleRefreshControl), for: .valueChanged)
+        }
+    
+    @objc func handleRefreshControl() {
+        fetchMyProfile()
+        fetchMystudy()
+
+           DispatchQueue.main.async {
+              self.tableView.reloadData()  //TableViewの中身を更新する場合はここでリロード処理
+              self.tableView.refreshControl?.endRefreshing()  //これを必ず記載すること
+           }
+        }
     
     
     func fetchMyProfile(){
@@ -195,33 +210,33 @@ class ProfileViewController: UIViewController,UITableViewDelegate,UITableViewDat
     }
     
     // 画像を非同期でダウンロードする関数
-    func downloadImage(from urlString: String, completion: @escaping (UIImage?) -> Void) {
-        guard let url = URL(string: urlString) else {
-            completion(nil)
-            return
-        }
-        
-        URLSession.shared.dataTask(with: url) { data, _, error in
-            if let error = error {
-                print("画像ダウンロードエラー: \(error.localizedDescription)")
-                completion(nil)
-                return
-            }
-            
-            if let data = data, let image = UIImage(data: data) {
-                completion(image)
-            } else {
-                completion(nil)
-            }
-        }.resume()
-    }
-    
-    // ダウンロードした画像をセルに設定する関数
-    func setImage(_ image: UIImage?, for imageView: UIImageView) {
-        DispatchQueue.main.async {
-            imageView.image = image
-        }
-    }
+       func downloadImage(from urlString: String, completion: @escaping (UIImage?) -> Void) {
+           guard let url = URL(string: urlString) else {
+               completion(nil)
+               return
+           }
+           
+           URLSession.shared.dataTask(with: url) { data, _, error in
+               if let error = error {
+                   print("画像ダウンロードエラー: \(error.localizedDescription)")
+                   completion(nil)
+                   return
+               }
+               
+               if let data = data, let image = UIImage(data: data) {
+                   completion(image)
+               } else {
+                   completion(nil)
+               }
+           }.resume()
+       }
+       
+       // ダウンロードした画像をセルに設定する関数
+       func setImage(_ image: UIImage?, for imageView: UIImageView) {
+           DispatchQueue.main.async {
+               imageView.image = image
+           }
+       }
     
     func showAlert(message: String) {
         let alert = UIAlertController(title: "エラー", message: message, preferredStyle: .alert)
@@ -229,27 +244,10 @@ class ProfileViewController: UIViewController,UITableViewDelegate,UITableViewDat
         self.present(alert, animated: true, completion: nil)
     }
     
-    func showCreateStudyAlert() {
-        let alert = UIAlertController(
-            title: "勉強記録が存在しません",
-            message: "新しい勉強記録を作成しますか？",
-            preferredStyle: .alert
-        )
-        
-        alert.addAction(UIAlertAction(title: "はい", style: .default) { _ in
-            // 新しい勉強記録を作成する処理をここに追加する
-        })
-        
-        alert.addAction(UIAlertAction(title: "いいえ", style: .cancel, handler: nil))
-        
-        self.present(alert, animated: true, completion: nil)
-    }
-    
     func setupUI(){
         iconImageView.layer.cornerRadius = iconImageView.frame.width / 2
         iconImageView.contentMode = .scaleAspectFill
         iconImageView.clipsToBounds = true
-        //        introLabel.contentMode = .top
     }
     
     func setupTableView(){

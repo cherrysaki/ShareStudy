@@ -25,6 +25,9 @@ class NotificationViewController: UIViewController,UITableViewDelegate,UITableVi
         fetchFriendRequests() // 申請された友達のプロフィール情報を取得
     }
     
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 80
+    }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return friendRequests.count
@@ -77,24 +80,26 @@ class NotificationViewController: UIViewController,UITableViewDelegate,UITableVi
             }
             // 申請されたユーザーIDのプロフィール情報を取得してfriendRequestsに格納
             for document in snapshot?.documents ?? [] {
-                let userID = document.documentID
-                let profileCollection = db.collection("user").document(userID).collection("profile")
-                profileCollection.getDocuments { (profileSnapshot, profileError) in
-                    if let profileError = profileError {
-                        print("Error fetching profile for user \(userID): \(profileError.localizedDescription)")
-                        return
-                    }
-                    
-                    if let profileDocument = profileSnapshot?.documents.first,
-                       let userName = profileDocument["userName"] as? String,
-                       let profileImage = profileDocument["profileImageName"] as? String {
-                        let profile = Profile(userName: userName, userID: userID, profileImage: profileImage)
-                        self.friendRequests.append(profile)
-                        self.tableView.reloadData()
+                let data = document.data()
+                if let userID = data["waitFollowerUser"] as? String{
+                    let profileCollection = db.collection("user").document(userID).collection("profile")
+                    profileCollection.getDocuments { (profileSnapshot, profileError) in
+                        if let profileError = profileError {
+                            print("Error fetching profile for user \(userID): \(profileError.localizedDescription)")
+                            return
+                        }
+                        
+                        if let profileDocument = profileSnapshot?.documents.first,
+                           let userName = profileDocument["userName"] as? String,
+                           let userID = profileDocument["userID"] as? String,
+                           let profileImage = profileDocument["profileImageName"] as? String {
+                            let profile = Profile(userName: userName, userID: userID, profileImage: profileImage)
+                            self.friendRequests.append(profile)
+                            self.tableView.reloadData()
+                        }
                     }
                 }
             }
-
         }
     }
     // NotificationTableViewCellDelegate メソッドの実装

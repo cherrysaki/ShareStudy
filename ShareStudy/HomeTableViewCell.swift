@@ -23,7 +23,9 @@ class HomeTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         setupIcon()
+        setupLine()
         setupPostImageView()
+        studyImageView.layer.cornerRadius = 5
         
     }
 
@@ -32,7 +34,7 @@ class HomeTableViewCell: UITableViewCell {
     }
     
     func setupPostImageView(){
-        studyImageView.frame = CGRect(x: 25, y: 67, width: 280, height: 340) // サイズを指定
+        studyImageView.frame = CGRect(x: 8, y: 64, width: 280, height: 340) // サイズを指定
         studyImageView.contentMode = .scaleAspectFill
         studyImageView.clipsToBounds = true
     }
@@ -44,14 +46,12 @@ class HomeTableViewCell: UITableViewCell {
     }
     
     func setupLine(){
-        backView.layer.borderWidth = 1.0 //枠線の太さを指定
-        backView.layer.borderColor = UIColor.lightGray.cgColor //枠線の色を指定
+        backView.layer.cornerRadius = 5
+        backView.layer.borderWidth = 0.5 //枠線の太さを指定
+        backView.layer.borderColor = UIColor(red: 217.0 / 255.0, green: 217.0 / 255.0, blue: 217.0 / 255.0, alpha: 1.0).cgColor
     }
     
-    func progressCheck(){
-        
-    }
-    
+
     
     
 }

@@ -18,13 +18,19 @@ class NotificationTableViewCell: UITableViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
+        setupIcon()
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
         
         // Configure the view for the selected state
+    }
+    
+    func setupIcon(){
+        iconImageView.layer.cornerRadius = 30
+        iconImageView.contentMode = .scaleAspectFill
+        iconImageView.clipsToBounds = true
     }
     
     @IBAction func approveButtonTapped(_ sender: UIButton) {

@@ -265,9 +265,7 @@ class EditProfileViewController: UIViewController,UITextFieldDelegate,UITextView
                         self.updateProfile(user: user,profileImageName: urlString)
                         
                         //画面遷移
-                        let storyboard: UIStoryboard = self.storyboard!
-                        let next = storyboard.instantiateViewController(withIdentifier: "ProfileViewController")
-                        self.present(next, animated: true, completion: nil)
+                        self.dismiss(animated: true)
                         
                     case .failure(let error):
                         print("エラー: \(error)")
