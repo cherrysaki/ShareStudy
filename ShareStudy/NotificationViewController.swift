@@ -12,7 +12,7 @@ class NotificationViewController: UIViewController,UITableViewDelegate,UITableVi
     
     @IBOutlet var tableView: UITableView!
     var friendRequests: [Profile] = [] // 申請された友達のプロフィール情報を格納する配列
-  
+    var friendRequestsUid: [String] = [] //申請された友達のユニークなIDを格納する配列
     private let imageCache = NSCache<NSString, UIImage>()  // 画像をキャッシュするためのNSCache
     
     override func viewDidLoad() {
@@ -35,6 +35,7 @@ class NotificationViewController: UIViewController,UITableViewDelegate,UITableVi
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "friendRequestCell", for: indexPath) as! NotificationTableViewCell
+        cell.delegate = self
         let friendRequest = friendRequests[indexPath.row]
         cell.userNameLabel.text = friendRequest.userName
         cell.userIdLabel.text = friendRequest.userID
@@ -65,6 +66,7 @@ class NotificationViewController: UIViewController,UITableViewDelegate,UITableVi
     // 申請された友達のプロフィール情報を取得して表示するメソッド
     func fetchFriendRequests() {
         friendRequests = []
+        friendRequestsUid = []
         guard let currentUserID = Auth.auth().currentUser?.uid else {
             return
         }
@@ -83,6 +85,7 @@ class NotificationViewController: UIViewController,UITableViewDelegate,UITableVi
             for document in snapshot?.documents ?? [] {
                 let data = document.data()
                 if let userID = data["waitFollowerUser"] as? String{
+                    self.friendRequestsUid.append(userID)
                     let profileCollection = db.collection("user").document(userID).collection("profile")
                     profileCollection.getDocuments { (profileSnapshot, profileError) in
                         if let profileError = profileError {
@@ -109,8 +112,8 @@ class NotificationViewController: UIViewController,UITableViewDelegate,UITableVi
         guard let indexPath = tableView.indexPath(for: cell) else {
             return
         }
-        let friendRequest = friendRequests[indexPath.row]
-        approveFriendRequest(targetUserID: friendRequest.userID)
+        let friendRequestUid = friendRequestsUid[indexPath.row]
+        approveFriendRequest(targetUserID: friendRequestUid)
     }
     
     func approveFriendRequest(targetUserID: String) {
@@ -149,8 +152,8 @@ class NotificationViewController: UIViewController,UITableViewDelegate,UITableVi
         guard let indexPath = tableView.indexPath(for: cell) else {
             return
         }
-        let friendRequest = friendRequests[indexPath.row]
-        cancelFriendRequest(targetUserID: friendRequest.userID)
+        let friendRequestUid = friendRequestsUid[indexPath.row]
+        cancelFriendRequest(targetUserID: friendRequestUid)
     }
     
     func cancelFriendRequest(targetUserID: String) {
